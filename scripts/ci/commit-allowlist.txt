@@ -1,0 +1,4 @@
+# Commits anteriores à adoção das regras de commit (ver scripts/ci/check_commits.py).
+# Não adicione commits novos aqui: corrija a mensagem antes do merge.
+38b5bbd2ef336d4751e297b36c39c6c7a66ef589 commit inicial, antes do Conventional Commits e do DCO
+ce58f085539c31fbe1e4ca3a5f8b2ca407639ac8 sem sign-off

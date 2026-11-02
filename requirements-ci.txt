@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
+# Ferramentas do CI, com versão exata (atualizadas pelo Dependabot).
+actionlint-py==1.7.12.25
+build==1.6.1
+editorconfig-checker==3.11.1
+mypy==2.4.1
+pip-audit==2.10.1
+pre-commit==4.7.0
+pytest==9.2.0
+pytest-cov==7.1.0
+ruff==0.17.3
+yamllint==1.38.0
+zizmor==1.32.0

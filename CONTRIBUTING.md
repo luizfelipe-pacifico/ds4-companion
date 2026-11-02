@@ -18,7 +18,13 @@ sudo pacman -S --needed python python-gobject gtk4 libadwaita python-pyudev pyth
                         inter-font pipewire wireplumber jq
 python -m venv --system-site-packages .venv && . .venv/bin/activate
 pip install -e '.[dev]'     # pytest, ruff, mypy
+pip install -r requirements-ci.txt
+sudo pacman -S --needed gitleaks shellcheck
+pre-commit install --hook-type pre-commit --hook-type commit-msg
 ```
+
+Antes de cada commit e push, rode `scripts/check.sh` (as mesmas verificações do CI que não precisam
+de container). O CI completo está descrito em [BEST_PRACTICES.md](docs/desenvolvimento/BEST_PRACTICES.md#6-ci-github-actions).
 
 ## Rodando
 

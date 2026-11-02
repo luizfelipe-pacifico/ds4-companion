@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
+# Regras padrão do gitleaks. Não adicione exceções para esconder um segredo
+# real: revogue o segredo primeiro (SECURITY.md) e depois reescreva o histórico.
+title = "ds4-companion"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Binários de terceiros baixados por skills (não versionados)"
+paths = ['''^\.claude/skills/impeccable/scripts/bin/''']

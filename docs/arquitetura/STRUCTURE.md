@@ -28,12 +28,13 @@ ds4-companion/
 │
 ├── po/                                                🗓️ traduções (gettext)
 ├── tests/                                             testes automatizados
-│   ├── ci/                                            ✅ (vazia) testes do próprio CI
+│   ├── ci/                                            ✅ testes dos verificadores do CI
 │   ├── unit/                                          🗓️
 │   └── integration/                                   🗓️
 ├── packaging/                                         🗓️ PKGBUILD e arquivos do AUR
 ├── scripts/                                           scripts de desenvolvimento e CI
-│   └── ci/                                            ✅ (vazia)
+│   ├── check.sh                                       ✅ roda as verificações do CI localmente
+│   └── ci/                                            ✅ verificadores (SVG, dados sensíveis, SPDX, commits)
 │
 ├── docs/                                              ✅ documentação (ver abaixo)
 ├── .github/                                           ✅ templates de issue/PR e workflows
@@ -150,7 +151,8 @@ O que o `makepkg` gera (`src/`, `pkg/`, `*.pkg.tar.*`) é ignorado pelo Git.
 
 ## `scripts/` — automação
 
-Scripts de apoio, nunca instalados no sistema. `scripts/ci/` ✅ guarda o que os workflows chamam;
+Scripts de apoio, nunca instalados no sistema. `scripts/ci/` ✅ guarda o que os workflows chamam
+(ver [ADR 0007](adr/0007-ci-e-verificacoes-de-seguranca.md)), e `scripts/check.sh` ✅ roda o mesmo localmente;
 scripts de desenvolvimento (gerar recursos, otimizar SVG) ficam direto em `scripts/`.
 
 ## `.github/` — GitHub
@@ -159,7 +161,8 @@ scripts de desenvolvimento (gerar recursos, otimizar SVG) ficam direto em `scrip
 |---|---|
 | `ISSUE_TEMPLATE/` ✅ | Formulários de bug e de recurso; issues em branco desativadas |
 | `PULL_REQUEST_TEMPLATE.md` ✅ | Checklist do PR |
-| `workflows/` ✅ (vazia) | CI: lint, tipos, testes, `namcap`, CodeQL, release |
+| `workflows/` ✅ | `ci.yml` (lint, testes, build, pacote, instalador), `security.yml` (gitleaks, CodeQL, dependências), `scorecard.yml` |
+| `dependabot.yml` ✅ | Atualização semanal de Actions e ferramentas do CI |
 
 ## `.claude/` — Claude Code
 

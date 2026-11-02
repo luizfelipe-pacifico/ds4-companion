@@ -4,11 +4,13 @@ labels: ["enhancement"]
 body:
   - type: textarea
     id: problem
-    attributes: { label: Qual problema isso resolve? }
+    attributes:
+      label: Qual problema isso resolve?
     validations: { required: true }
   - type: textarea
     id: idea
-    attributes: { label: Como você imagina que funcione? }
+    attributes:
+      label: Como você imagina que funcione?
   - type: checkboxes
     id: check
     attributes:

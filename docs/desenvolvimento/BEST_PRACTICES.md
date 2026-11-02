@@ -66,15 +66,20 @@ Fontes: [semver.org](https://semver.org/lang/pt-BR/), [conventionalcommits.org](
 
 ## 6. CI (GitHub Actions)
 
-Em todo PR e push na `main`:
+Em **todo push e PR**, em qualquer branch (detalhes e motivos na [ADR 0007](../arquitetura/adr/0007-ci-e-verificacoes-de-seguranca.md)):
 
-1. `ruff check` + `ruff format --check`
-2. `mypy --strict src/`
-3. `pytest --cov`
-4. `namcap` no PKGBUILD e no pacote gerado (container `archlinux:latest`)
-5. CodeQL (Python)
+1. Repositório: EditorConfig, `yamllint`, `actionlint`, `zizmor`, SVG seguro, dados pessoais, cabeçalho SPDX
+2. Commits: Conventional Commits, sign-off (DCO), sem atribuição de IA
+3. Links internos da documentação; `shellcheck` nos scripts
+4. Python: `ruff check`, `ruff format --check`, `mypy --strict src/`, `pytest` com cobertura ≥ 80 %, `pip-audit`, build
+5. Integração com PipeWire + WirePlumber isolados no container
+6. Pacote: `namcap` no PKGBUILD e no pacote, `.SRCINFO` em dia, instala/valida/remove num Arch limpo
+7. `install.sh` instalando e desinstalando como usuário comum
+8. Segurança: gitleaks no histórico inteiro, CodeQL (Python e Actions), revisão de dependências e licenças
+9. OpenSSF Scorecard na `main`
 
-Actions fixadas por SHA, permissões mínimas (`permissions: contents: read`).
+Actions fixadas por SHA, permissões mínimas (`permissions: contents: read`), imagem do Arch fixada por digest.
+Os checks obrigatórios na `main` são **CI ok** e **Segurança ok**. Localmente: `scripts/check.sh` e `pre-commit`.
 
 ## 7. Empacotamento Arch / AUR
 

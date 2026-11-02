@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
+extends: default
+ignore: |
+  .claude/
+  .venv/
+rules:
+  braces:
+    max-spaces-inside: 1
+  document-start: disable
+  truthy:
+    check-keys: false
+  line-length:
+    max: 130
+  comments:
+    min-spaces-from-content: 1

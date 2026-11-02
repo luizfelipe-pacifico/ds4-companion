@@ -11,7 +11,6 @@ Bluetooth. Status atual: **documentação / planejamento** — ainda não há c�
 Leia antes de mexer em algo grande:
 
 - Arquitetura e fluxo do áudio: `docs/arquitetura/ARCHITECTURE.md`
-- Onde cada arquivo fica e onde colocar algo novo: `docs/arquitetura/STRUCTURE.md`
 - Boas práticas (fonte da verdade para estilo, testes, Git, CI, empacotamento): `docs/desenvolvimento/BEST_PRACTICES.md`
 - Roadmap: `docs/desenvolvimento/ROADMAP.md`
 - Interface e visual: `docs/design/UI.md`, `docs/design/DESIGN.md`
@@ -36,7 +35,11 @@ python -m ds4_companion.app
 ruff check && ruff format --check
 mypy --strict src/
 pytest --cov
+scripts/check.sh            # verificações do CI localmente (segredos, dados sensíveis, SVG, SPDX, commits, lints)
 ```
+
+O CI (`.github/workflows/`) roda tudo em todo push/PR; ver ADR 0007. Commits novos nunca entram em
+`scripts/ci/commit-allowlist.txt`.
 
 ## Verificações obrigatórias antes de commit e push
 

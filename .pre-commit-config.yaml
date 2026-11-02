@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
+# Mesmas verificações rápidas do CI, antes de cada commit:
+#   pip install -r requirements-ci.txt && pre-commit install --hook-type pre-commit --hook-type commit-msg
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: dados-sensiveis
+        name: dados pessoais e arquivos proibidos
+        entry: python3 -I scripts/ci/check_sensitive.py
+        language: system
+        pass_filenames: true
+        exclude: ^(\.claude/|scripts/ci/check_sensitive\.py$)
+      - id: svg
+        name: SVG seguro
+        entry: python3 -I scripts/ci/check_svg.py
+        language: system
+        files: \.svg$
+        exclude: ^\.claude/
+      - id: spdx
+        name: cabeçalho SPDX
+        entry: python3 -I scripts/ci/check_spdx.py
+        language: system
+        files: (\.py|\.sh|PKGBUILD)$
+        exclude: ^\.claude/
+      - id: editorconfig
+        name: editorconfig
+        entry: ec
+        language: system
+        pass_filenames: true
+        exclude: ^(\.claude/|LICENSE$)
+      - id: yamllint
+        name: yamllint
+        entry: yamllint --strict
+        language: system
+        types: [yaml]
+        exclude: ^\.claude/
+      - id: actionlint
+        name: actionlint
+        entry: actionlint
+        language: system
+        files: ^\.github/workflows/
+      - id: mensagem-de-commit
+        name: Conventional Commits, sign-off e sem atribuição de IA
+        entry: python3 -I scripts/ci/check_commits.py --message-file
+        language: system
+        stages: [commit-msg]
+      - id: testes-ci
+        name: testes dos verificadores
+        entry: python3 -I -m unittest discover -s tests/ci
+        language: system
+        pass_filenames: false
+        files: ^(scripts/ci/|tests/ci/)

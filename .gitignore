@@ -27,8 +27,21 @@ packaging/*.log
 .env
 .env.*
 !.env.example
+.envrc
+.direnv/
+.secrets/
+credentials.json
+credentials.yaml
+credentials.yml
+secrets.json
+secrets.yaml
+secrets.yml
 *.pem
 *.key
+*.p12
+*.pfx
+*.jks
+*.keystore
 config.local.toml
 
 # Dados do usuário/dispositivo (logs, dumps de PipeWire/HID, backups do RPCS3)

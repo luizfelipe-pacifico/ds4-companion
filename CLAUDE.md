@@ -37,6 +37,18 @@ mypy --strict src/
 pytest --cov
 ```
 
+## Verificações obrigatórias antes de commit e push
+
+Antes de **cada commit** e de **cada push** (especialmente para `main`), não publicar até concluir:
+
+1. Revisar o diff completo, inclusive arquivos novos e staged (`git diff` e `git diff --cached`), e ler todo o texto alterado para conferir clareza, ortografia, idioma e consistência com o projeto.
+2. Executar `git diff --check` e verificar se nenhum segredo, credencial, dado pessoal, serial/MAC, log ou dump foi incluído. Conferir também arquivos não rastreados e staged; o `.gitignore` não protege arquivos que já estão versionados. Usar o scanner de segredos disponível no projeto/ambiente, se houver.
+3. Executar todos os testes de regressão e verificações automatizadas definidos pelo projeto para a mudança, incluindo lint, formatação, tipagem, testes e build/empacotamento quando aplicáveis. Não substituir a suíte completa por apenas testes direcionados antes de publicar.
+4. Para correção de bug, primeiro criar um teste de regressão que reproduza o problema e confirmar que falha antes da correção; depois corrigir e executar novamente esse teste e a suíte completa. Para novas funcionalidades, cobrir o comportamento esperado e casos de erro/limite. Nunca simular uma falha como se fosse resultado real nem ignorar teste falhando.
+5. Se uma verificação não puder ser executada (por exemplo, falta de hardware), registrar claramente a limitação e executar as alternativas automatizadas seguras disponíveis. Não declarar a validação completa nem fazer commit/push enquanto testes automatizados aplicáveis estiverem falhando.
+
+Repetir as verificações após qualquer alteração feita durante a revisão. Antes do push, conferir novamente o conteúdo efetivamente staged/commitado e o destino da branch.
+
 ## Regras
 
 - **Idioma:** documentação, textos da interface e mensagens de commit em português. Textos da UI com `gettext`.

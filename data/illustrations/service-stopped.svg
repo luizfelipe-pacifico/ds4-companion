@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <title>Serviço parado</title>
+  <defs>
+    <radialGradient id="glow" cx="128" cy="96" r="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0070D1" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#0070D1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="body" x1="0" y1="40" x2="0" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0070D1"/>
+      <stop offset="0.55" stop-color="#003791"/>
+      <stop offset="1" stop-color="#00205B"/>
+    </linearGradient>
+  </defs>
+  <circle cx="128" cy="128" r="112" fill="#0D0D12"/>
+  <circle cx="128" cy="128" r="112" fill="url(#glow)"/>
+  <ellipse cx="128" cy="206" rx="72" ry="7" fill="#1A1A22"/>
+  <g transform="translate(128 120)">
+    <circle r="50" fill="none" stroke="#1A1A22" stroke-width="22" stroke-dasharray="15.7 15.7"/>
+    <circle r="42" fill="#1A1A22"/>
+    <circle r="42" fill="none" stroke="#A0A3AD" stroke-opacity="0.35" stroke-width="2"/>
+    <circle r="16" fill="#0D0D12"/>
+  </g>
+  <g transform="translate(176 166)">
+    <circle r="31" fill="#0D0D12"/>
+    <circle r="26" fill="#E5383B"/>
+    <rect x="-9" y="-9" width="18" height="18" rx="3" fill="#FFFFFF"/>
+  </g>
+</svg>

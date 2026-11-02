@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <title>Algo deu errado</title>
+  <defs>
+    <radialGradient id="glow" cx="128" cy="96" r="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0070D1" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#0070D1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="body" x1="0" y1="40" x2="0" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0070D1"/>
+      <stop offset="0.55" stop-color="#003791"/>
+      <stop offset="1" stop-color="#00205B"/>
+    </linearGradient>
+  </defs>
+  <circle cx="128" cy="128" r="112" fill="#0D0D12"/>
+  <circle cx="128" cy="128" r="112" fill="url(#glow)"/>
+  <ellipse cx="128" cy="206" rx="72" ry="7" fill="#1A1A22"/>
+  <g transform="translate(32 14) scale(1.5)" fill="none" stroke="#A0A3AD" stroke-opacity="0.55" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="4 3">
+    <rect x="45" y="34" width="38" height="5" rx="2.5"/>
+    <path fill="#1A1A22" d="M40 46H88C100 46 106 52 109 62L114 86C116 98 106 106 97 99L88 93C86 91 84 90 81 90H47C44 90 42 91 40 93L31 99C22 106 12 98 14 86L19 62C22 52 28 46 40 46Z"/>
+    <rect x="50" y="51" width="28" height="16" rx="4"/>
+    <circle cx="50" cy="80" r="5.5"/><circle cx="78" cy="80" r="5.5"/>
+  </g>
+  <g transform="translate(128 118)">
+    <circle r="35" fill="#0D0D12"/>
+    <circle r="30" fill="#E5383B"/>
+    <path d="M0 -12v12" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cy="12" r="3.5" fill="#FFFFFF"/>
+  </g>
+</svg>

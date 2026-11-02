@@ -94,6 +94,7 @@ Fontes: [ArchWiki — Arch package guidelines](https://wiki.archlinux.org/title/
 - Usar widgets do libadwaita (`AdwPreferencesPage`, `AdwActionRow`, `AdwToast`) em vez de reinventar.
 - Navegável só pelo teclado e pelo controle; rótulos acessíveis em todos os controles.
 - Contraste mínimo WCAG AA (ver [DESIGN.md](../design/DESIGN.md)).
+- Ícones e logo **só em SVG**, preferindo os simbólicos do Adwaita (ver [DESIGN.md](../design/DESIGN.md#ícones)).
 - Metadados AppStream (`.metainfo.xml`) com descrição, capturas de tela e licença.
 
 Fontes: [Adwaita (Wikipedia)](https://en.wikipedia.org/wiki/Adwaita_(design_language)), [GNOME HIG](https://developer.gnome.org/hig/).

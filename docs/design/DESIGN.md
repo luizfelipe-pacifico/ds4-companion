@@ -75,6 +75,21 @@ window, label { font-family: "SST", "Inter", sans-serif; }
 - **Botões:** principal `ps-blue` com texto branco; secundário transparente com borda `ps-surface-2`.
 - **Navegação pelo controle (v0.4):** D-pad move o foco, ✕ confirma, ◯ volta.
 
+## Ícones
+
+Todo ícone do projeto é **SVG**: logo, ícones da interface, ícone da bandeja e da documentação.
+Nada de PNG, JPG ou ícone em fonte.
+
+- **Ícones da interface:** primeiro os do tema Adwaita (`*-symbolic`), para combinar com o GNOME.
+  Ícone próprio só quando não existir equivalente.
+- **Ícones próprios:** versão simbólica `nome-symbolic.svg` (16×16, uma cor só, que o GTK recolore
+  conforme o tema) em `data/icons/`, carregados por nome via GResource.
+- **Logo do app:** `hicolor/scalable/apps/<app-id>.svg` colorido + `<app-id>-symbolic.svg`
+  (ver [ROADMAP](../desenvolvimento/ROADMAP.md)). Sempre **quadrado (1:1)**: `viewBox="0 0 128 128"`
+  no colorido (grade de ícones do GNOME) e `viewBox="0 0 16 16"` no simbólico.
+- SVG limpo: sem imagem embutida (`<image>`/base64), sem script, texto convertido em caminho;
+  otimizar com `scour` ou `svgo` antes do commit.
+
 ## Marca
 
 - Usar só a **paleta e o estilo**. Não usar logotipo da PlayStation, os símbolos △◯✕□ como

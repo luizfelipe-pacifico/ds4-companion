@@ -25,20 +25,20 @@
 - [ ] Página **Luz**: escolher a cor da barra de luz do controle entre cores pré-definidas,
       com pré-visualização ao vivo no controle conectado:
 
-      | Cor | RGB do LED |
-      |---|---|
-      | Azul (padrão, Jogador 1 do PS4) | `#0000FF` |
-      | Vermelho (Jogador 2) | `#FF0000` |
-      | Verde (Jogador 3) | `#00FF00` |
-      | Rosa (Jogador 4) | `#FF1493` |
-      | Roxo | `#8000FF` |
-      | Ciano | `#00FFFF` |
-      | Laranja | `#FF8000` |
-      | Branco | `#FFFFFF` |
-      | Desligada | `#000000` |
+  | Cor | RGB do LED |
+  |---|---|
+  | Azul (padrão, Jogador 1 do PS4) | `#0000FF` |
+  | Vermelho (Jogador 2) | `#FF0000` |
+  | Verde (Jogador 3) | `#00FF00` |
+  | Rosa (Jogador 4) | `#FF1493` |
+  | Roxo | `#8000FF` |
+  | Ciano | `#00FFFF` |
+  | Laranja | `#FF8000` |
+  | Branco | `#FFFFFF` |
+  | Desligada | `#000000` |
 
-      A cor fica salva em `[led]` no `config.toml` e é reaplicada ao conectar o controle.
-- [ ] Logo do app em **SVG**: ícone colorido `hicolor/scalable/apps/<app-id>.svg` e versão
+  A cor fica salva em `[led]` no `config.toml` e é reaplicada ao conectar o controle.
+- [ ] Logo do app em **SVG**, proporção **1:1** (quadrado): ícone colorido `hicolor/scalable/apps/<app-id>.svg` e versão
       simbólica `<app-id>-symbolic.svg` (GNOME HIG), seguindo as regras de marca do
       [DESIGN.md](../design/DESIGN.md): desenho próprio, `ps-blue` sobre preto, sem logotipo da PlayStation
 

@@ -89,17 +89,7 @@ RPCS3 (Stream/Output/Audio)
 
 O daemon detecta a mudança (udev via `pyudev`) e mostra na interface quais recursos estão ativos.
 
-## Estrutura de pastas (planejada)
+## Estrutura de pastas
 
-```
-ds4-companion/
-├── src/ds4_companion/
-│   ├── app/          # GUI (GTK4/libadwaita)
-│   ├── daemon/       # áudio, hid, rpcs3, dbus
-│   ├── cli/          # ds4ctl
-│   └── common/       # config, modelos, conversão dB
-├── data/             # .desktop, ícone, serviço systemd, regras udev, esquema D-Bus
-├── packaging/PKGBUILD
-├── tests/
-└── docs/
-```
+Mapa completo do repositório, convenções de nomes e onde colocar cada coisa nova em
+[STRUCTURE.md](STRUCTURE.md).

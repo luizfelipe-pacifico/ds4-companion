@@ -104,8 +104,8 @@ Visual: preto + azul PlayStation, ícones só em SVG ([design](docs/design/DESIG
 
 | | Para quem usa | | Para quem desenvolve |
 |:-:|---|:-:|---|
-| 📦 | [Instalação](docs/guia/INSTALL.md) | 🏗️ | [Arquitetura](docs/arquitetura/ARCHITECTURE.md) |
-| ⚙️ | [Configuração](docs/guia/CONFIGURATION.md) | 🎨 | [Design](docs/design/DESIGN.md) · [Telas](docs/design/UI.md) |
+| 📦 | [Instalação](docs/guia/INSTALL.md) | 🏗️ | [Arquitetura](docs/arquitetura/ARCHITECTURE.md) · [Estrutura](docs/arquitetura/STRUCTURE.md) |
+| ⚙️ | [Configuração](docs/guia/CONFIGURATION.md) | 🎨 | [Design](docs/design/DESIGN.md) · [Telas](docs/design/UI.md) · [Ilustrações](docs/design/ILLUSTRATIONS.md) |
 | 🔊 | [Áudio](docs/guia/AUDIO.md) | ✅ | [Boas práticas](docs/desenvolvimento/BEST_PRACTICES.md) |
 | 📳 | [Vibração](docs/guia/VIBRATION.md) | 🗺️ | [Roadmap](docs/desenvolvimento/ROADMAP.md) |
 | 🩺 | [Solução de problemas](docs/guia/TROUBLESHOOTING.md) | 🤝 | [Contribuir](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) |

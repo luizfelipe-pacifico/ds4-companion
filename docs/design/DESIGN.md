@@ -242,6 +242,12 @@ Nada de PNG, JPG ou ícone em fonte.
 - Traço dos ícones próprios: 1,5 px a 16 px, cantos arredondados, para combinar com o peso leve da
   tipografia.
 
+## Ilustrações
+
+Telas de estado (vazio, espera, aviso, erro, sucesso) usam ilustrações *flat* em SVG com as mesmas
+cinco cores, traço fino e uma única luz azul. Nunca têm texto dentro e sempre vêm com título e
+descrição na interface. Catálogo, descrições e textos em [ILLUSTRATIONS.md](ILLUSTRATIONS.md).
+
 ## Marca
 
 - Usar só a **paleta e o estilo**. Não usar logotipo da PlayStation, os símbolos △◯✕□ como

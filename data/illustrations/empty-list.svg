@@ -1,31 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
   <title>Lista vazia</title>
-  <defs>
-    <radialGradient id="glow" cx="128" cy="96" r="110" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0070D1" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#0070D1" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="body" x1="0" y1="40" x2="0" y2="104" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0070D1"/>
-      <stop offset="0.55" stop-color="#003791"/>
-      <stop offset="1" stop-color="#00205B"/>
-    </linearGradient>
-  </defs>
-  <circle cx="128" cy="128" r="112" fill="#0D0D12"/>
-  <circle cx="128" cy="128" r="112" fill="url(#glow)"/>
-  <ellipse cx="128" cy="206" rx="72" ry="7" fill="#1A1A22"/>
-  <g>
-    <rect x="58" y="146" width="140" height="40" rx="10" fill="#1A1A22" opacity="0.5"/>
-    <rect x="58" y="100" width="140" height="40" rx="10" fill="#1A1A22"/>
-    <rect x="72" y="114" width="12" height="12" rx="3" fill="#A0A3AD" opacity="0.4"/>
-    <rect x="94" y="116" width="62" height="8" rx="4" fill="#A0A3AD" opacity="0.4"/>
-    <rect x="72" y="160" width="12" height="12" rx="3" fill="#A0A3AD" opacity="0.25"/>
-    <rect x="94" y="162" width="44" height="8" rx="4" fill="#A0A3AD" opacity="0.25"/>
-    <rect x="58" y="54" width="140" height="40" rx="10" fill="none" stroke="#0070D1" stroke-width="3" stroke-dasharray="8 6"/>
-  </g>
-  <g transform="translate(128 74)">
-    <circle r="21" fill="#0D0D12"/>
-    <circle r="16" fill="#0070D1"/>
-    <path d="M0 -10v20M-10 0h20" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="128" cy="128" r="112" fill="#111318"/>
+  <path d="M30 110a100 100 0 0 1 196 0" fill="none" stroke="#FFFFFF" stroke-opacity="0.06"/>
+  <path d="M68 196h120" stroke="#FFFFFF" stroke-opacity="0.08" stroke-linecap="round"/>
+  <rect x="58" y="146" width="140" height="38" rx="10" fill="#060709" fill-opacity="0.6"/>
+  <rect x="58" y="102" width="140" height="38" rx="10" fill="#1D2027" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <g fill="#FFFFFF"><rect x="72" y="117" width="10" height="8" rx="2" fill-opacity="0.32"/><rect x="92" y="119" width="60" height="4" rx="2" fill-opacity="0.32"/>
+  <rect x="72" y="161" width="10" height="8" rx="2" fill-opacity="0.12"/><rect x="92" y="163" width="42" height="4" rx="2" fill-opacity="0.12"/></g>
+  <rect x="58" y="58" width="140" height="38" rx="10" fill="none" stroke="#2B6CF6" stroke-width="2" stroke-dasharray="6 5"/>
+  <g transform="translate(128 77)">
+    <circle r="19" fill="#111318"/>
+    <circle r="14" fill="#2B6CF6"/>
+    <path d="M0 -8v16M-8 0h16" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>

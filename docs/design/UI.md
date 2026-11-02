@@ -36,5 +36,6 @@ Janela GTK4/libadwaita com 4 páginas na barra lateral. Cores e fonte em [DESIGN
 - Pasta do RPCS3, backups, logs do daemon, reiniciar serviço, restaurar padrões.
 
 ## Comportamento
+- Estados vazios, avisos e erros usam `AdwStatusPage` com as ilustrações de [ILLUSTRATIONS.md](ILLUSTRATIONS.md).
 - Bluetooth: cartão de áudio vira aviso "conecte o cabo para ter som no controle".
 - Volume acima do teto: slider para no teto; ir além exige diálogo de confirmação.

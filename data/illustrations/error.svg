@@ -1,28 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
   <title>Algo deu errado</title>
-  <defs>
-    <radialGradient id="glow" cx="128" cy="96" r="110" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0070D1" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#0070D1" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="body" x1="0" y1="40" x2="0" y2="104" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0070D1"/>
-      <stop offset="0.55" stop-color="#003791"/>
-      <stop offset="1" stop-color="#00205B"/>
-    </linearGradient>
-  </defs>
-  <circle cx="128" cy="128" r="112" fill="#0D0D12"/>
-  <circle cx="128" cy="128" r="112" fill="url(#glow)"/>
-  <ellipse cx="128" cy="206" rx="72" ry="7" fill="#1A1A22"/>
-  <g transform="translate(32 14) scale(1.5)" fill="none" stroke="#A0A3AD" stroke-opacity="0.55" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="4 3">
-    <rect x="45" y="34" width="38" height="5" rx="2.5"/>
-    <path fill="#1A1A22" d="M40 46H88C100 46 106 52 109 62L114 86C116 98 106 106 97 99L88 93C86 91 84 90 81 90H47C44 90 42 91 40 93L31 99C22 106 12 98 14 86L19 62C22 52 28 46 40 46Z"/>
-    <rect x="50" y="51" width="28" height="16" rx="4"/>
-    <circle cx="50" cy="80" r="5.5"/><circle cx="78" cy="80" r="5.5"/>
+  <circle cx="128" cy="128" r="112" fill="#111318"/>
+  <path d="M30 110a100 100 0 0 1 196 0" fill="none" stroke="#FFFFFF" stroke-opacity="0.06"/>
+  <path d="M68 196h120" stroke="#FFFFFF" stroke-opacity="0.08" stroke-linecap="round"/>
+  <g transform="translate(32 14) scale(1.5)">
+    <rect x="46" y="35" width="36" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.08"/>
+    <path fill="none" stroke="#FFFFFF" stroke-opacity="0.32" stroke-width="1" stroke-dasharray="3 2.5" stroke-linejoin="round" d="M40 46H88C100 46 106 52 109 62L114 86C116 98 106 106 97 99L88 93C86 91 84 90 81 90H47C44 90 42 91 40 93L31 99C22 106 12 98 14 86L19 62C22 52 28 46 40 46Z"/>
+    <rect x="50" y="51" width="28" height="16" rx="3" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="0.8"/>
+    <g fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M33 59h6v4.5h4.5v5H39V73h-6v-4.5h-4.5v-5H33z"/>
+      <circle cx="92" cy="58.5" r="2.8"/><circle cx="92" cy="73.5" r="2.8"/>
+      <circle cx="84.5" cy="66" r="2.8"/><circle cx="99.5" cy="66" r="2.8"/>
+      <circle cx="50" cy="80" r="5.5"/><circle cx="78" cy="80" r="5.5"/>
+    </g>
   </g>
   <g transform="translate(128 118)">
-    <circle r="35" fill="#0D0D12"/>
-    <circle r="30" fill="#E5383B"/>
-    <path d="M0 -12v12" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cy="12" r="3.5" fill="#FFFFFF"/>
+    <circle r="33" fill="#111318"/>
+    <circle r="28" fill="#1D2027" stroke="#FFFFFF" stroke-width="2.5"/>
+    <path d="M0 -12v13" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cy="11" r="2.6" fill="#FFFFFF"/>
   </g>
 </svg>

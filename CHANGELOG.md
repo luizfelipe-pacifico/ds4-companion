@@ -7,6 +7,9 @@
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.
 - `.gitignore`, `.editorconfig`, `.gitattributes`, templates de issue e PR.
 - Ícone do app em SVG 1:1 (colorido e simbólico) em `data/icons/hicolor/`.
+- `docs/arquitetura/STRUCTURE.md`: mapa dos arquivos do repositório e onde colocar algo novo (ADR 0006).
+- 8 ilustrações flat em SVG para telas de estado em `data/illustrations/`, documentadas em
+  `docs/design/ILLUSTRATIONS.md`.
 - ADRs em `docs/arquitetura/adr/` (stack, áudio paralelo, paleta, commits sem atribuição de IA).
 - Plano de instalação por um comando (`sudo pacman -U`) e por `install.sh` executável (ADR 0005).
 - `CLAUDE.md` e skills de design (`impeccable`, `apple-design`) em `.claude/`.

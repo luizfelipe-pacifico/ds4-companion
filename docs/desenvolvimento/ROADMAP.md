@@ -38,6 +38,8 @@
   | Desligada | `#000000` |
 
   A cor fica salva em `[led]` no `config.toml` e é reaplicada ao conectar o controle.
+- [ ] Telas de estado (vazio, espera, aviso, erro, sucesso) com `AdwStatusPage` e as ilustrações de
+      [ILLUSTRATIONS.md](../design/ILLUSTRATIONS.md)
 - [ ] Logo do app em **SVG**, proporção **1:1** (quadrado): ícone colorido `hicolor/scalable/apps/<app-id>.svg` e versão
       simbólica `<app-id>-symbolic.svg` (GNOME HIG), seguindo as regras de marca do
       [DESIGN.md](../design/DESIGN.md): desenho próprio, faixa de luz `led-blue` sobre `black-0`, sem logotipo da PlayStation

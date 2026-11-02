@@ -8,6 +8,7 @@
 - `.gitignore`, `.editorconfig`, `.gitattributes`, templates de issue e PR.
 - Ícone do app em SVG 1:1 (colorido e simbólico) em `data/icons/hicolor/`.
 - ADRs em `docs/arquitetura/adr/` (stack, áudio paralelo, paleta, commits sem atribuição de IA).
+- Plano de instalação por um comando (`sudo pacman -U`) e por `install.sh` executável (ADR 0005).
 - `CLAUDE.md` e skills de design (`impeccable`, `apple-design`) em `.claude/`.
 
 ### Alterado

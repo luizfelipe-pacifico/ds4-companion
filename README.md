@@ -64,10 +64,11 @@ Detalhes em [arquitetura](docs/arquitetura/ARCHITECTURE.md).
 > O pacote ainda não existe. Os comandos abaixo mostram como vai ser.
 
 ```bash
-git clone <repo> ds4-companion && cd ds4-companion/packaging
-makepkg -si
-systemctl --user enable --now ds4-companion.service
+sudo pacman -U https://github.com/luizfelipe-pacifico/ds4-companion/releases/latest/download/ds4-companion.pkg.tar.zst
 ```
+
+Também dá para usar o instalador executável (`install.sh`, na página de [releases](https://github.com/luizfelipe-pacifico/ds4-companion/releases)),
+o AUR (`yay -S ds4-companion`) ou compilar com `makepkg -si`.
 
 Depois, desconecte e reconecte o controle para a regra udev valer. Passo a passo, desinstalação e migração
 dos scripts atuais em [instalação](docs/guia/INSTALL.md).

@@ -15,8 +15,8 @@
   <circle cx="128" cy="128" r="112" fill="url(#glow)"/>
   <ellipse cx="128" cy="206" rx="72" ry="7" fill="#1A1A22"/>
   <g fill="none" stroke="#0070D1" stroke-opacity="0.9" stroke-width="5" stroke-linecap="round">
-    <path d="M30 104a40 40 0 0 0 0 44"/><path d="M16 92a58 58 0 0 0 0 68"/>
-    <path d="M226 104a40 40 0 0 1 0 44"/><path d="M240 92a58 58 0 0 1 0 68"/>
+    <path d="M44 108a30 30 0 0 0 0 36"/><path d="M32 98a46 46 0 0 0 0 56"/>
+    <path d="M212 108a30 30 0 0 1 0 36"/><path d="M224 98a46 46 0 0 1 0 56"/>
   </g>
   <g transform="translate(32 14) scale(1.5)" opacity="1">
     <rect x="45" y="34" width="38" height="5" rx="2.5" fill="#4DA3FF"/>

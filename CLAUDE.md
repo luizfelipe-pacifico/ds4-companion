@@ -54,6 +54,9 @@ pytest --cov
 - **Segurança:** nada roda como root; `subprocess.run([...])` com lista, nunca `shell=True`;
   nomes de nós do PipeWire, propriedades udev e YAML do RPCS3 são dados não confiáveis.
   Nunca logar serial/MAC completos nem commitar segredos ou dumps (`pw-dump*.json`, `hid-dump*`).
+- **Instalação simples:** o app tem que continuar instalável por um comando (`sudo pacman -U <url da release>`) e pelo
+  `install.sh` executável (ADR 0005). Mudança em arquivos instalados, dependências ou serviço atualiza `packaging/`,
+  `install.sh` e `docs/guia/INSTALL.md` juntos.
 - **Hardware:** respeitar o teto `max_db`; não enviar vibração por `hidraw` enquanto o RPCS3 estiver com jogo aberto.
 - **Interface:** seguir o GNOME HIG e usar widgets do libadwaita (`AdwPreferencesPage`, `AdwActionRow`, `AdwToast`)
   em vez de reinventar; contraste WCAG AA; navegável por teclado e controle.

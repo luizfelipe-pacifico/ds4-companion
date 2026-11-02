@@ -10,6 +10,7 @@ antiga como *Substituída por NNNN*.
 | [0002](0002-audio-paralelo-por-links-pipewire.md) | Áudio em paralelo por links extras no PipeWire | Aceita |
 | [0003](0003-paleta-de-cinco-cores.md) | Paleta de cinco cores, sem cores de alerta | Aceita |
 | [0004](0004-commits-sem-atribuicao-de-ia.md) | Commits e PRs sem atribuição de IA | Aceita |
+| [0005](0005-instalacao-por-um-comando.md) | Instalação por um comando (`sudo pacman -U`) ou `install.sh` | Aceita |
 
 ## Modelo
 

@@ -1,0 +1,18 @@
+name: Sugerir recurso
+description: Ideia para o DS4 Companion
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes: { label: Qual problema isso resolve? }
+    validations: { required: true }
+  - type: textarea
+    id: idea
+    attributes: { label: Como você imagina que funcione? }
+  - type: checkboxes
+    id: check
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Procurei nas issues e no docs/desenvolvimento/ROADMAP.md
+          required: true

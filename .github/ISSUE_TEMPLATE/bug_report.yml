@@ -1,0 +1,27 @@
+name: Relatar problema
+description: Algo não funciona como deveria
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Não cole** número de série, endereço MAC do controle, e-mail ou caminhos com seu nome de usuário.
+        Falha de segurança? Use a aba **Security → Report a vulnerability**, não uma issue pública.
+  - type: textarea
+    id: what
+    attributes: { label: O que aconteceu, description: "E o que você esperava que acontecesse." }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Passos para reproduzir, placeholder: "1. ...\n2. ..." }
+    validations: { required: true }
+  - type: dropdown
+    id: connection
+    attributes: { label: Conexão do controle, options: ["Cabo USB", "Bluetooth", "Os dois"] }
+    validations: { required: true }
+  - type: input
+    id: versions
+    attributes: { label: Versões, placeholder: "ds4-companion 0.1.0, RPCS3 0.0.43, PipeWire 1.4, GNOME 51" }
+  - type: textarea
+    id: logs
+    attributes: { label: Logs, description: "journalctl --user -u ds4-companion -n 100 (revise antes de colar)", render: text }

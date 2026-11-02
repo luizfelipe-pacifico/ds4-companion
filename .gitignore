@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# makepkg / AUR (gerados no build)
+packaging/src/
+packaging/pkg/
+packaging/*.pkg.tar.*
+packaging/*.log
+*.tar.gz
+*.tar.zst
+
+# Segredos e configuração local — nunca subir
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+config.local.toml
+
+# Dados do usuário/dispositivo (logs, dumps de PipeWire/HID, backups do RPCS3)
+*.log
+*.bak
+*.bak-*
+*.bak[0-9]*
+pw-dump*.json
+hid-dump*
+
+# Editores / SO
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store

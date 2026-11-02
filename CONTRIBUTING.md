@@ -1,0 +1,44 @@
+# Contribuindo
+
+Ao participar você concorda com o [Código de Conduta](CODE_OF_CONDUCT.md).
+Leia também as [boas práticas](docs/desenvolvimento/BEST_PRACTICES.md).
+
+## Fluxo
+
+1. Abra (ou escolha) uma issue.
+2. Crie um branch: `feat/nome-curto` ou `fix/nome-curto`.
+3. Commits em [Conventional Commits](https://www.conventionalcommits.org/pt-br/) com sign-off: `git commit -s`.
+4. Atualize `CHANGELOG.md` (seção *Não lançado*) e a documentação.
+5. Abra o PR usando o template; o CI precisa passar.
+
+## Ambiente
+
+```bash
+sudo pacman -S --needed python python-gobject gtk4 libadwaita python-pyudev python-dbus-next \
+                        inter-font pipewire wireplumber jq
+python -m venv --system-site-packages .venv && . .venv/bin/activate
+pip install -e '.[dev]'     # pytest, ruff, mypy
+```
+
+## Rodando
+
+```bash
+python -m ds4_companion.daemon --foreground --debug
+python -m ds4_companion.app
+```
+
+## Testes
+
+- Unitários: conversão dB ↔ volume linear, parser de config, gerador de relatórios HID (USB e BT com CRC32).
+- Integração: PipeWire de teste com `pw-play` fingindo ser o RPCS3:
+  ```bash
+  pw-play --properties='{ node.name = "teste" application.name = "RPCS3" }' apito.wav
+  pw-link -l | grep -A3 '^teste:output_'
+  ```
+- Hardware: checklist manual em cabo **e** Bluetooth antes de cada versão.
+
+## Estilo
+
+- `ruff` + `mypy --strict` no `src/`
+- Commits no formato `tipo: descrição` (`feat`, `fix`, `docs`, `refactor`)
+- Textos da interface em português, com suporte a tradução (gettext)

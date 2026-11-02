@@ -18,7 +18,7 @@
 
 ## Fase 2 — Interface gráfica (v0.2)
 - [ ] Janela GTK4/libadwaita: Status, Áudio, Vibração, Avançado
-- [ ] Slider de volume em dB com faixas verde/amarelo/vermelho
+- [ ] Slider de volume em dB com faixas livre/alto/acima do limite (texto + ícone, ver DESIGN.md)
 - [ ] Botões de teste de vibração (forte, fraco, ambos)
 - [ ] Indicador de conexão (cabo/Bluetooth) e bateria
 - [ ] Ícone na bandeja (extensão AppIndicator)
@@ -40,7 +40,7 @@
   A cor fica salva em `[led]` no `config.toml` e é reaplicada ao conectar o controle.
 - [ ] Logo do app em **SVG**, proporção **1:1** (quadrado): ícone colorido `hicolor/scalable/apps/<app-id>.svg` e versão
       simbólica `<app-id>-symbolic.svg` (GNOME HIG), seguindo as regras de marca do
-      [DESIGN.md](../design/DESIGN.md): desenho próprio, `ps-blue` sobre preto, sem logotipo da PlayStation
+      [DESIGN.md](../design/DESIGN.md): desenho próprio, faixa de luz `led-blue` sobre `black-0`, sem logotipo da PlayStation
 
 ## Fase 3 — Empacotamento (v0.3)
 - [ ] `PKGBUILD` (instala app, serviço, regra udev, .desktop, ícone SVG)

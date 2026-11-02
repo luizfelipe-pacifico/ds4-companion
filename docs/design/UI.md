@@ -15,8 +15,9 @@ Janela GTK4/libadwaita com 4 páginas na barra lateral. Cores e fonte em [DESIGN
 ## Áudio
 ```
  Som do jogo no controle           [ ligado ]
- Volume do controle   −6 dB  ━━━━━━━●━━━━│━━━
-                            verde  amarelo│vermelho
+ Volume do controle   −6 dB  ━━━━━━━●─────│───
+                            livre   alto  │ acima do limite (branco)
+                                         0 dB
  ⚠ Acima de 0 dB o som distorce e pode danificar o alto-falante.
  [ Tocar apito de teste ]
  Apps espelhados: RPCS3  [+ adicionar]

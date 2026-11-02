@@ -25,11 +25,14 @@ O alto-falante do DS4 é pequeno (aprox. 0,5 W). Volume alto por muito tempo dis
   Acima disso o sinal é amplificado digitalmente e passa a **clipar**.
 - **Faixas na interface:**
 
-| Faixa | Cor | Comportamento |
+| Faixa | Sinal na interface | Comportamento |
 |---|---|---|
-| ≤ −6 dB | verde | livre |
-| −6 dB a 0 dB | amarelo | aviso "volume alto" |
-| > 0 dB | vermelho | exige confirmação; nunca passa de `max_db` (padrão **0 dB**) |
+| ≤ −6 dB | preenchimento azul | livre |
+| −6 dB a 0 dB | ícone de aviso + rótulo "alto" | aviso "volume alto" |
+| > 0 dB | preenchimento invertido para branco + ícone + "acima do limite" | exige confirmação; nunca passa de `max_db` (padrão **0 dB**) |
+
+A interface não usa verde/amarelo/vermelho (ver [DESIGN.md](docs/design/DESIGN.md#estados-sem-cores-de-alerta)):
+cada faixa é indicada por texto e ícone, nunca só por cor.
 
 - **Fone na entrada do controle:** perfil separado com teto padrão de −6 dB (proteção auditiva).
 - **Ao conectar o controle**, o daemon reaplica o volume salvo (nunca começa no máximo).

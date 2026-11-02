@@ -42,6 +42,9 @@ pytest --cov
 - **Idioma:** documentação, textos da interface e mensagens de commit em português. Textos da UI com `gettext`.
 - **Commits:** Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`), com sign-off (`git commit -s`).
 - **Sem atribuição do Claude:** não adicionar `Co-Authored-By: Claude` nem "Generated with Claude Code" em commits ou PRs.
+- **Registrar decisões:** toda decisão importante (stack, arquitetura, design system, processo) vira uma ADR em
+  `docs/arquitetura/adr/NNNN-titulo.md` e entra no índice `docs/arquitetura/adr/README.md`, no mesmo commit da mudança.
+  Mudar de ideia = nova ADR que substitui a antiga. Se a decisão muda uma regra deste arquivo, atualize-o também.
 - **Changelog:** atualizar a seção *Não lançado* do `CHANGELOG.md` e a documentação no mesmo PR que o código.
 - **Cabeçalho SPDX** em todo arquivo de código:
   ```python

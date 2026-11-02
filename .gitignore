@@ -45,3 +45,7 @@ hid-dump*
 *.swp
 *~
 .DS_Store
+
+# Claude Code: configuração pessoal e binário baixado pela skill impeccable
+.claude/settings.local.json
+.claude/skills/impeccable/scripts/bin/

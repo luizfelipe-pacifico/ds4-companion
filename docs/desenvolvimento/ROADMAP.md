@@ -9,7 +9,10 @@
 ## Fase 1 — Daemon + CLI (v0.1)
 - [ ] `ds4-companiond` em Python substituindo o script bash
 - [ ] Eventos do PipeWire em vez de polling
-- [ ] `ds4ctl status | volume | vibration | test-rumble | mirror on/off`
+- [ ] `ds4ctl status | volume | vibration | test-rumble | mirror on/off | led <cor>`
+- [ ] Cor da barra de luz: aplicar pelo `hidraw` fora do jogo (mesmo relatório HID da vibração:
+      USB `0x05` bytes 6/7/8 = R/G/B; Bluetooth `0x11` com CRC32) e no RPCS3 via `Color Value R/G/B`
+      do `Default.yml`. Não manda cor enquanto o RPCS3 está com jogo aberto, igual à vibração
 - [ ] `config.toml` com validação
 - [ ] Teto de volume (`max_db`) aplicado automaticamente
 
@@ -19,16 +22,35 @@
 - [ ] Botões de teste de vibração (forte, fraco, ambos)
 - [ ] Indicador de conexão (cabo/Bluetooth) e bateria
 - [ ] Ícone na bandeja (extensão AppIndicator)
+- [ ] Página **Luz**: escolher a cor da barra de luz do controle entre cores pré-definidas,
+      com pré-visualização ao vivo no controle conectado:
+
+      | Cor | RGB do LED |
+      |---|---|
+      | Azul (padrão, Jogador 1 do PS4) | `#0000FF` |
+      | Vermelho (Jogador 2) | `#FF0000` |
+      | Verde (Jogador 3) | `#00FF00` |
+      | Rosa (Jogador 4) | `#FF1493` |
+      | Roxo | `#8000FF` |
+      | Ciano | `#00FFFF` |
+      | Laranja | `#FF8000` |
+      | Branco | `#FFFFFF` |
+      | Desligada | `#000000` |
+
+      A cor fica salva em `[led]` no `config.toml` e é reaplicada ao conectar o controle.
+- [ ] Logo do app em **SVG**: ícone colorido `hicolor/scalable/apps/<app-id>.svg` e versão
+      simbólica `<app-id>-symbolic.svg` (GNOME HIG), seguindo as regras de marca do
+      [DESIGN.md](../design/DESIGN.md): desenho próprio, `ps-blue` sobre preto, sem logotipo da PlayStation
 
 ## Fase 3 — Empacotamento (v0.3)
-- [ ] `PKGBUILD` (instala app, serviço, regra udev, .desktop, ícone)
+- [ ] `PKGBUILD` (instala app, serviço, regra udev, .desktop, ícone SVG)
 - [ ] Publicar no AUR
 - [ ] Migração automática dos scripts da Fase 0
 
 ## Fase 4 — Recursos extras (v0.4+)
 - [ ] Limitador via `filter-chain` do PipeWire
 - [ ] Perfis por jogo (ex.: FIFA com mais som no controle, Tekken só vibração)
-- [ ] Barra de luz: cor por jogador / bateria
+- [ ] Barra de luz além das cores fixas: cor personalizada, cor por jogador, cor por perfil de jogo e modo bateria
 - [ ] Suporte a DualSense (PS5): vibração háptica/gatilhos quando o RPCS3 suportar
 - [ ] Espelhar áudio de outros apps (Steam/Proton) — lista configurável
 

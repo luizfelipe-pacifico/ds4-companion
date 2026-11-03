@@ -25,7 +25,7 @@ from typing import Protocol
 
 from ..common import config as cfg
 from ..common.db import LIMIT_DB, clamp_db, db_to_volume, volume_to_db
-from ..common.models import Connection, Motor, Status, led_preset
+from ..common.models import LED_MODES, Connection, Motor, Status, led_preset, led_rgb
 from .audio import graph as audio_graph
 from .audio.pipewire import PipeWireError, write_test_tone
 from .device import Controller, pick, read_battery, redact
@@ -107,6 +107,7 @@ class Daemon:
         self._rpcs3_pending = False
         self._led_pending = False
         self._backed_up = False  # um backup do Default.yml por execução, não um por ajuste
+        self._applied_rgb: tuple[int, int, int] | None = None
         self._refresh_lock = asyncio.Lock()
         self._refresh_task: asyncio.Task[None] | None = None
         self._update_status()
@@ -188,6 +189,9 @@ class Daemon:
             return  # o RPCS3 só lê o Default.yml ao abrir e usa o controle: fica pendente
         if self._rpcs3_pending:
             self._write_rpcs3()
+        # Modo bateria: a faixa de carga mudou, a cor no controle muda junto.
+        if self.controller is not None and self._applied_rgb not in (None, self._effective_led()):
+            self._led_pending = True
         if self._led_pending:
             self._apply_led_hid()
 
@@ -319,6 +323,7 @@ class Daemon:
             players=list(vib.players),
             vibration_pending=self._rpcs3_pending,
             led_color=self.config.led.color,
+            led_mode=self.config.led.mode,
             rpcs3_config_dir=self.config.rpcs3.config_dir,
             backup_before_edit=self.config.rpcs3.backup_before_edit,
         )
@@ -467,17 +472,29 @@ class Daemon:
             raise DaemonError("Busy", "Feche o RPCS3 para testar: ele está usando o controle.")
         return c
 
+    async def set_led_mode(self, mode: str) -> None:
+        if mode not in LED_MODES:
+            raise DaemonError("InvalidArgument", "Modo da luz precisa ser fixed ou battery.")
+        self.config.led.mode = mode
+        self._led_pending = True
+        self._save()
+        await self.refresh()
+
     def _hid_error(self, exc: OSError) -> DaemonError:
         if isinstance(exc, hidraw.HidAccessError):
             self.status.hid_access = False
             return DaemonError("AccessDenied", "Sem acesso ao controle. Desconecte e conecte de novo.")
         return DaemonError("Failed", f"Falha ao falar com o controle: {exc.strerror or exc}")
 
+    def _effective_led(self) -> tuple[int, int, int]:
+        battery, _charging = read_battery(self.controller.battery_dir if self.controller else None)
+        return led_rgb(self.config.led.color, self.config.led.mode, battery)
+
     def _apply_led_hid(self) -> None:
         c = self.controller
         if c is None:
             return
-        rgb = led_preset(self.config.led.color).rgb
+        rgb = self._effective_led()
         try:
             self._write_report(c.hidraw, reports.output_report(c.connection, rgb=rgb))
         except OSError as exc:
@@ -486,6 +503,7 @@ class Daemon:
                 self.status.hid_access = False
             return
         self._led_pending = False
+        self._applied_rgb = rgb
 
     def _write_rpcs3(self) -> None:
         path = self.config.rpcs3.input_file

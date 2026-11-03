@@ -113,6 +113,8 @@ def test_mirror_led_rumble_tone(proxy: FakeProxy) -> None:
     assert ds4ctl("limiter", "off") == (0, "Limitador desligado.\n")
     assert ("call_set_limiter", False) in proxy.calls
     assert ds4ctl("led", "rosa")[0] == 0
+    assert ds4ctl("led-mode", "battery") == (0, "A luz mostra a bateria.\n")
+    assert ds4ctl("led-mode", "fixed")[0] == 0
     assert ds4ctl("test-rumble")[0] == 0
     assert ds4ctl("test-tone")[0] == 0
     assert ("call_test_rumble", "both") in proxy.calls
@@ -184,3 +186,7 @@ def test_apps_list_add_remove(proxy: FakeProxy) -> None:
 def test_status_shows_limiter() -> None:
     assert "limitador desligado" in cli.format_status(Status(limiter=False))
     assert "picos até −1 dBFS" in cli.format_status(Status(limiter=True, limiter_active=True))
+
+
+def test_status_shows_led_mode() -> None:
+    assert "mostra a bateria" in cli.format_status(Status(led_mode="battery"))

@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from .db import ABSOLUTE_MAX_DB, FLOOR_DB
-from .models import DEFAULT_LED, LED_PRESETS
+from .models import DEFAULT_LED, HEX_COLOR, LED_MODES, LED_PRESETS
 
 DEFAULT_APPS = ("rpcs3", "AppRun.wrapped")
 MAX_APPS = 32
@@ -58,6 +58,7 @@ class VibrationConfig:
 @dataclass
 class LedConfig:
     color: str = DEFAULT_LED
+    mode: str = "fixed"
 
 
 @dataclass
@@ -153,8 +154,16 @@ def validate_players(value: Any) -> list[int]:
 
 def _led(value: Any) -> str:
     ids = [p.id for p in LED_PRESETS]
+    if isinstance(value, str) and HEX_COLOR.match(value):
+        return value.upper()
     if value not in ids:
-        raise ConfigError(f"cor precisa ser uma de: {', '.join(ids)}")
+        raise ConfigError(f"cor precisa ser uma de: {', '.join(ids)} ou #RRGGBB")
+    return str(value)
+
+
+def _led_mode(value: Any) -> str:
+    if value not in LED_MODES:
+        raise ConfigError(f"modo precisa ser um de: {', '.join(LED_MODES)}")
     return str(value)
 
 
@@ -181,7 +190,7 @@ SCHEMA: dict[str, dict[str, Validator]] = {
         "swap_motors": _bool,
         "players": validate_players,
     },
-    "led": {"color": _led},
+    "led": {"color": _led, "mode": _led_mode},
     "rpcs3": {"config_dir": _path, "backup_before_edit": _bool},
     "ui": {"start_minimized": _bool, "tray_icon": _bool},
     "updates": {"check_on_start": _bool},

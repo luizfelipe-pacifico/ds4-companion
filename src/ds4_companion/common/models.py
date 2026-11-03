@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import dataclasses
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
@@ -62,12 +63,39 @@ LED_ALIASES = {
 }
 
 
+HEX_COLOR = re.compile(r"^#[0-9A-Fa-f]{6}$")
+LED_MODES = ("fixed", "battery")
+BATTERY_LOW = 20
+BATTERY_MID = 50
+BATTERY_LOW_RGB = (0xFF, 0x00, 0x00)
+BATTERY_MID_RGB = (0xFF, 0x80, 0x00)
+
+
 def led_preset(color_id: str) -> LedPreset:
+    """Cor pelo nome (pt ou en) ou personalizada em `#RRGGBB`."""
+    if HEX_COLOR.match(color_id):
+        value = color_id.upper()
+        return LedPreset(value, (int(value[1:3], 16), int(value[3:5], 16), int(value[5:7], 16)))
     key = LED_ALIASES.get(color_id.casefold(), color_id.casefold())
     for preset in LED_PRESETS:
         if preset.id == key:
             return preset
     raise KeyError(color_id)
+
+
+def led_rgb(color_id: str, mode: str = "fixed", battery: int = -1) -> tuple[int, int, int]:
+    """A cor que vai para o controle. No modo bateria: laranja abaixo de 50 %, vermelha abaixo de 20 %."""
+    try:
+        base = led_preset(color_id).rgb
+    except KeyError:
+        base = led_preset(DEFAULT_LED).rgb
+    if mode != "battery" or battery < 0:
+        return base
+    if battery < BATTERY_LOW:
+        return BATTERY_LOW_RGB
+    if battery < BATTERY_MID:
+        return BATTERY_MID_RGB
+    return base
 
 
 @dataclass
@@ -100,6 +128,7 @@ class Status:
     players: list[int] = field(default_factory=list)
     vibration_pending: bool = False
     led_color: str = DEFAULT_LED
+    led_mode: str = "fixed"
     rpcs3_config_dir: str = ""
     backup_before_edit: bool = True
     error: str = ""
@@ -139,7 +168,5 @@ class Status:
 
     @property
     def led_hex(self) -> str:
-        try:
-            return led_preset(self.led_color).hex
-        except KeyError:
-            return led_preset(DEFAULT_LED).hex
+        """A cor real no controle agora (com o modo bateria aplicado)."""
+        return "#{:02X}{:02X}{:02X}".format(*led_rgb(self.led_color, self.led_mode, self.battery))

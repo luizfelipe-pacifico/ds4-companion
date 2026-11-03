@@ -51,7 +51,9 @@ def build_parser() -> argparse.ArgumentParser:
     rumble.add_argument("motor", choices=["strong", "weak", "both"], nargs="?", default="both")
 
     led = sub.add_parser("led", help="cor da barra de luz")
-    led.add_argument("color", help="azul, vermelho, verde, rosa, roxo, ciano, laranja, branco ou desligada")
+    led.add_argument("color", help="azul, vermelho, verde, rosa, roxo, ciano, laranja, branco, desligada ou #RRGGBB")
+    led_mode = sub.add_parser("led-mode", help="luz fixa ou mostrando a bateria")
+    led_mode.add_argument("mode", choices=["fixed", "battery"])
 
     sub.add_parser("test-tone", help="toca um apito só no controle")
 
@@ -94,7 +96,8 @@ def format_status(s: Status) -> str:
     lines.append(f"Vibração: forte {s.large_percent} % · fraco {s.small_percent} %{swap}")
     players = ", ".join(str(p) for p in s.players) or "nenhum"
     lines.append(f"  jogadores {players}{' · vale ao fechar o RPCS3' if s.vibration_pending else ''}")
-    lines.append(f"Luz: {LED_NAMES.get(s.led_color, s.led_color)}")
+    mode = " · mostra a bateria" if s.led_mode == "battery" else ""
+    lines.append(f"Luz: {LED_NAMES.get(s.led_color, s.led_color)}{mode}")
     if s.error:
         lines.append(f"Aviso: {s.error}")
     return "\n".join(lines)
@@ -124,6 +127,10 @@ async def run(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
     if cmd == "status":
         raw = await proxy.get_status()
         print(format_status(Status.from_mapping({k: v.value for k, v in raw.items()})), file=out)
+    elif cmd == "led-mode":
+        await proxy.call_set_led_mode(args.mode)
+        text = "mostra a bateria" if args.mode == "battery" else "fica na cor escolhida"
+        print(f"A luz {text}.", file=out)
     elif cmd == "limiter":
         await proxy.call_set_limiter(args.state == "on")
         print("Limitador " + ("ligado." if args.state == "on" else "desligado."), file=out)

@@ -18,7 +18,8 @@ swap_motors = false
 players = [1, 2]               # jogadores do RPCS3 que usam DS4
 
 [led]
-color = "blue"                 # blue, red, green, pink, purple, cyan, orange, white, off
+color = "blue"                 # blue, red, green, pink, purple, cyan, orange, white, off ou "#RRGGBB"
+mode = "fixed"                 # fixed, ou battery: laranja abaixo de 50 %, vermelha abaixo de 20 %
 
 [rpcs3]
 config_dir = "~/.config/rpcs3"
@@ -43,7 +44,8 @@ e aparece um aviso no journal (`journalctl --user -u ds4-companion`).
 | `apps` | até 32 nomes ou padrões (`*.exe`, `wine*`), 1 a 64 caracteres visíveis cada; um padrão que pegaria qualquer app (`*`) é recusado |
 | `large_percent`, `small_percent` | inteiro de 0 a 200 |
 | `players` | jogadores de 1 a 7 |
-| `color` | uma das cores da lista acima |
+| `color` | uma das cores da lista acima ou `#RRGGBB` |
+| `mode` | `fixed` ou `battery` |
 | `check_on_start` | `true` ou `false` |
 
 Se o arquivo estiver com erro de sintaxe, o daemon guarda uma cópia (`config.toml.bak-AAAAMMDD-HHMMSS`)
@@ -60,7 +62,8 @@ ds4ctl limiter on|off               # limitador contra picos acima de −1 dBFS
 ds4ctl volume -6                    # em dB; acima de 0 dB pede confirmação (ou --yes)
 ds4ctl vibration --large 80 --small 100 [--swap|--no-swap] [--players 1 2]
 ds4ctl test-rumble [strong|weak|both]
-ds4ctl led rosa                     # azul, vermelho, verde, rosa, roxo, ciano, laranja, branco, desligada
+ds4ctl led rosa                     # azul, vermelho, …, desligada ou "#FF8800"
+ds4ctl led-mode battery             # a luz mostra a bateria (fixed volta à cor escolhida)
 ds4ctl test-tone                    # apito só no controle
 ds4ctl apps                         # apps no controle e o que está tocando agora
 ds4ctl apps add '*.exe'             # nome do processo ou padrão (Proton: *.exe)

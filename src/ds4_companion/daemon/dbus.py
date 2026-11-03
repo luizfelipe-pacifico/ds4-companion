@@ -97,6 +97,10 @@ class DaemonInterface(ServiceInterface):
         await self._call(self._daemon.set_led(color))
 
     @method()
+    async def SetLedMode(self, mode: "s") -> None:
+        await self._call(self._daemon.set_led_mode(mode))
+
+    @method()
     async def PlayTestTone(self) -> None:
         await self._call(self._daemon.play_test_tone())
 

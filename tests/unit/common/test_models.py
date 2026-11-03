@@ -51,3 +51,28 @@ def test_status_ignores_wrong_types_and_unknown_keys() -> None:
 
 def test_status_bad_led_falls_back() -> None:
     assert Status(led_color="nope").led_hex == "#0000FF"
+
+
+def test_custom_hex_color() -> None:
+    preset = led_preset("#ff8800")
+    assert preset.id == "#FF8800"
+    assert preset.rgb == (0xFF, 0x88, 0x00)
+    with pytest.raises(KeyError):
+        led_preset("#ff88")
+
+
+@pytest.mark.parametrize(
+    ("battery", "expected"),
+    [(-1, (0, 0, 255)), (100, (0, 0, 255)), (50, (0, 0, 255)), (49, (255, 128, 0)), (19, (255, 0, 0))],
+)
+def test_battery_mode_bands(battery: int, expected: tuple[int, int, int]) -> None:
+    from ds4_companion.common.models import led_rgb
+
+    assert led_rgb("blue", "battery", battery) == expected
+    assert led_rgb("blue", "fixed", battery) == (0, 0, 255)
+    assert led_rgb("nope", "fixed") == (0, 0, 255)
+
+
+def test_status_led_hex_follows_battery_mode() -> None:
+    assert Status(led_color="#123456").led_hex == "#123456"
+    assert Status(led_color="green", led_mode="battery", battery=10).led_hex == "#FF0000"

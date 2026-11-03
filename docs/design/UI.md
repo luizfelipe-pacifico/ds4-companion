@@ -50,6 +50,8 @@ Capturas com estados sintéticos, sem daemon nem hardware: `dbus-run-session -- 
  (●) Azul  (●) Vermelho  (●) Verde  (●) Rosa  (●) Roxo  (●) Ciano  (●) Laranja  (●) Branco  (○) Desligada
  ℹ O RPCS3 está aberto: a cor vai para o controle quando ele fechar.
 ```
+- Abaixo das amostras: **Cor personalizada** (seletor de cor do GTK; marcada com ✓ e o código `#RRGGBB`)
+  e **Mostrar a bateria na luz** (laranja abaixo de 50 %, vermelha abaixo de 20 %).
 - As amostras mostram a cor real do LED (exceção da paleta). A escolhida ganha anel branco e rótulo
   em peso 500, além do fundo azul 16 %: a seleção não depende só de cor.
 

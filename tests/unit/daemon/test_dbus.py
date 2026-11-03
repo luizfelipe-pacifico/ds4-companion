@@ -86,6 +86,7 @@ def test_interface_over_session_bus(tmp_path: Path) -> None:
         await p.call_set_players([1])
         await p.call_test_rumble("both")
         await p.call_set_led("green")
+        await p.call_set_led_mode("battery")
         await p.call_play_test_tone()
         await p.call_set_apps(["rpcs3"])
         await p.call_set_rpcs3_dir(str(tmp_path))

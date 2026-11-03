@@ -38,6 +38,7 @@ SHOTS = [
     ("audio-acima", "audio", {"volume_db": 2.0, "max_db": 3.0, "configured_max_db": 3.0}),
     ("vibracao-rpcs3-aberto", "vibration", {"rpcs3_running": True, "vibration_pending": True}),
     ("luz", "light", {"led_color": "pink"}),
+    ("luz-personalizada", "light", {"led_color": "#FF8800", "led_mode": "battery"}),
     ("avancado", "advanced", {}),
     ("erro-pipewire", "status", {"error": "pw-dump não respondeu em 5 s"}),
 ]

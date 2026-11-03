@@ -2,6 +2,8 @@
 
 ## [Não lançado]
 ### Adicionado
+- Barra de luz: cor personalizada `#RRGGBB` (seletor de cor do GTK, `ds4ctl led "#FF8800"`) e modo
+  bateria, que deixa a luz laranja abaixo de 50 % e vermelha abaixo de 20 % (`ds4ctl led-mode battery`).
 - Limitador contra picos acima de −1 dBFS entre o jogo e o controle: `filter-chain` do PipeWire com
   `clamp`, sem dependência nova (ADR 0010); interruptor em Áudio, `ds4ctl limiter on|off`.
 - Pacote Python (`pyproject.toml`, layout `src/`) com ruff, `mypy --strict` e pytest configurados.

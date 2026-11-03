@@ -228,6 +228,20 @@ def test_light_page(ctx: Ctx, client: FakeClient) -> None:
     assert client.calls == []  # atualizar a tela não manda nada de volta
     page.swatches[3].set_active(True)
     assert client.calls[-1] == ("SetLed", "pink")
+    page.update(sample(led_color="#123456", led_mode="battery"))
+    assert not any(s.get_active() for s in page.swatches)
+    assert page.custom_check.get_visible()
+    assert page.custom.get_subtitle() == "#123456"
+    assert page.battery.get_active()
+    assert client.calls[-1] == ("SetLed", "pink")  # atualizar a tela não manda nada
+    from gi.repository import Gdk
+
+    rgba = Gdk.RGBA()
+    rgba.parse("#FF8800")
+    page.picker.set_rgba(rgba)
+    assert client.calls[-1] == ("SetLed", "#FF8800")
+    page.battery.set_active(False)
+    assert client.calls[-1] == ("SetLedMode", "fixed")
     page.update(sample(rpcs3_running=True))
     assert page.note.get_visible()
     page.update(sample(connection=Connection.NONE))

@@ -18,6 +18,9 @@
     <method name="SetLed">
       <arg name="color" direction="in" type="s"/>
     </method>
+    <method name="SetLedMode">
+      <arg name="mode" direction="in" type="s"/>
+    </method>
     <method name="SetLimiter">
       <arg name="enabled" direction="in" type="b"/>
     </method>

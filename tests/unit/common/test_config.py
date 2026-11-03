@@ -123,3 +123,14 @@ def test_apps_accept_patterns_but_not_everything() -> None:
     for everything in ("*", "**", "?*", "[a-z]*"):
         with pytest.raises(cfg.ConfigError, match="todo o som"):
             cfg.validate_apps([everything])
+
+
+def test_led_custom_color_and_mode() -> None:
+    c, warnings = cfg.from_dict({"led": {"color": "#a1b2c3", "mode": "battery"}})
+    assert warnings == []
+    assert c.led.color == "#A1B2C3"
+    assert c.led.mode == "battery"
+    c, warnings = cfg.from_dict({"led": {"color": "#zzzzzz", "mode": "piscar"}})
+    assert c.led.color == "blue"
+    assert c.led.mode == "fixed"
+    assert len(warnings) == 2

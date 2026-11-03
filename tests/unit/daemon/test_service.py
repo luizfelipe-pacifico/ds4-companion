@@ -518,3 +518,23 @@ def test_mirror_goes_through_limiter_and_drops_direct_links(tmp_path: Path) -> N
     assert ("link", 121, 151) in env.audio.calls
     assert env.daemon.status.limiter_active
     assert env.daemon.status.mirror_active
+
+
+def test_custom_color_and_battery_mode(env: Env) -> None:
+    run(env.daemon.refresh())
+    run(env.daemon.set_led("#102030"))
+    assert env.reports[-1][6:9] == bytes([0x10, 0x20, 0x30])
+    assert "Color Value B: 48" in env.yml.read_text()
+    with pytest.raises(service.DaemonError):
+        run(env.daemon.set_led_mode("piscar"))
+    run(env.daemon.set_led_mode("battery"))  # bateria a 70 %: cor escolhida
+    assert env.daemon.status.led_mode == "battery"
+    assert env.reports[-1][6:9] == bytes([0x10, 0x20, 0x30])
+    battery = Path(env.devices.controllers[0].battery_dir or "")
+    (battery / "capacity").write_text("15")
+    count = len(env.reports)
+    run(env.daemon.refresh())  # caiu abaixo de 20 %: a luz fica vermelha sozinha
+    assert len(env.reports) == count + 1
+    assert env.reports[-1][6:9] == bytes([0xFF, 0, 0])
+    run(env.daemon.refresh())  # mesma faixa: não reenvia
+    assert len(env.reports) == count + 1

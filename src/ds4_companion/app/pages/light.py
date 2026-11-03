@@ -116,16 +116,55 @@ class LightPage(Page):
         group.add(self.note)
         self.prefs.add(group)
 
+        more = Adw.PreferencesGroup()
+        self.custom = Adw.ActionRow(title=_("Cor personalizada"), subtitle=_("Qualquer cor, escolhida no seletor."))
+        self.custom_check = Gtk.Image(icon_name="object-select-symbolic", visible=False)
+        self.custom_check.update_property([Gtk.AccessibleProperty.LABEL], [_("Escolhida")])
+        self.picker = Gtk.ColorDialogButton(dialog=Gtk.ColorDialog(with_alpha=False), valign=Gtk.Align.CENTER)
+        self.picker.update_property([Gtk.AccessibleProperty.LABEL], [_("Escolher cor personalizada")])
+        self.picker.connect("notify::rgba", self._on_custom)
+        self.custom.add_suffix(self.custom_check)
+        self.custom.add_suffix(self.picker)
+        more.add(self.custom)
+        self.battery = Adw.SwitchRow(
+            title=_("Mostrar a bateria na luz"),
+            subtitle=_("Laranja abaixo de 50 %, vermelha abaixo de 20 %; acima disso, a cor escolhida."),
+        )
+        self.battery.connect("notify::active", self._on_battery)
+        more.add(self.battery)
+        self.prefs.add(more)
+
     def update(self, s: Status) -> None:
         self._syncing = True
         for swatch in self.swatches:
             swatch.set_active(swatch.preset.id == s.led_color)
+        custom = s.led_color.startswith("#")
+        self.custom_check.set_visible(custom)
+        if custom:
+            rgba = Gdk.RGBA()
+            rgba.parse(s.led_color)
+            self.picker.set_rgba(rgba)
+            self.custom.set_subtitle(s.led_color)
+        else:
+            self.custom.set_subtitle(_("Qualquer cor, escolhida no seletor."))
+        self.battery.set_active(s.led_mode == "battery")
         self._syncing = False
         if s.rpcs3_running:
             self.note.set_label(_("O RPCS3 está aberto: a cor vai para o controle quando ele fechar."))
         elif not s.connected:
             self.note.set_label(_("A cor fica salva e vai para o controle quando ele conectar."))
         self.note.set_visible(s.rpcs3_running or not s.connected)
+
+    def _on_custom(self, button: Gtk.ColorDialogButton, _pspec: object) -> None:
+        if self._syncing:
+            return
+        rgba = button.get_rgba()
+        color = "#{:02X}{:02X}{:02X}".format(*(round(c * 255) for c in (rgba.red, rgba.green, rgba.blue)))
+        self.ctx.call("SetLed", color)
+
+    def _on_battery(self, row: Adw.SwitchRow, _pspec: object) -> None:
+        if not self._syncing:
+            self.ctx.call("SetLedMode", "battery" if row.get_active() else "fixed")
 
     def _on_toggled(self, swatch: Swatch) -> None:
         if swatch.get_active() and not self._syncing:

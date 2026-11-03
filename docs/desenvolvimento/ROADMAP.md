@@ -57,7 +57,8 @@
 ## Fase 4 — Recursos extras (v0.4+)
 - [x] Limitador via `filter-chain` do PipeWire (`clamp` em −1 dBFS, ADR 0010)
 - [ ] Perfis por jogo (ex.: FIFA com mais som no controle, Tekken só vibração)
-- [ ] Barra de luz além das cores fixas: cor personalizada, cor por jogador, cor por perfil de jogo e modo bateria
+- [x] Barra de luz além das cores fixas: cor personalizada (`#RRGGBB`) e modo bateria
+- [ ] Barra de luz por jogador e por perfil de jogo (junto com os perfis por jogo)
 - [ ] Suporte a DualSense (PS5): vibração háptica/gatilhos quando o RPCS3 suportar
 - [x] Espelhar áudio de outros apps (Steam/Proton) — lista configurável: padrões (`*.exe` para o
       Proton), sugestões do que está tocando na página Áudio e `ds4ctl apps`

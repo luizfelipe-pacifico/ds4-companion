@@ -215,11 +215,12 @@ p {
 }
 
 .button.primary:hover {
-  background: #2562e3;
+  /* escurece por opacidade de preto: nenhuma cor nova, contraste do texto sobe */
+  box-shadow: inset 0 0 0 999px rgb(0 0 0 / 0.12);
 }
 
 .button.primary:active {
-  background: #1f55c8;
+  box-shadow: inset 0 0 0 999px rgb(0 0 0 / 0.24);
 }
 
 .button.secondary {
@@ -228,7 +229,7 @@ p {
 }
 
 .button.secondary:hover {
-  background: #252933;
+  box-shadow: inset 0 0 0 1px var(--hairline), inset 0 0 0 999px var(--edge);
 }
 
 .button.secondary:active {

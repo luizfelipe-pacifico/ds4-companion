@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T22:00:00Z",
+  "title": "Design System: DS4 Companion (landing page)",
+  "extensions": {
+    "colorMeta": {
+      "led-blue": {
+        "role": "primary",
+        "displayName": "Luz do Jogador 1",
+        "tonalRamp": [
+          "oklch(15% 0.02 264)",
+          "oklch(25% 0.06 264)",
+          "oklch(35% 0.1 264)",
+          "oklch(45% 0.14 264)",
+          "oklch(55% 0.17 264)",
+          "oklch(68% 0.15 264)",
+          "oklch(80% 0.1 264)",
+          "oklch(95% 0.03 264)"
+        ]
+      },
+      "black-0": {
+        "role": "neutral",
+        "displayName": "Vazio",
+        "tonalRamp": [
+          "oklch(8% 0.01 265)",
+          "oklch(12% 0.01 265)",
+          "oklch(16% 0.01 265)",
+          "oklch(22% 0.01 265)",
+          "oklch(32% 0.01 265)",
+          "oklch(50% 0.01 265)",
+          "oklch(72% 0.01 265)",
+          "oklch(95% 0.01 265)"
+        ]
+      },
+      "black-1": {
+        "role": "neutral",
+        "displayName": "Corpo do controle",
+        "tonalRamp": [
+          "oklch(8% 0.01 265)",
+          "oklch(12% 0.01 265)",
+          "oklch(16% 0.01 265)",
+          "oklch(22% 0.01 265)",
+          "oklch(32% 0.01 265)",
+          "oklch(50% 0.01 265)",
+          "oklch(72% 0.01 265)",
+          "oklch(95% 0.01 265)"
+        ]
+      },
+      "black-2": {
+        "role": "neutral",
+        "displayName": "Camada elevada",
+        "tonalRamp": [
+          "oklch(8% 0.01 265)",
+          "oklch(12% 0.01 265)",
+          "oklch(16% 0.01 265)",
+          "oklch(22% 0.01 265)",
+          "oklch(32% 0.01 265)",
+          "oklch(50% 0.01 265)",
+          "oklch(72% 0.01 265)",
+          "oklch(95% 0.01 265)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Branco"
+      },
+      "text-body": {
+        "role": "neutral",
+        "displayName": "Texto corrido (branco 78%)"
+      },
+      "text-2": {
+        "role": "neutral",
+        "displayName": "Secundário (branco 60%)"
+      },
+      "text-off": {
+        "role": "neutral",
+        "displayName": "Desligado (branco 32%)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Traço (branco 8%)"
+      },
+      "edge": {
+        "role": "neutral",
+        "displayName": "Aresta (branco 6%)"
+      },
+      "blue-16": {
+        "role": "primary",
+        "displayName": "Seleção (led-blue 16%)"
+      },
+      "led": {
+        "role": "tertiary",
+        "displayName": "Cor real da barra de luz (dado do hardware)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Só o título da abertura."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Só o valor em dB sobre o fader grande."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Título de cada seção."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Título de página dentro da janela."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Parágrafo da abertura."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Parágrafos das seções."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Botões, nomes, títulos de fato, faixas."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Linhas de preferência, links do topo."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Legendas, chamadas, notas."
+      },
+      "value": {
+        "displayName": "Value",
+        "purpose": "Valores tabulares (bateria, %, dB em linha)."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Comandos."
+      }
+    },
+    "shadows": [
+      {
+        "name": "window",
+        "value": "0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 64px rgb(0 0 0 / 0.6)",
+        "purpose": "A prévia da janela flutuando sobre a foto; única sombra de elevação."
+      },
+      {
+        "name": "edge",
+        "value": "inset 0 1px 0 rgb(255 255 255 / 0.06)",
+        "purpose": "Aresta de luz das superfícies black-1."
+      },
+      {
+        "name": "outline",
+        "value": "inset 0 0 0 1px rgb(255 255 255 / 0.08)",
+        "purpose": "Contorno de botão secundário, interruptor desligado, botão do repositório."
+      },
+      {
+        "name": "fader-thumb",
+        "value": "0 1px 4px rgb(0 0 0 / 0.5)",
+        "purpose": "Separa o botão branco do trilho."
+      },
+      {
+        "name": "header-scrolled",
+        "value": "0 1px 0 rgb(255 255 255 / 0.08); backdrop-filter: blur(16px) saturate(140%) sobre rgb(6 7 9 / 0.72)",
+        "purpose": "Barra do topo depois de rolar; sólida com prefers-reduced-transparency."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entrada de página na janela, interruptor, religar do grafo."
+      },
+      {
+        "name": "hover",
+        "value": "150ms ease-out",
+        "purpose": "Hover e foco."
+      },
+      {
+        "name": "press",
+        "value": "0ms; scale(0.98)",
+        "purpose": "Resposta imediata no pressionar."
+      },
+      {
+        "name": "page-in",
+        "value": "220ms, opacidade e translateY(4px)",
+        "purpose": "Troca de página na prévia."
+      },
+      {
+        "name": "light",
+        "value": "300ms ease-out",
+        "purpose": "Faixa de luz e retinta da foto da abertura."
+      },
+      {
+        "name": "flow",
+        "value": "1.2s linear infinite, tracejado 2 8",
+        "purpose": "Fios do grafo em paralelo."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animações e transições 0.01ms; sem rolagem suave, pulso ou sacudida",
+        "purpose": "prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tablet",
+        "value": "960px"
+      },
+      {
+        "name": "mobile",
+        "value": "720px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botão principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "A ação da seção, em led-blue; um por seção.",
+      "html": "<a class=\"ds-btn ds-btn-primary\" href=\"#\">Acompanhar no GitHub</a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:0;border-radius:6px;font:500 0.9375rem/1 Inter,system-ui,sans-serif;color:#fff;text-decoration:none;cursor:pointer;transition:background-color 150ms ease-out,transform 100ms ease-out} .ds-btn:active{transform:scale(0.98);transition-duration:0ms} .ds-btn:focus-visible{outline:2px solid #2b6cf6;outline-offset:2px} .ds-btn-primary{background:var(--led-blue, #2b6cf6)}"
+    },
+    {
+      "name": "Botão secundário",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ações dentro da janela e na confirmação do limite.",
+      "html": "<button class=\"ds-btn2\">Testar som</button>",
+      "css": ".ds-btn2{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border:0;border-radius:6px;background:#1d2027;box-shadow:inset 0 0 0 1px rgb(255 255 255 / 0.08);color:#fff;font:500 0.9375rem/1 Inter,system-ui,sans-serif;cursor:pointer;transition:transform 100ms ease-out} .ds-btn2:active{background:#111318;transform:scale(0.98);transition-duration:0ms} .ds-btn2:focus-visible{outline:2px solid #2b6cf6;outline-offset:2px}"
+    },
+    {
+      "name": "Botão plano",
+      "kind": "button",
+      "refersTo": "button-flat",
+      "description": "Ação secundária ao lado da principal.",
+      "html": "<a class=\"ds-btn3\" href=\"#\">Como instalar</a>",
+      "css": ".ds-btn3{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:6px;background:transparent;color:#fff;font:500 0.9375rem/1 Inter,system-ui,sans-serif;text-decoration:none;transition:background-color 150ms ease-out} .ds-btn3:hover{background:#1d2027} .ds-btn3:focus-visible{outline:2px solid #2b6cf6;outline-offset:2px}"
+    },
+    {
+      "name": "Barra do topo",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "60 px, links em text-2, botão do repositório com contorno.",
+      "html": "<nav class=\"ds-top\"><span class=\"ds-brand\">DS4 Companion</span><a href=\"#\">Em paralelo</a><a href=\"#\">Volume</a><a class=\"ds-repo\" href=\"#\">Código</a></nav>",
+      "css": ".ds-top{display:flex;align-items:center;gap:4px;height:60px;padding:0 24px;background:rgb(6 7 9 / 0.92);box-shadow:0 1px 0 rgb(255 255 255 / 0.08);font-family:Inter,system-ui,sans-serif} .ds-brand{font-weight:500;font-size:0.9375rem;color:#fff;margin-right:auto} .ds-top a{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border-radius:6px;font-size:0.875rem;color:rgb(255 255 255 / 0.6);text-decoration:none;transition:color 150ms ease-out,background-color 150ms ease-out} .ds-top a:hover{color:#fff;background:#1d2027} .ds-top a:focus-visible{outline:2px solid #2b6cf6;outline-offset:2px} .ds-top a.ds-repo{color:#fff;box-shadow:inset 0 0 0 1px rgb(255 255 255 / 0.08)}"
+    },
+    {
+      "name": "Selo planejado",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Marca um recurso que ainda não existe, ao lado do título.",
+      "html": "<span class=\"ds-tag\">planejado</span>",
+      "css": ".ds-tag{display:inline-block;font:500 0.6875rem/1.4 Inter,system-ui,sans-serif;letter-spacing:0.02em;color:rgb(255 255 255 / 0.6);border:1px solid rgb(255 255 255 / 0.08);border-radius:999px;padding:1px 8px}"
+    },
+    {
+      "name": "Cartão do controle",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "black-1 com aresta e faixa de luz na cor do hardware.",
+      "html": "<div class=\"ds-card\"><span class=\"ds-strip\"></span><div class=\"ds-row\"><span class=\"ds-name\">DualShock 4</span><span class=\"ds-num\">78%</span></div><p class=\"ds-cap\">Conectado por cabo USB</p></div>",
+      "css": ".ds-card{position:relative;padding:22px 20px 18px;background:#111318;border-radius:10px;box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.06);color:#fff;font-family:Inter,system-ui,sans-serif} .ds-strip{position:absolute;top:0;left:50%;width:96px;height:2px;margin-left:-48px;border-radius:1px;background:#0000ff} .ds-row{display:flex;justify-content:space-between} .ds-name{font-size:0.9375rem;font-weight:500} .ds-num{font-size:0.9375rem;font-weight:500;font-variant-numeric:tabular-nums} .ds-cap{margin:4px 0 0;font-size:0.8125rem;color:rgb(255 255 255 / 0.6)}"
+    },
+    {
+      "name": "Interruptor",
+      "kind": "input",
+      "refersTo": "switch",
+      "description": "36 × 20, led-blue ligado.",
+      "html": "<button class=\"ds-sw\" role=\"switch\" aria-checked=\"true\"><span></span></button>",
+      "css": ".ds-sw{position:relative;width:36px;height:20px;padding:0;border:0;border-radius:10px;background:#1d2027;box-shadow:inset 0 0 0 1px rgb(255 255 255 / 0.08);cursor:pointer;transition:background-color 150ms ease-out} .ds-sw span{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform 200ms cubic-bezier(0.16,1,0.3,1)} .ds-sw[aria-checked=\"true\"]{background:#2b6cf6;box-shadow:none} .ds-sw[aria-checked=\"true\"] span{transform:translateX(16px)} .ds-sw:focus-visible{outline:2px solid #2b6cf6;outline-offset:2px}"
+    },
+    {
+      "name": "Fader em dB",
+      "kind": "custom",
+      "refersTo": "fader",
+      "description": "Trilho de 2 px, marcas em −6 e 0 dB; inverte para branco acima do limite.",
+      "html": "<div class=\"ds-fader\" role=\"slider\" tabindex=\"0\" aria-valuenow=\"-9\" style=\"--pos:58.3%\"><span class=\"ds-tr\"><span class=\"ds-fill\"></span></span><span class=\"ds-mk ds-m6\"></span><span class=\"ds-mk ds-m0\"></span><span class=\"ds-th\"></span></div>",
+      "css": ".ds-fader{position:relative;width:320px;height:28px;cursor:pointer;--zero:83.333%;--minus6:66.667%} .ds-fader:focus-visible{outline:2px solid #2b6cf6;outline-offset:4px;border-radius:6px} .ds-tr{position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;border-radius:1px;background:#1d2027} .ds-fill{position:absolute;inset:0 auto 0 0;width:var(--pos);border-radius:1px;background:#2b6cf6;transition:background-color 150ms ease-out} .ds-fader[data-band=\"over\"] .ds-fill{background:#fff} .ds-mk{position:absolute;top:50%;width:1px;height:12px;margin-top:-6px} .ds-m6{left:var(--minus6);background:rgb(255 255 255 / 0.32)} .ds-m0{left:var(--zero);background:#fff} .ds-th{position:absolute;top:50%;left:var(--pos);width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgb(0 0 0 / 0.5);transition:transform 100ms ease-out} .ds-fader:active .ds-th{transform:scale(1.15)}"
+    },
+    {
+      "name": "Bloco do comando",
+      "kind": "custom",
+      "refersTo": "command",
+      "description": "Comando copiável em black-1 com botão de copiar separado por traço.",
+      "html": "<div class=\"ds-cmd\"><code>sudo pacman -U &lt;url da release&gt;</code><button>Copiar</button></div>",
+      "css": ".ds-cmd{display:flex;border-radius:10px;background:#111318;box-shadow:inset 0 1px 0 rgb(255 255 255 / 0.06),0 0 0 1px rgb(255 255 255 / 0.08);overflow:hidden;color:#fff} .ds-cmd code{flex:1;padding:16px 18px;font:0.875rem/1.6 ui-monospace,monospace} .ds-cmd button{padding:0 18px;border:0;border-left:1px solid rgb(255 255 255 / 0.08);background:transparent;color:#fff;font:0.875rem Inter,system-ui,sans-serif;cursor:pointer;transition:background-color 150ms ease-out} .ds-cmd button:hover{background:#1d2027} .ds-cmd button:active{background:#111318} .ds-cmd button:focus-visible{outline:2px solid #2b6cf6;outline-offset:-2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "A janela no escuro",
+    "overview": "**Creative North Star: \"A janela no escuro\"**\n\nA página é a própria janela do app. O primeiro viewport não é um herói de produto com cartões: é a janela libadwaita escura, com barra lateral e controles que funcionam, flutuando logo abaixo da barra de luz acesa de um DualShock 4 fotografado no escuro. Tudo o que não é luz fica quieto; a única coisa que brilha é o azul (`led-blue` na interface, `led` na foto e na faixa do cartão).\n\nAs seções abaixo seguem o mesmo material: fundo `black-0` contínuo, colunas de texto e foto lado a lado, divisores de 1 px no lugar de caixas, títulos grandes em peso leve. A densidade é baixa fora da janela e de app dentro dela: lá dentro valem as medidas do app (linhas de 48 px, título de página de 26 px), cá fora a escala sobe para leitura em tela grande.",
+    "keyCharacteristics": [
+      "Janela do app como abertura, interativa e rotulada como prévia.",
+      "Fotos noturnas tratadas para que só a luz azul brilhe.",
+      "Títulos em Light 300 (exibição em 300, numeral do fader em 200), aperto de −0,03 a −0,04em.",
+      "Um único numeral aceso, tabular, que troca no lugar: o valor em dB.",
+      "Divisores e linhas de chamada de 1 px; trilhos de 2 px."
+    ],
+    "rules": [
+      {
+        "name": "The Hardware Color Rule",
+        "body": "`led` é dado, não tema: aparece só na faixa de luz do cartão, nos seletores de cor da página Luz, no nó do controle no grafo e, via `hue-rotate`/`saturate` da foto da abertura, na barra de luz fotografada. Trocar a cor na prévia retinge os quatro juntos.",
+        "section": "colors"
+      },
+      {
+        "name": "The Inversion Rule",
+        "body": "Acima de 0 dB o preenchimento do fader e a borda da faixa ativa passam para branco e o rótulo vai a peso 600. É o sinal mais forte da paleta e fica reservado ao limite de volume.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Lit Numeral Rule",
+        "body": "Só o valor em dB é numeral grande e aceso; ele troca no lugar, tabular, sem animar dígitos. Nenhum outro número da página (fases, bateria, porcentagem) passa de 15 px.",
+        "section": "typography"
+      },
+      {
+        "name": "The Legible Header Rule",
+        "body": "O único desfoque da página é o da barra do topo depois de rolar (`blur(16px)` sobre `black-0` 72%, com divisor de 1 px), e existe para manter os links legíveis sobre fotos; com `prefers-reduced-transparency` ou sem suporte vira `black-0` sólido. Nenhum outro vidro.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Dissolve Rule",
+        "body": "As fotos não ganham moldura nem degradê de cor; a da abertura só se dissolve no preto pela máscara (transparente até 6%, opaca de 20% a 72%, transparente em 100%).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do começar pela janela do app sobre foto escura, rotulada como prévia.",
+      "Do usar `text-body` (branco 78%) em parágrafos e `text-2` em legendas.",
+      "Do tratar toda foto nova para que só a luz azul brilhe e registrar a procedência em `assets/CREDITS.md`.",
+      "Do manter um só botão `led-blue` por seção.",
+      "Do separar listas e tabelas com divisores de 1 px `hairline`."
+    ],
+    "donts": [
+      "Don't criar cor nova fora das cinco e de suas opacidades; variação é opacidade ou camada.",
+      "Don't usar verde, amarelo ou vermelho para estado; o alerta é ícone, texto, peso e a inversão para branco.",
+      "Don't pôr chamada em parte que a foto não mostra (alto-falante, motores).",
+      "Don't usar logotipo da PlayStation nem △◯✕□ como marca."
+    ]
+  }
+}

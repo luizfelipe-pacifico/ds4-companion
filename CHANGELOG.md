@@ -39,6 +39,8 @@
   serviço de usuário com `ExecStopPost` que para os motores, ativação D-Bus para o `ds4ctl`, regra
   udev com `uaccess` (cabo, Bluetooth e adaptador) e `install.sh` (confere `SHA256SUMS`, só usa
   `sudo` no `pacman`, migra os scripts da Fase 0, `--uninstall`, `--no-service`).
+  `python-cairo` é dependência direta: no Arch ele é só opcional do `python-gobject`, e sem ele a
+  faixa de luz e as amostras de cor não desenham.
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

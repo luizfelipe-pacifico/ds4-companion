@@ -59,7 +59,7 @@ O `ds4ctl` sobe o daemon sozinho pela ativação D-Bus se ele não estiver rodan
 
 ## Dependências
 
-`python`, `python-gobject`, `gtk4`, `libadwaita`, `python-pyudev`, `python-dbus-next`, `polkit`, `inter-font`, `pipewire`, `wireplumber`.
+`python`, `python-gobject`, `python-cairo`, `gtk4`, `libadwaita`, `python-pyudev`, `python-dbus-next`, `polkit`, `inter-font`, `pipewire`, `wireplumber`.
 Opcional: `rpcs3-bin` (ou AppImage), `gamemode`, `bluez`.
 
 ## Migração dos scripts atuais (Fase 0)

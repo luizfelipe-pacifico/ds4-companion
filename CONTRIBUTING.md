@@ -14,7 +14,7 @@ Leia também as [boas práticas](docs/desenvolvimento/BEST_PRACTICES.md).
 ## Ambiente
 
 ```bash
-sudo pacman -S --needed python python-gobject gtk4 libadwaita python-pyudev python-dbus-next \
+sudo pacman -S --needed python python-gobject python-cairo gtk4 libadwaita python-pyudev python-dbus-next \
                         inter-font pipewire wireplumber jq
 python -m venv --system-site-packages .venv && . .venv/bin/activate
 pip install -e '.[dev]'     # pytest, ruff, mypy

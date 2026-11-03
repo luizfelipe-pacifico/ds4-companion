@@ -15,6 +15,7 @@ license=('GPL-3.0-or-later')
 depends=(
   'python'
   'python-gobject'
+  'python-cairo'  # desenho da faixa de luz e das amostras de cor (Gtk.DrawingArea)
   'gtk4'
   'libadwaita'
   'python-pyudev'

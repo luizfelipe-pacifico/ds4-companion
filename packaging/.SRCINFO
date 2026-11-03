@@ -13,6 +13,7 @@ pkgbase = ds4-companion
 	makedepends = glib2
 	depends = python
 	depends = python-gobject
+	depends = python-cairo
 	depends = gtk4
 	depends = libadwaita
 	depends = python-pyudev

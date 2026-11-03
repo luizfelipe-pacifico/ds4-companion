@@ -91,7 +91,8 @@ testpaths = ["tests"]
 addopts = "--strict-markers -ra --import-mode=importlib"
 # O dbus-next 0.2.3 usa APIs que saem no Python 3.15/3.16 (typing.no_type_check_decorator,
 # asyncio.iscoroutinefunction); o risco está anotado na ADR 0008.
-filterwarnings = ["ignore::DeprecationWarning:dbus_next.*"]
+# O PyGObject 3.58 (gi.events) também usa a política de laço do asyncio que sai no 3.16.
+filterwarnings = ["ignore::DeprecationWarning:dbus_next.*", "ignore::DeprecationWarning:gi.events"]
 markers = [
     "gui: precisa de display (GTK)",
     "hardware: precisa de um DualShock 4 conectado (manual)",

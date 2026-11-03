@@ -1,6 +1,10 @@
 # Interface
 
-Janela GTK4/libadwaita com 4 páginas na barra lateral. Cores e fonte em [DESIGN.md](DESIGN.md).
+Janela GTK4/libadwaita com 5 páginas na barra lateral (Status, Áudio, Vibração, Luz, Avançado). Cores e
+fonte em [DESIGN.md](DESIGN.md). Abaixo de 600 sp a barra lateral vira navegação com voltar.
+
+Capturas com estados sintéticos, sem daemon nem hardware: `dbus-run-session -- scripts/screenshots.sh <pasta>`
+(roda num `mutter` headless, sem abrir janela na sessão).
 
 ## Status
 ```
@@ -32,8 +36,18 @@ Janela GTK4/libadwaita com 4 páginas na barra lateral. Cores e fonte em [DESIGN
  ℹ Vale ao reabrir o RPCS3.
 ```
 
+## Luz
+```
+ Cor da barra de luz
+ (●) Azul  (●) Vermelho  (●) Verde  (●) Rosa  (●) Roxo  (●) Ciano  (●) Laranja  (●) Branco  (○) Desligada
+ ℹ O RPCS3 está aberto: a cor vai para o controle quando ele fechar.
+```
+- As amostras mostram a cor real do LED (exceção da paleta). A escolhida ganha anel branco e rótulo
+  em peso 500, além do fundo azul 16 %: a seleção não depende só de cor.
+
 ## Avançado
-- Pasta do RPCS3, backups, logs do daemon, reiniciar serviço, restaurar padrões.
+- Pasta do RPCS3 (seletor de pasta), backup antes de editar, ver registros do serviço
+  (`journalctl --user`), reiniciar serviço, restaurar padrões (com confirmação).
 
 ## Atualização
 Ao abrir, a janela consulta o GitHub Releases em segundo plano. Com versão nova, abre um
@@ -50,6 +64,14 @@ Ao abrir, a janela consulta o GitHub Releases em segundo plano. Com versão nova
 - Sem rede ou sem versão nova, nada aparece.
 
 ## Comportamento
-- Estados vazios, avisos e erros usam `AdwStatusPage` com as ilustrações de [ILLUSTRATIONS.md](ILLUSTRATIONS.md).
-- Bluetooth: cartão de áudio vira aviso "conecte o cabo para ter som no controle".
-- Volume acima do teto: slider para no teto; ir além exige diálogo de confirmação.
+- Estados vazios, avisos e erros usam `AdwStatusPage` com as ilustrações de [ILLUSTRATIONS.md](ILLUSTRATIONS.md);
+  dentro de uma página (Áudio aguardando o jogo) a ilustração aparece pequena, ao lado do texto.
+- Bluetooth: a página Áudio vira o aviso "Som no controle precisa do cabo".
+- Volume: o slider para em 0 dB; passar disso exige confirmação e nunca vai além de `max_db`.
+  O valor em dB acompanha o arraste; o daemon recebe o valor final do gesto.
+- Vibração: com o RPCS3 aberto aparece um banner dizendo que a mudança vale ao reabrir, e os testes
+  ficam desativados com o motivo na dica.
+- Serviço parado: a janela inteira vira a tela "Serviço parado". Na primeira abertura o app ativa o
+  serviço sozinho (`systemctl --user enable --now ds4-companion.service`).
+- Problema no PipeWire: banner no topo com a mensagem do daemon.
+- Ícone na bandeja: ainda não implementado (precisa de StatusNotifierItem; ver ROADMAP).

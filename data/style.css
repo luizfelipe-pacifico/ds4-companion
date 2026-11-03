@@ -1,0 +1,152 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* DS4 Companion — tokens e regras de docs/design/DESIGN.md (ADR 0003). Só cor, peso e espessura:
+   o comportamento é o dos widgets do libadwaita. */
+
+:root {
+  /* paleta: cinco cores */
+  --black-0: #060709;
+  --black-1: #111318;
+  --black-2: #1D2027;
+  --led-blue: #2B6CF6;
+
+  /* mapeamento libadwaita */
+  --accent-bg-color: var(--led-blue);
+  --accent-fg-color: #FFFFFF;
+  --accent-color: var(--led-blue);
+  --window-bg-color: var(--black-0);
+  --window-fg-color: #FFFFFF;
+  --view-bg-color: var(--black-0);
+  --view-fg-color: #FFFFFF;
+  --headerbar-bg-color: var(--black-0);
+  --headerbar-fg-color: #FFFFFF;
+  --headerbar-shade-color: alpha(#FFFFFF, 0.06);
+  --sidebar-bg-color: var(--black-1);
+  --sidebar-fg-color: #FFFFFF;
+  --sidebar-backdrop-color: var(--black-1);
+  --sidebar-shade-color: alpha(#FFFFFF, 0.06);
+  --card-bg-color: var(--black-1);
+  --card-fg-color: #FFFFFF;
+  --popover-bg-color: var(--black-2);
+  --popover-fg-color: #FFFFFF;
+  --dialog-bg-color: var(--black-1);
+  --dialog-fg-color: #FFFFFF;
+  --border-color: alpha(#FFFFFF, 0.08);
+  --dim-opacity: 60%;
+  --disabled-opacity: 32%;
+
+  /* sem cores de alerta: estados usam ícone + texto */
+  --success-color: #FFFFFF;
+  --success-bg-color: var(--black-2);
+  --warning-color: #FFFFFF;
+  --warning-bg-color: var(--black-2);
+  --error-color: #FFFFFF;
+  --error-bg-color: var(--black-2);
+  --destructive-bg-color: var(--black-2);
+  --destructive-fg-color: #FFFFFF;
+  --destructive-color: #FFFFFF;
+}
+
+window { font-family: "SST", "Inter", sans-serif; }
+
+/* tipografia */
+.title-1 { font-size: 186%; font-weight: 300; letter-spacing: -0.02em; }
+.heading { font-size: 107%; font-weight: 500; letter-spacing: -0.005em; }
+.caption { font-size: 86%; letter-spacing: 0.01em; }
+.dim-label, .caption.dim { opacity: 0.6; }
+.numeric { font-feature-settings: "tnum"; font-weight: 500; }
+statuspage > scrolledwindow > viewport > box > .title { font-size: 186%; font-weight: 300; letter-spacing: -0.02em; }
+
+/* superfícies: profundidade por camada, aresta de luz em cima, sem sombra */
+.card, list.boxed-list {
+  border-radius: 10px;
+  box-shadow: inset 0 1px alpha(#FFFFFF, 0.06);
+}
+popover > contents, dialog.alert > .dialog-contents, .toast {
+  box-shadow: 0 8px 24px alpha(#000000, 0.5), inset 0 0 0 1px alpha(#FFFFFF, 0.08);
+}
+
+/* resposta no pressionar; hover e foco em 150 ms */
+row.activatable, button, .navigation-sidebar > row {
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+row.activatable:hover, row:focus-visible { background-color: var(--black-2); }
+row.activatable:active { background-color: var(--black-1); transition: none; }
+button:active { transition: none; }
+*:focus-visible { outline: 2px solid var(--led-blue); outline-offset: 2px; }
+
+/* barra lateral: item selecionado com fundo azul 16 % e ícone azul */
+.navigation-sidebar > row { border-radius: 6px; min-height: 40px; }
+.navigation-sidebar > row:selected { background-color: alpha(#2B6CF6, 0.16); color: #FFFFFF; }
+.navigation-sidebar > row:selected image { color: var(--led-blue); }
+
+/* botões: principal azul, secundário black-2, plano só texto */
+button { border-radius: 6px; }
+button.suggested-action { background-color: var(--led-blue); color: #FFFFFF; }
+button:not(.suggested-action):not(.flat):not(.circular):not(.image-button) { background-color: var(--black-2); }
+button.destructive-action { background-color: var(--black-2); color: #FFFFFF; font-weight: 500; }
+
+/* interruptor fino: 36 × 20, botão 14 */
+switch { min-width: 36px; min-height: 20px; padding: 0; background-color: var(--black-2); }
+switch:checked { background-color: var(--led-blue); }
+switch > slider { min-width: 14px; min-height: 14px; margin: 3px; box-shadow: none; }
+
+/* slider: trilho 2 px, botão 14 px */
+scale trough { min-height: 2px; background-color: var(--black-2); border-radius: 1px; }
+scale highlight { background-color: var(--led-blue); }
+scale slider { min-width: 14px; min-height: 14px; margin: -6px; background-color: #FFFFFF; box-shadow: none; }
+scale marks indicator { min-height: 6px; min-width: 1px; background-color: alpha(#FFFFFF, 0.32); }
+scale.over-limit highlight, scale.over-limit slider { background-color: #FFFFFF; }
+
+/* cartão do controle */
+.controller-card { padding: 0; }
+.controller-card .controller-body { padding: 16px; }
+.controller-card .controller-name { font-size: 186%; font-weight: 300; letter-spacing: -0.02em; }
+.light-strip { min-height: 2px; margin: 0 16px; }
+
+/* volume em dB */
+.volume-row { padding: 12px 12px 8px 12px; }
+.volume-value { font-size: 107%; }
+.volume-value.over-limit { font-weight: 600; }
+.zone-label { font-size: 86%; }
+.zone-label.high { font-weight: 500; }
+.zone-label.over-limit { font-weight: 600; }
+
+/* amostras da barra de luz: a cor é dado do hardware, o resto é tema */
+.swatch { padding: 8px; border-radius: 10px; background: none; }
+.swatch:hover { background-color: var(--black-2); }
+.swatch:checked { background-color: alpha(#2B6CF6, 0.16); }
+.swatch:checked .swatch-name { font-weight: 500; }
+.swatch-name { font-size: 86%; }
+
+/* jogadores */
+.player-toggle { min-width: 28px; padding: 6px 4px; font-feature-settings: "tnum"; }
+.player-toggle:checked { background-color: var(--led-blue); color: #FFFFFF; }
+
+/* estados */
+.state-icon { color: #FFFFFF; }
+.live-dot { min-width: 8px; min-height: 8px; border-radius: 4px; background-color: var(--led-blue); }
+.idle-dot { min-width: 8px; min-height: 8px; border-radius: 4px; background-color: alpha(#FFFFFF, 0.32); }
+
+banner > revealer > widget { background-color: var(--black-2); color: #FFFFFF; }
+.log-view { font-family: monospace; font-size: 86%; background-color: var(--black-0); padding: 12px; }
+
+/* ilustrações das telas de estado: 176 px (faixa 160–200 do ILLUSTRATIONS.md) */
+statuspage:not(.compact) image.icon { -gtk-icon-size: 176px; margin-bottom: 24px; }
+statuspage.compact image.icon { -gtk-icon-size: 120px; margin-bottom: 12px; }
+
+/* títulos das telas de estado: grandes e leves */
+statuspage .title { font-weight: 300; letter-spacing: -0.02em; }
+statuspage.compact .title { font-size: 107%; font-weight: 500; letter-spacing: -0.005em; }
+
+/* estado dentro da página (ilustração pequena ao lado do texto) */
+.inline-state { padding: 4px 0 8px 0; }
+
+/* amostras não herdam o fundo do botão secundário */
+button.swatch { background-color: transparent; }
+button.swatch:hover { background-color: var(--black-2); }
+button.swatch:checked { background-color: alpha(#2B6CF6, 0.16); }
+.swatch-name { font-weight: 400; }
+button.swatch:checked .swatch-name { font-weight: 500; }
+
+/* jogadores: botões finos, iguais */
+.players { padding: 8px; }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<gresources>
+  <gresource prefix="/io/github/luizfelipe_pacifico/DS4Companion">
+    <file>style.css</file>
+    <file>icons/scalable/actions/ds4-vibration-symbolic.svg</file>
+    <file>illustrations/all-set.svg</file>
+    <file>illustrations/bluetooth-no-audio.svg</file>
+    <file>illustrations/empty-list.svg</file>
+    <file>illustrations/error.svg</file>
+    <file>illustrations/no-controller.svg</file>
+    <file>illustrations/no-permission.svg</file>
+    <file>illustrations/service-stopped.svg</file>
+    <file>illustrations/waiting-game.svg</file>
+  </gresource>
+</gresources>

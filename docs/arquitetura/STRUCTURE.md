@@ -16,7 +16,7 @@ ds4-companion/
 ├── install.sh                                         🗓️ instalador executável (ADR 0005)
 │
 ├── src/ds4_companion/                                 ✅ código Python
-│   ├── app/                                           🗓️ GUI (GTK4/libadwaita)
+│   ├── app/                                           ✅ GUI (GTK4/libadwaita)
 │   ├── daemon/                                        ✅ ds4-companiond
 │   ├── cli/                                           ✅ ds4ctl
 │   └── common/                                        ✅ código compartilhado
@@ -118,10 +118,10 @@ Tudo que o pacote instala e não é Python. Nomes em `kebab-case` e em inglês.
 |---|---|---|
 | `icons/hicolor/scalable/apps/ds4-companion.svg` | `/usr/share/icons/hicolor/scalable/apps/` | ✅ |
 | `icons/hicolor/symbolic/apps/ds4-companion-symbolic.svg` | `/usr/share/icons/hicolor/symbolic/apps/` | ✅ |
-| `icons/*-symbolic.svg` (ícones próprios da interface) | GResource | 🗓️ |
+| `icons/scalable/actions/*-symbolic.svg` (ícones próprios da interface) | GResource | ✅ |
 | `illustrations/*.svg` ([catálogo](../design/ILLUSTRATIONS.md)) | GResource | ✅ |
-| `style.css` (CSS do [DESIGN.md](../design/DESIGN.md#aplicação-no-gtk4libadwaita)) | GResource | 🗓️ |
-| `ds4-companion.gresource.xml` | compilado para `.gresource` | 🗓️ |
+| `style.css` (CSS do [DESIGN.md](../design/DESIGN.md#aplicação-no-gtk4libadwaita)) | GResource | ✅ |
+| `ds4-companion.gresource.xml` | compilado para `/usr/share/ds4-companion/ds4-companion.gresource` | ✅ |
 | `<app-id>.desktop.in` | `/usr/share/applications/` | 🗓️ |
 | `<app-id>.metainfo.xml.in` | `/usr/share/metainfo/` | 🗓️ |
 | `ds4-companion.service` | `/usr/lib/systemd/user/` | 🗓️ |

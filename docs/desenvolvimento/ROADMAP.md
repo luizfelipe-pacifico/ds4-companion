@@ -7,22 +7,22 @@
 - [x] GameMode automático ao abrir o RPCS3
 
 ## Fase 1 — Daemon + CLI (v0.1)
-- [ ] `ds4-companiond` em Python substituindo o script bash
-- [ ] Eventos do PipeWire em vez de polling
-- [ ] `ds4ctl status | volume | vibration | test-rumble | mirror on/off | led <cor>`
-- [ ] Cor da barra de luz: aplicar pelo `hidraw` fora do jogo (mesmo relatório HID da vibração:
+- [x] `ds4-companiond` em Python substituindo o script bash
+- [x] Eventos do PipeWire em vez de polling (`pw-dump --monitor`, com verificação a cada 3 s de reserva)
+- [x] `ds4ctl status | volume | vibration | test-rumble | mirror on/off | led <cor>`
+- [x] Cor da barra de luz: aplicar pelo `hidraw` fora do jogo (mesmo relatório HID da vibração:
       USB `0x05` bytes 6/7/8 = R/G/B; Bluetooth `0x11` com CRC32) e no RPCS3 via `Color Value R/G/B`
       do `Default.yml`. Não manda cor enquanto o RPCS3 está com jogo aberto, igual à vibração
-- [ ] `config.toml` com validação
-- [ ] Teto de volume (`max_db`) aplicado automaticamente
+- [x] `config.toml` com validação
+- [x] Teto de volume (`max_db`) aplicado automaticamente
 
 ## Fase 2 — Interface gráfica (v0.2)
-- [ ] Janela GTK4/libadwaita: Status, Áudio, Vibração, Avançado
-- [ ] Slider de volume em dB com faixas livre/alto/acima do limite (texto + ícone, ver DESIGN.md)
-- [ ] Botões de teste de vibração (forte, fraco, ambos)
-- [ ] Indicador de conexão (cabo/Bluetooth) e bateria
-- [ ] Ícone na bandeja (extensão AppIndicator)
-- [ ] Página **Luz**: escolher a cor da barra de luz do controle entre cores pré-definidas,
+- [x] Janela GTK4/libadwaita: Status, Áudio, Vibração, Luz, Avançado
+- [x] Slider de volume em dB com faixas livre/alto/acima do limite (texto + ícone, ver DESIGN.md)
+- [x] Botões de teste de vibração (forte, fraco, ambos)
+- [x] Indicador de conexão (cabo/Bluetooth) e bateria
+- [ ] Ícone na bandeja (extensão AppIndicator) — pendente: exige implementar StatusNotifierItem no D-Bus
+- [x] Página **Luz**: escolher a cor da barra de luz do controle entre cores pré-definidas,
       com pré-visualização ao vivo no controle conectado:
 
   | Cor | RGB do LED |
@@ -38,9 +38,9 @@
   | Desligada | `#000000` |
 
   A cor fica salva em `[led]` no `config.toml` e é reaplicada ao conectar o controle.
-- [ ] Telas de estado (vazio, espera, aviso, erro, sucesso) com `AdwStatusPage` e as ilustrações de
+- [x] Telas de estado (vazio, espera, aviso, erro, sucesso) com `AdwStatusPage` e as ilustrações de
       [ILLUSTRATIONS.md](../design/ILLUSTRATIONS.md)
-- [ ] Logo do app em **SVG**, proporção **1:1** (quadrado): ícone colorido `hicolor/scalable/apps/<app-id>.svg` e versão
+- [x] Logo do app em **SVG**, proporção **1:1** (quadrado): ícone colorido `hicolor/scalable/apps/<app-id>.svg` e versão
       simbólica `<app-id>-symbolic.svg` (GNOME HIG), seguindo as regras de marca do
       [DESIGN.md](../design/DESIGN.md): desenho próprio, faixa de luz `led-blue` sobre `black-0`, sem logotipo da PlayStation
 
@@ -50,7 +50,7 @@
 - [ ] Release no GitHub com `.pkg.tar.zst` assinado, `SHA256SUMS` e `install.sh`
       (instalação por um comando: `sudo pacman -U <url>`, ver [ADR 0005](../arquitetura/adr/0005-instalacao-por-um-comando.md))
 - [ ] `install.sh`: instala, migra scripts da Fase 0, ativa o serviço; `--uninstall`; `shellcheck` + teste em container no CI
-- [ ] App ativa o serviço de usuário na primeira abertura
+- [x] App ativa o serviço de usuário na primeira abertura
 - [ ] Migração automática dos scripts da Fase 0
 
 ## Fase 4 — Recursos extras (v0.4+)

@@ -141,16 +141,18 @@ tela. Os textos são o ponto de partida para o `gettext`.
 
 ```python
 page = Adw.StatusPage(
-    paintable=Gdk.Texture.new_from_resource("/<app-id>/illustrations/no-controller.svg"),  # via GResource
+    paintable=Gtk.Svg.new_from_resource(  # vetorial: nítido em qualquer escala (GTK 4.22+)
+        "/io/github/luizfelipe_pacifico/DS4Companion/illustrations/no-controller.svg"
+    ),
     title=_("Nenhum controle conectado"),
     description=_("Ligue o DualShock 4 pelo cabo USB ou pareie por Bluetooth."),
 )
 ```
 
-- Carregar pelo GResource; o caminho segue o app ID, que ainda não foi definido.
-- `Gdk.Texture` rasteriza o SVG. Para ficar nítido em telas HiDPI, carregar no tamanho final
-  × fator de escala (ou usar `Rsvg`).
-- O texto alternativo vai em `accessible-label` do widget da imagem.
+- Implementado em `src/ds4_companion/app/states.py` (`status_page` e `inline_state`), carregando do
+  GResource `data/ds4-companion.gresource.xml`.
+- Tamanho: 176 px na tela cheia e 96 px dentro de uma página (`data/style.css`).
+- O texto alternativo vai na descrição acessível da página.
 
 ## Nova ilustração
 

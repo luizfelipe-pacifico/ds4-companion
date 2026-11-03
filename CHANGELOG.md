@@ -27,6 +27,14 @@
   (`data/io.github.luizfelipe_pacifico.DS4Companion.Daemon.xml`) e `--stop-motors` para o serviço.
 - `ds4ctl`: `status`, `mirror`, `volume` (confirmação acima de 0 dB), `vibration`, `test-rumble`,
   `led` e `test-tone`, com mensagens em português e código de saída 3 quando o daemon não roda.
+- Interface GTK4 + libadwaita: barra lateral com Status (cartão do controle com a faixa de luz na
+  cor real do LED), Áudio (som no controle, volume em dB com marcas em −6/0 dB, confirmação acima de
+  0 dB, apito de teste, apps espelhados), Vibração (força 0–200 %, testes, inverter, jogadores), Luz
+  (nove cores) e Avançado (pasta do RPCS3, backup, registros, reiniciar serviço, restaurar padrões).
+  Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
+  ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
+  de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
+- `PRODUCT.md` e o contrato de direção da interface em `.impeccable/surfaces/app.md`.
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

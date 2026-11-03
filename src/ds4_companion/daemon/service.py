@@ -95,6 +95,7 @@ class Daemon:
         self._last_rumble = -math.inf
         self._rpcs3_pending = False
         self._led_pending = False
+        self._backed_up = False  # um backup do Default.yml por execução, não um por ajuste
         self._refresh_lock = asyncio.Lock()
         self._refresh_task: asyncio.Task[None] | None = None
         self._update_status()
@@ -459,7 +460,8 @@ class Daemon:
             text, color_warnings = input_config.apply_color(text, vib.players, led_preset(self.config.led.color).rgb)
             for warning in dict.fromkeys(warnings + color_warnings):
                 log.warning("RPCS3: %s", warning)
-            backup = input_config.write_with_backup(path, text, self.config.rpcs3.backup_before_edit)
+            want_backup = self.config.rpcs3.backup_before_edit and not self._backed_up
+            backup = input_config.write_with_backup(path, text, want_backup)
         except FileNotFoundError:
             log.info("RPCS3 sem %s; nada a editar", path.name)
         except (OSError, input_config.Rpcs3ConfigError) as exc:
@@ -467,6 +469,7 @@ class Daemon:
             return
         else:
             if backup:
+                self._backed_up = True
                 log.info("Default.yml atualizado (backup: %s)", backup.name)
         self._rpcs3_pending = False
 

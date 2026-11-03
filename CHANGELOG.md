@@ -22,7 +22,8 @@
 - `ds4-companiond`: daemon de usuário que reconcilia links do PipeWire por eventos, reaplica o
   volume salvo ao conectar o controle, rebaixa qualquer volume acima do teto (e para −6 dB com fone
   no controle), testa os motores por 0,5 s com intervalo mínimo e guarda vibração e cor como
-  pendentes enquanto o RPCS3 está aberto. API no D-Bus de sessão
+  pendentes enquanto o RPCS3 está aberto (um backup do `Default.yml` por execução, não um por
+  ajuste). API no D-Bus de sessão
   (`data/io.github.luizfelipe_pacifico.DS4Companion.Daemon.xml`) e `--stop-motors` para o serviço.
 - `ds4ctl`: `status`, `mirror`, `volume` (confirmação acima de 0 dB), `vibration`, `test-rumble`,
   `led` e `test-tone`, com mensagens em português e código de saída 3 quando o daemon não roda.

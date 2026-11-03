@@ -449,3 +449,18 @@ def test_invalid_config_is_logged(tmp_path: Path, caplog: pytest.LogCaptureFixtu
     env.config_path.write_text("[audio]\nvolume_db = 'alto'\n")
     service.Daemon(env.audio, env.devices, env.config_path)
     assert "volume_db" in caplog.text
+
+
+def test_only_one_backup_per_daemon_run(env: Env, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Regressão: cada ajuste (ex.: arrastar o slider) criava um Default.yml.bak-* novo.
+    from ds4_companion.daemon.rpcs3 import input_config
+
+    ticks = iter(range(100))
+    monkeypatch.setattr(input_config.time, "strftime", lambda fmt: f"20261102-2200{next(ticks):02d}")
+    run(env.daemon.refresh())
+    run(env.daemon.set_vibration(110, 100, False))
+    env.daemon._rpcs3_pending = True
+    run(env.daemon.set_vibration(120, 100, False))
+    run(env.daemon.set_led("green"))
+    assert len(list(env.yml.parent.glob("Default.yml.bak-*"))) == 1
+    assert "Large Vibration Motor Multiplier: 120" in env.yml.read_text()

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://luizfelipe-pacifico.github.io/ds4-companion/sitemap.xml

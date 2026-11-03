@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <title>Som no controle precisa do cabo</title>
+  <circle cx="128" cy="128" r="112" fill="#111318"/>
+  <path d="M30 110a100 100 0 0 1 196 0" fill="none" stroke="#FFFFFF" stroke-opacity="0.06"/>
+  <path d="M68 196h120" stroke="#FFFFFF" stroke-opacity="0.08" stroke-linecap="round"/>
+  <g transform="translate(32 14) scale(1.5)">
+    <rect x="46" y="35" width="36" height="2" rx="1" fill="#2B6CF6"/>
+    <path fill="#1D2027" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="0.8" d="M40 46H88C100 46 106 52 109 62L114 86C116 98 106 106 97 99L88 93C86 91 84 90 81 90H47C44 90 42 91 40 93L31 99C22 106 12 98 14 86L19 62C22 52 28 46 40 46Z"/>
+    <path d="M40 46.6H88" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="0.8"/>
+    <rect x="50" y="51" width="28" height="16" rx="3" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="0.8"/>
+    <g fill="none" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M33 59h6v4.5h4.5v5H39V73h-6v-4.5h-4.5v-5H33z"/>
+      <circle cx="92" cy="58.5" r="2.8"/><circle cx="92" cy="73.5" r="2.8"/>
+      <circle cx="84.5" cy="66" r="2.8"/><circle cx="99.5" cy="66" r="2.8"/>
+      <circle cx="50" cy="80" r="5.5"/><circle cx="78" cy="80" r="5.5"/>
+    </g>
+  </g>
+  <g transform="translate(190 80)">
+    <circle r="29" fill="#111318"/>
+    <circle r="24" fill="#1D2027"/>
+    <circle r="23.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.08"/>
+    <path d="M-12 -5h5l7 -7v24l-7 -7h-5z" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M6 -5l9 10M15 -5l-9 10" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(64 72)">
+    <circle r="23" fill="#111318"/>
+    <circle r="18" fill="#2B6CF6"/>
+    <path d="M-6 -7l12 12l-6 6v-24l6 6l-12 12" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

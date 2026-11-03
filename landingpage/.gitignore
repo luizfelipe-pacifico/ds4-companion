@@ -1,0 +1,3 @@
+# Estado local do impeccable: só o brief da superfície vai para o Git
+.impeccable/*
+!.impeccable/surfaces/

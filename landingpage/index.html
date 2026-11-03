@@ -1,0 +1,476 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion -->
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DS4 Companion — o som do jogo também no controle</title>
+    <meta name="description" content="App nativo para Arch Linux que manda o som do RPCS3 em paralelo para o DualShock 4, com volume em dB, teto de segurança e força da vibração.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://luizfelipe-pacifico.github.io/ds4-companion/">
+    <link rel="sitemap" type="application/xml" href="sitemap.xml">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#060709">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:url" content="https://luizfelipe-pacifico.github.io/ds4-companion/">
+    <meta property="og:site_name" content="DS4 Companion">
+    <meta property="og:title" content="DS4 Companion">
+    <meta property="og:description" content="O som do jogo na TV e no controle ao mesmo tempo. App nativo para Arch Linux, em GTK4 + libadwaita.">
+    <meta property="og:image" content="https://luizfelipe-pacifico.github.io/ds4-companion/assets/img/controle-luz.jpg">
+    <meta property="og:image:alt" content="DualShock 4 no escuro com a barra de luz azul acesa">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="assets/ds4-companion.svg" type="image/svg+xml">
+    <link rel="preload" href="assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "DS4 Companion",
+        "description": "App nativo para Arch Linux que manda o som do RPCS3 em paralelo para o DualShock 4, com volume em dB, teto de segurança e força da vibração.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Arch Linux",
+        "inLanguage": "pt-BR",
+        "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+        "url": "https://luizfelipe-pacifico.github.io/ds4-companion/",
+        "codeRepository": "https://github.com/luizfelipe-pacifico/ds4-companion",
+        "image": "https://luizfelipe-pacifico.github.io/ds4-companion/assets/img/controle-luz.jpg",
+        "isAccessibleForFree": true
+    }
+    </script>
+</head>
+<body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="topbar">
+        <a class="brand" href="#topo" aria-label="DS4 Companion, início">
+            <img src="assets/ds4-companion.svg" width="28" height="28" alt="">
+            <span>DS4 Companion</span>
+        </a>
+        <nav class="topnav" aria-label="Seções">
+            <a href="#paralelo">Como funciona</a>
+            <a href="#volume">Volume</a>
+            <a href="#conexao">Cabo e Bluetooth</a>
+            <a href="#instalar">Instalar</a>
+        </nav>
+        <a class="topbar-repo" href="https://github.com/luizfelipe-pacifico/ds4-companion">
+            <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5.5 2.5 10 7 14.5M13 5.5l4.5 4.5-4.5 4.5"/></svg>
+            <span>Código</span>
+        </a>
+    </header>
+
+    <main id="conteudo">
+        <!-- Abertura: a foto no escuro e a janela do app logo abaixo da luz -->
+        <section class="hero" id="topo" aria-labelledby="hero-titulo">
+            <div class="hero-copy">
+                <h1 id="hero-titulo">O som do jogo na TV.<br>E no controle.</h1>
+                <p class="lead">
+                    O DS4 Companion manda o áudio do RPCS3 <strong>em paralelo</strong> para o alto-falante do
+                    DualShock&nbsp;4, sem trocar a saída que você usa. Volume em dB com teto de segurança, força
+                    da vibração e cor da luz, num app nativo para Arch Linux.
+                </p>
+                <div class="hero-actions">
+                    <a class="button primary" href="https://github.com/luizfelipe-pacifico/ds4-companion">
+                        Acompanhar no GitHub
+                    </a>
+                    <a class="button flat" href="#instalar">Como instalar</a>
+                </div>
+                <p class="status-note">
+                    <span class="dot" aria-hidden="true"></span>
+                    Em desenvolvimento. Hoje funciona como script; o app chega na v0.2.
+                </p>
+            </div>
+
+            <div class="hero-photo" aria-hidden="true">
+                <picture>
+                    <source type="image/webp" srcset="assets/img/controle-luz-960.webp 960w, assets/img/controle-luz-1600.webp 1600w, assets/img/controle-luz-2400.webp 2400w" sizes="100vw">
+                    <img src="assets/img/controle-luz.jpg" alt="" width="2400" height="1653" fetchpriority="high">
+                </picture>
+            </div>
+
+            <!-- Prévia interativa da janela -->
+            <figure class="window-wrap">
+                <div class="window" id="janela" data-conn="usb" data-page="status">
+                    <div class="win-header">
+                        <span class="win-title">DS4 Companion</span>
+                        <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </div>
+                    <div class="win-body">
+                        <nav class="win-sidebar" aria-label="Páginas da prévia" role="tablist">
+                            <button role="tab" id="tab-status" aria-controls="pg-status" aria-selected="true" data-page="status">
+                                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 6.5h7a4 4 0 0 1 4 4v1.2a2.3 2.3 0 0 1-4.1 1.4l-.9-1.1h-5l-.9 1.1a2.3 2.3 0 0 1-4.1-1.4v-1.2a4 4 0 0 1 4-4ZM6.5 9v2.5M5.25 10.25h2.5"/><circle cx="13.5" cy="10.25" r=".6"/></svg>
+                                Status
+                            </button>
+                            <button role="tab" id="tab-audio" aria-controls="pg-audio" aria-selected="false" data-page="audio" tabindex="-1">
+                                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 8v4h3l4 3.5v-11l-4 3.5h-3ZM13.5 7.5a3.5 3.5 0 0 1 0 5M15.5 5.5a6.4 6.4 0 0 1 0 9"/></svg>
+                                Áudio
+                            </button>
+                            <button role="tab" id="tab-vibracao" aria-controls="pg-vibracao" aria-selected="false" data-page="vibracao" tabindex="-1">
+                                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="4" width="6" height="12" rx="1.5"/><path d="M4.5 7v6M2.5 8.5v3M15.5 7v6M17.5 8.5v3"/></svg>
+                                Vibração
+                            </button>
+                            <button role="tab" id="tab-luz" aria-controls="pg-luz" aria-selected="false" data-page="luz" tabindex="-1">
+                                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5h12M6 13.5l-1.5 2M14 13.5l1.5 2M10 13.5V16"/><rect x="4" y="8.5" width="12" height="4" rx="2"/></svg>
+                                Luz
+                            </button>
+                        </nav>
+
+                        <div class="win-content">
+                            <!-- Status -->
+                            <section class="win-page" id="pg-status" role="tabpanel" aria-labelledby="tab-status">
+                                <h2 class="page-title">Status</h2>
+                                <div class="card device-card">
+                                    <span class="light-strip" aria-hidden="true"></span>
+                                    <div class="device-row">
+                                        <div>
+                                            <p class="device-name">DualShock 4</p>
+                                            <p class="caption" data-conn-text>Conectado por cabo USB</p>
+                                        </div>
+                                        <p class="numeric battery" aria-label="Bateria carregando, 80 por cento">80%</p>
+                                    </div>
+                                </div>
+                                <div class="card rows">
+                                    <div class="row">
+                                        <span>Conexão</span>
+                                        <div class="segmented" role="radiogroup" aria-label="Conexão do controle">
+                                            <button role="radio" aria-checked="true" data-set-conn="usb">Cabo</button>
+                                            <button role="radio" aria-checked="false" data-set-conn="bt" tabindex="-1">Bluetooth</button>
+                                        </div>
+                                    </div>
+                                    <div class="row"><span>RPCS3</span><span class="value">aberto</span></div>
+                                    <div class="row"><span>Áudio no controle</span><span class="value" data-mirror-text>ativo</span></div>
+                                    <div class="row"><span>Saída principal</span><span class="value">TV (HDMI)</span></div>
+                                </div>
+                            </section>
+
+                            <!-- Áudio -->
+                            <section class="win-page" id="pg-audio" role="tabpanel" aria-labelledby="tab-audio" hidden>
+                                <h2 class="page-title">Áudio</h2>
+                                <div class="audio-usb">
+                                    <div class="card rows">
+                                        <div class="row">
+                                            <label for="mirror-switch">Som do jogo no controle</label>
+                                            <button class="switch" id="mirror-switch" role="switch" aria-checked="true"><span></span></button>
+                                        </div>
+                                        <div class="row row-tall">
+                                            <div class="fader-head">
+                                                <span id="mini-fader-label">Volume do controle</span>
+                                                <output class="numeric db-readout" data-db-out for="mini-fader">−9 dB</output>
+                                            </div>
+                                            <div class="fader mini" data-fader id="mini-fader" role="slider" tabindex="0"
+                                                aria-labelledby="mini-fader-label" aria-valuemin="-30" aria-valuemax="6" aria-valuenow="-9" aria-valuetext="−9 dB, livre">
+                                                <span class="fader-track"><span class="fader-fill"></span></span>
+                                                <span class="fader-mark m6" aria-hidden="true"></span>
+                                                <span class="fader-mark m0" aria-hidden="true"></span>
+                                                <span class="fader-thumb" aria-hidden="true"></span>
+                                            </div>
+                                            <p class="band-text caption" data-band-text>Livre</p>
+                                        </div>
+                                    </div>
+                                    <button class="button secondary small" data-beep>
+                                        <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 5.5v9l8-4.5-8-4.5Z"/></svg>
+                                        Tocar apito de teste
+                                    </button>
+                                    <p class="caption fine">Na prévia o apito toca no seu computador, no volume escolhido.</p>
+                                </div>
+                                <div class="audio-bt">
+                                    <img src="assets/bluetooth-no-audio.svg" width="128" height="128" alt="Bluetooth sem áudio no controle">
+                                    <p class="state-title">Som no controle precisa do cabo</p>
+                                    <p class="caption">Por Bluetooth o Linux ainda não envia áudio para o DualShock 4. Vibração, luz e bateria continuam funcionando.</p>
+                                </div>
+                            </section>
+
+                            <!-- Vibração -->
+                            <section class="win-page" id="pg-vibracao" role="tabpanel" aria-labelledby="tab-vibracao" hidden>
+                                <h2 class="page-title">Vibração</h2>
+                                <div class="card rows">
+                                    <div class="row row-range">
+                                        <label for="motor-forte">Motor forte</label>
+                                        <input type="range" id="motor-forte" min="0" max="100" step="5" value="100" data-motor="strong">
+                                        <output class="numeric" for="motor-forte">100%</output>
+                                    </div>
+                                    <div class="row row-range">
+                                        <label for="motor-fraco">Motor fraco</label>
+                                        <input type="range" id="motor-fraco" min="0" max="100" step="5" value="60" data-motor="weak">
+                                        <output class="numeric" for="motor-fraco">60%</output>
+                                    </div>
+                                </div>
+                                <button class="button secondary small" data-rumble>
+                                    <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="4" width="6" height="12" rx="1.5"/><path d="M4.5 7v6M15.5 7v6"/></svg>
+                                    Testar os motores
+                                </button>
+                                <p class="caption fine" data-rumble-note>Teste de no máximo 2 s. Com um controle ligado ao navegador, ele vibra de verdade.</p>
+                            </section>
+
+                            <!-- Luz -->
+                            <section class="win-page" id="pg-luz" role="tabpanel" aria-labelledby="tab-luz" hidden>
+                                <h2 class="page-title">Luz <span class="tag">planejado</span></h2>
+                                <p class="caption">Cor da barra de luz. A faixa do cartão e a foto acima mostram a cor do LED.</p>
+                                <div class="swatches" role="radiogroup" aria-label="Cor da barra de luz">
+                                    <button role="radio" aria-checked="true" data-led="#0000FF" data-hue="0" style="--c:#0000FF">Azul</button>
+                                    <button role="radio" aria-checked="false" data-led="#FF0000" data-hue="135" style="--c:#FF0000" tabindex="-1">Vermelho</button>
+                                    <button role="radio" aria-checked="false" data-led="#00FF00" data-hue="-110" style="--c:#00FF00" tabindex="-1">Verde</button>
+                                    <button role="radio" aria-checked="false" data-led="#FF1493" data-hue="95" style="--c:#FF1493" tabindex="-1">Rosa</button>
+                                    <button role="radio" aria-checked="false" data-led="#8000FF" data-hue="35" style="--c:#8000FF" tabindex="-1">Roxo</button>
+                                    <button role="radio" aria-checked="false" data-led="#00FFFF" data-hue="-50" style="--c:#00FFFF" tabindex="-1">Ciano</button>
+                                    <button role="radio" aria-checked="false" data-led="#FF8000" data-hue="170" style="--c:#FF8000" tabindex="-1">Laranja</button>
+                                    <button role="radio" aria-checked="false" data-led="#FFFFFF" data-hue="white" style="--c:#FFFFFF" tabindex="-1">Branco</button>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                <figcaption class="caption">Prévia interativa da interface planejada. Os valores são de demonstração.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Em paralelo -->
+        <section class="section parallel" id="paralelo" aria-labelledby="paralelo-titulo">
+            <div class="parallel-photo">
+                <picture>
+                    <source type="image/webp" srcset="assets/img/sala-tv-640.webp 640w, assets/img/sala-tv-1200.webp 1200w" sizes="(min-width: 960px) 40vw, 100vw">
+                    <img src="assets/img/sala-tv.jpg" alt="Pessoa sentada no chão de uma sala escura, jogando diante da TV" width="1200" height="1800" loading="lazy">
+                </picture>
+            </div>
+            <div class="parallel-body">
+                <h2 id="paralelo-titulo">Em paralelo,<br>nunca no lugar.</h2>
+                <p>
+                    O juiz apita no jogo e apita na TV <em>e</em> no controle. O app não cria saída virtual e não
+                    mexe na saída padrão: ele liga as portas do RPCS3 também ao DualShock 4 no PipeWire. A
+                    latência é praticamente zero.
+                </p>
+
+                <div class="graph" id="grafo" data-out="hdmi">
+                    <svg viewBox="0 0 560 300" role="img" aria-labelledby="grafo-desc">
+                        <desc id="grafo-desc">O RPCS3 envia o som para a saída padrão e, por um link extra, para o DualShock 4.</desc>
+                        <path class="link main" d="M150 150 C 260 150, 280 70, 390 70"/>
+                        <path class="link extra" d="M150 150 C 260 150, 280 230, 390 230"/>
+                        <g class="node">
+                            <rect x="20" y="122" width="130" height="56" rx="10"/>
+                            <text x="85" y="147" text-anchor="middle" class="n-title">RPCS3</text>
+                            <text x="85" y="166" text-anchor="middle" class="n-sub">som do jogo</text>
+                        </g>
+                        <g class="node out">
+                            <rect x="390" y="42" width="150" height="56" rx="10"/>
+                            <text x="465" y="67" text-anchor="middle" class="n-title" data-out-name>TV (HDMI)</text>
+                            <text x="465" y="86" text-anchor="middle" class="n-sub">saída padrão</text>
+                        </g>
+                        <g class="node ds4">
+                            <rect x="390" y="202" width="150" height="56" rx="10"/>
+                            <rect x="440" y="202" width="50" height="2" rx="1" class="n-strip"/>
+                            <text x="465" y="227" text-anchor="middle" class="n-title">DualShock 4</text>
+                            <text x="465" y="246" text-anchor="middle" class="n-sub" data-ds4-sub>alto-falante</text>
+                        </g>
+                        <text x="270" y="282" text-anchor="middle" class="n-label">link extra do ds4-companiond</text>
+                    </svg>
+                </div>
+                <div class="graph-controls">
+                    <span class="caption" id="saida-label">Trocar a saída no GNOME:</span>
+                    <div class="segmented" role="radiogroup" aria-labelledby="saida-label">
+                        <button role="radio" aria-checked="true" data-out="hdmi">TV</button>
+                        <button role="radio" aria-checked="false" data-out="fone" tabindex="-1">Fone</button>
+                        <button role="radio" aria-checked="false" data-out="notebook" tabindex="-1">Notebook</button>
+                    </div>
+                </div>
+                <p class="caption" aria-live="polite" data-graph-note>O WirePlumber move o som principal. O link do controle fica intacto.</p>
+            </div>
+        </section>
+
+        <!-- Volume -->
+        <section class="section volume" id="volume" aria-labelledby="volume-titulo">
+            <div class="volume-head">
+                <h2 id="volume-titulo">O volume tem teto.</h2>
+                <p>
+                    O alto-falante do controle tem cerca de 0,5&nbsp;W. Acima de 0&nbsp;dB, o volume nativo do
+                    hardware, o som passa a clipar e pode danificar a peça. Por isso o volume é em dB, e o app não
+                    passa do teto sem você confirmar.
+                </p>
+            </div>
+
+            <div class="big-fader-wrap">
+                <div class="big-readout" aria-hidden="true">
+                    <span class="numeric" data-db-big>−9</span><span class="unit">dB</span>
+                </div>
+                <div class="fader big" data-fader id="big-fader" role="slider" tabindex="0"
+                    aria-label="Volume do controle" aria-valuemin="-30" aria-valuemax="6" aria-valuenow="-9" aria-valuetext="−9 dB, livre">
+                    <span class="fader-track"><span class="fader-fill"></span></span>
+                    <span class="fader-mark m6" aria-hidden="true"></span>
+                    <span class="fader-mark m0" aria-hidden="true"></span>
+                    <span class="fader-thumb" aria-hidden="true"></span>
+                </div>
+                <ol class="bands" aria-label="Faixas de volume">
+                    <li class="band-free">
+                        <span class="band-name">Livre</span>
+                        <span class="caption">até −6 dB</span>
+                    </li>
+                    <li class="band-high">
+                        <span class="band-name">
+                            <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3.5 17.5 16h-15L10 3.5ZM10 8.5v3.5M10 14v.01"/></svg>
+                            Alto
+                        </span>
+                        <span class="caption">−6 a 0 dB, com aviso</span>
+                    </li>
+                    <li class="band-over">
+                        <span class="band-name">
+                            <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3.5 17.5 16h-15L10 3.5ZM10 8.5v3.5M10 14v.01"/></svg>
+                            Acima do limite
+                        </span>
+                        <span class="caption">só com confirmação</span>
+                    </li>
+                </ol>
+                <div class="limit-confirm" data-limit-confirm hidden>
+                    <p>
+                        <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3.5 17.5 16h-15L10 3.5ZM10 8.5v3.5M10 14v.01"/></svg>
+                        Acima de 0 dB o som distorce e pode danificar o alto-falante.
+                    </p>
+                    <div class="confirm-actions">
+                        <button class="button flat small" data-limit-keep>Manter em 0 dB</button>
+                        <button class="button secondary small" data-limit-pass>Passar do limite</button>
+                    </div>
+                </div>
+            </div>
+            <p class="caption volume-foot">
+                Arraste ou use as setas do teclado. O preenchimento fica branco acima do limite: o estado não
+                depende de cor, vem com texto e ícone.
+            </p>
+        </section>
+
+        <!-- Cabo e Bluetooth -->
+        <section class="section conn" id="conexao" aria-labelledby="conexao-titulo">
+            <div class="conn-photo">
+                <picture>
+                    <source type="image/webp" srcset="assets/img/mao-luz-960.webp 960w, assets/img/mao-luz-1600.webp 1600w" sizes="(min-width: 960px) 55vw, 100vw">
+                    <img src="assets/img/mao-luz.jpg" alt="Mão segurando um DualShock 4 com a barra de luz azul acesa" width="1600" height="1066" loading="lazy">
+                </picture>
+            </div>
+            <div class="conn-body">
+                <h2 id="conexao-titulo">Cabo ou Bluetooth, sem surpresa.</h2>
+                <p>
+                    O app percebe a troca sozinho e mostra o que funciona em cada caso. Por Bluetooth o DualShock 4
+                    não usa o perfil de áudio comum, e nem o kernel nem o PipeWire implementam o formato dele.
+                    A gente diz isso na tela, em vez de esconder.
+                </p>
+                <table class="compat">
+                    <caption class="visually-hidden">Recursos por tipo de conexão</caption>
+                    <thead>
+                        <tr><th scope="col">Recurso</th><th scope="col">Cabo USB</th><th scope="col">Bluetooth</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><th scope="row">Som do jogo no controle</th><td>sim</td><td class="no">não <span class="caption">pelo Linux, hoje</span></td></tr>
+                        <tr><th scope="row">Volume em dB com teto</th><td>sim</td><td class="no">—</td></tr>
+                        <tr><th scope="row">Força da vibração</th><td>sim</td><td>sim</td></tr>
+                        <tr><th scope="row">Cor da barra de luz <span class="tag">planejado</span></th><td>sim</td><td>sim</td></tr>
+                        <tr><th scope="row">Bateria</th><td>sim</td><td>sim</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Nativo -->
+        <section class="section native" aria-labelledby="nativo-titulo">
+            <h2 id="nativo-titulo">Feito para o Arch, do jeito do Arch.</h2>
+            <dl class="facts">
+                <div>
+                    <dt>Nativo</dt>
+                    <dd>Python, GTK4 e libadwaita. Só pacotes do repositório <code>extra</code>. Sem Flatpak, sem Electron.</dd>
+                </div>
+                <div>
+                    <dt>Sem root</dt>
+                    <dd>Interface, serviço e CLI rodam como seu usuário. Root só na instalação, para a regra udev.</dd>
+                </div>
+                <div>
+                    <dt>Nada sai da máquina</dt>
+                    <dd>Sem telemetria e sem rede. O serviço fala com a interface por D-Bus de sessão.</dd>
+                </div>
+                <div>
+                    <dt>Também no terminal</dt>
+                    <dd><code>ds4ctl volume -6</code>, <code>ds4ctl test-rumble</code>: a mesma API da interface, para scripts.</dd>
+                </div>
+            </dl>
+        </section>
+
+        <!-- Roadmap -->
+        <section class="section roadmap" aria-labelledby="roadmap-titulo">
+            <h2 id="roadmap-titulo">Onde o projeto está.</h2>
+            <ol class="phases">
+                <li class="done">
+                    <span class="phase-id">Fase 0</span>
+                    <span class="phase-name">Scripts: vibração no RPCS3 e áudio em paralelo por cabo</span>
+                    <span class="phase-state">feito</span>
+                </li>
+                <li class="now">
+                    <span class="phase-id">v0.1</span>
+                    <span class="phase-name">Serviço <code>ds4-companiond</code> e CLI <code>ds4ctl</code></span>
+                    <span class="phase-state">em andamento</span>
+                </li>
+                <li>
+                    <span class="phase-id">v0.2</span>
+                    <span class="phase-name">Interface gráfica, cor da luz e telas de estado</span>
+                    <span class="phase-state">próximo</span>
+                </li>
+                <li>
+                    <span class="phase-id">v0.3</span>
+                    <span class="phase-name">Pacote, AUR e instalação por um comando</span>
+                    <span class="phase-state">próximo</span>
+                </li>
+                <li>
+                    <span class="phase-id">v0.4+</span>
+                    <span class="phase-name">Limitador, perfis por jogo, DualSense</span>
+                    <span class="phase-state">depois</span>
+                </li>
+            </ol>
+            <a class="text-link" href="https://github.com/luizfelipe-pacifico/ds4-companion/blob/main/docs/desenvolvimento/ROADMAP.md">Roadmap completo</a>
+        </section>
+
+        <!-- Instalar -->
+        <section class="section install" id="instalar" aria-labelledby="instalar-titulo">
+            <div class="install-photo" aria-hidden="true">
+                <picture>
+                    <source type="image/webp" srcset="assets/img/mao-escuro-640.webp 640w, assets/img/mao-escuro-1000.webp 1000w" sizes="(min-width: 960px) 30vw, 60vw">
+                    <img src="assets/img/mao-escuro.jpg" alt="" width="1000" height="1334" loading="lazy">
+                </picture>
+            </div>
+            <div class="install-body">
+                <h2 id="instalar-titulo">Um comando, quando sair.</h2>
+                <p>
+                    O pacote chega na v0.3. Vai ser assim: um comando do <code>pacman</code>, e depois desconectar e
+                    reconectar o controle para a regra udev valer.
+                </p>
+                <div class="command">
+                    <code id="cmd-pacman">sudo pacman -U https://github.com/luizfelipe-pacifico/ds4-companion/releases/latest/download/ds4-companion.pkg.tar.zst</code>
+                    <button class="copy" data-copy="cmd-pacman" aria-label="Copiar o comando">
+                        <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="1.5"/><path d="M13 4.5H5.5A1.5 1.5 0 0 0 4 6v7.5"/></svg>
+                        <span>Copiar</span>
+                    </button>
+                </div>
+                <p class="caption">Também pelo AUR (<code>yay -S ds4-companion</code>), pelo <code>install.sh</code> das releases ou com <code>makepkg -si</code>. Requer Arch Linux com GNOME, PipeWire e o RPCS3.</p>
+                <div class="hero-actions">
+                    <a class="button primary" href="https://github.com/luizfelipe-pacifico/ds4-companion">Acompanhar no GitHub</a>
+                    <a class="button flat" href="https://github.com/luizfelipe-pacifico/ds4-companion/blob/main/CONTRIBUTING.md">Como contribuir</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-brand">
+            <img src="assets/ds4-companion.svg" width="24" height="24" alt="">
+            <span>DS4 Companion · <a href="https://github.com/luizfelipe-pacifico/ds4-companion/blob/main/LICENSE">GPL-3.0-or-later</a></span>
+        </div>
+        <p class="caption">
+            PlayStation, DualShock e PS4 são marcas da Sony Interactive Entertainment. Este projeto não é afiliado,
+            patrocinado nem endossado pela Sony.
+        </p>
+        <p class="caption">
+            Fotos do Unsplash:
+            <a href="https://unsplash.com/photos/LfVBFnrM-bM">Radek Skrzypczak</a>,
+            <a href="https://unsplash.com/photos/qgInQSplXBU">Erik Mclean</a>,
+            <a href="https://unsplash.com/photos/jk4EUmHtU8M">Mateusz Strzeszewski</a> e
+            <a href="https://unsplash.com/photos/7Q2RYMQTpJg">Javid Naderi</a>.
+        </p>
+    </footer>
+</body>
+</html>

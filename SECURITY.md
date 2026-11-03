@@ -4,7 +4,10 @@
 
 1. **Sem root em tempo de execução.** GUI, daemon e CLI rodam como usuário.
 2. **Root só na instalação**, via `pacman`, para colocar a regra udev em `/usr/lib/udev/rules.d/`.
-3. **Nada sai da máquina.** Sem telemetria, sem rede.
+   O botão **Atualizar agora** roda só o `pacman -U` como root, pelo `pkexec`, depois do clique e da senha.
+3. **Nada sai da máquina.** Sem telemetria. A única conexão é a consulta de versão nova que a
+   interface faz ao abrir (uma requisição HTTPS ao GitHub, sem dados do usuário), desligável com
+   `[updates] check_on_start = false` ([ADR 0009](docs/arquitetura/adr/0009-aviso-de-atualizacao.md)).
 4. **Proteção do hardware em primeiro lugar.** Volume e vibração têm limites que a interface não deixa passar sem confirmação.
 
 ## Permissões

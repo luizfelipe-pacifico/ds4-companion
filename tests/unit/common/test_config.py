@@ -17,6 +17,7 @@ def test_defaults_match_configuration_doc() -> None:
     assert c.audio.headphone_max_db == -6.0
     assert c.vibration.players == [1, 2]
     assert c.led.color == "blue"
+    assert c.updates.check_on_start
     assert c.rpcs3.input_file.parts[-3:] == ("input_configs", "global", "Default.yml")
 
 
@@ -108,3 +109,9 @@ def test_default_path_respects_xdg(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
 def test_toml_value_rejects_unknown_type() -> None:
     with pytest.raises(TypeError):
         cfg._toml_value(object())
+
+
+def test_update_check_can_be_turned_off() -> None:
+    c, warnings = cfg.from_dict({"updates": {"check_on_start": False}})
+    assert warnings == []
+    assert not c.updates.check_on_start

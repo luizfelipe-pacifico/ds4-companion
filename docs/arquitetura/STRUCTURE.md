@@ -101,6 +101,7 @@ src/ds4_companion/
     ├── config.py           # config.toml: leitura, validação, padrões
     ├── db.py               # conversão dB ↔ volume do PipeWire (escala cúbica)
     ├── models.py           # tipos compartilhados (estado, cores da luz)
+    ├── updates.py          # consulta de versão nova no GitHub Releases (ADR 0009)
     └── names.py            # app ID e nomes do D-Bus (ADR 0008)
 ```
 

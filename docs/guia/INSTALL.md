@@ -52,9 +52,24 @@ O pacote instala:
 
 Depois de instalar, **desconecte e reconecte o controle** (ou rode `sudo udevadm trigger`) para a regra udev valer.
 
+## Atualização
+
+Ao abrir, o app confere se há versão nova no GitHub Releases. Se houver, aparece o aviso
+**Nova versão disponível** com duas opções:
+
+- **Atualizar agora**: o sistema pede sua senha e o app instala a versão nova sozinho. Depois, reabra o app.
+- **Copiar comando**: copia o comando abaixo (com a versão certa) para colar no terminal:
+
+  ```bash
+  sudo pacman -U https://github.com/luizfelipe-pacifico/ds4-companion/releases/latest/download/ds4-companion.pkg.tar.zst
+  ```
+
+Para não consultar, use `check_on_start = false` em `[updates]` ([configuração](CONFIGURATION.md)).
+Detalhes em [ADR 0009](../arquitetura/adr/0009-aviso-de-atualizacao.md).
+
 ## Dependências
 
-`python`, `python-gobject`, `gtk4`, `libadwaita`, `python-pyudev`, `python-dbus-next`, `inter-font`, `pipewire`, `wireplumber`.
+`python`, `python-gobject`, `gtk4`, `libadwaita`, `python-pyudev`, `python-dbus-next`, `polkit`, `inter-font`, `pipewire`, `wireplumber`.
 Opcional: `rpcs3-bin` (ou AppImage), `gamemode`, `bluez`.
 
 ## Migração dos scripts atuais (Fase 0)

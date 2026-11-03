@@ -14,6 +14,7 @@ antiga como *Substituída por NNNN*.
 | [0006](0006-organizacao-dos-arquivos.md) | Organização dos arquivos do repositório | Aceita |
 | [0007](0007-ci-e-verificacoes-de-seguranca.md) | CI e verificações de segurança em todo commit | Aceita |
 | [0008](0008-app-id-e-api-dbus.md) | App ID `io.github.luizfelipe_pacifico.DS4Companion` e API D-Bus do daemon | Aceita |
+| [0009](0009-aviso-de-atualizacao.md) | Aviso de atualização ao abrir o app, com botão e comando para o terminal | Aceita |
 
 ## Modelo
 

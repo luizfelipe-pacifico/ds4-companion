@@ -74,12 +74,18 @@ class UiConfig:
 
 
 @dataclass
+class UpdatesConfig:
+    check_on_start: bool = True
+
+
+@dataclass
 class Config:
     audio: AudioConfig = field(default_factory=AudioConfig)
     vibration: VibrationConfig = field(default_factory=VibrationConfig)
     led: LedConfig = field(default_factory=LedConfig)
     rpcs3: Rpcs3Config = field(default_factory=Rpcs3Config)
     ui: UiConfig = field(default_factory=UiConfig)
+    updates: UpdatesConfig = field(default_factory=UpdatesConfig)
 
 
 class ConfigError(ValueError):
@@ -168,6 +174,7 @@ SCHEMA: dict[str, dict[str, Validator]] = {
     "led": {"color": _led},
     "rpcs3": {"config_dir": _path, "backup_before_edit": _bool},
     "ui": {"start_minimized": _bool, "tray_icon": _bool},
+    "updates": {"check_on_start": _bool},
 }
 
 

@@ -27,6 +27,9 @@ backup_before_edit = true
 [ui]
 start_minimized = false
 tray_icon = true
+
+[updates]
+check_on_start = true          # procurar versão nova ao abrir a interface
 ```
 
 ## Validação
@@ -41,6 +44,7 @@ e aparece um aviso no journal (`journalctl --user -u ds4-companion`).
 | `large_percent`, `small_percent` | inteiro de 0 a 200 |
 | `players` | jogadores de 1 a 7 |
 | `color` | uma das cores da lista acima |
+| `check_on_start` | `true` ou `false` |
 
 Se o arquivo estiver com erro de sintaxe, o daemon guarda uma cópia (`config.toml.bak-AAAAMMDD-HHMMSS`)
 e começa com os padrões.

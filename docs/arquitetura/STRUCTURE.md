@@ -93,7 +93,7 @@ src/ds4_companion/
 │   ├── audio/              # links do PipeWire, volume em dB, teto, limitador
 │   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32) e acesso ao hidraw
 │   ├── rpcs3/              # leitura/edição do Default.yml com backup
-│   ├── device.py           # detecção cabo ↔ Bluetooth via udev
+│   ├── device.py           # detecção cabo ↔ Bluetooth e bateria via udev
 │   └── dbus.py             # serviço D-Bus exposto para GUI e CLI
 ├── cli/                    # ds4ctl
 │   └── __main__.py

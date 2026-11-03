@@ -12,7 +12,7 @@ App nativo para Arch Linux, em GTK4 + libadwaita.
 <img src="https://img.shields.io/badge/Arch_Linux-nativo-0070D1?style=flat-square&logo=archlinux&logoColor=white" alt="Arch Linux">
 <img src="https://img.shields.io/badge/GTK4-libadwaita-003791?style=flat-square&logo=gnome&logoColor=white" alt="GTK4 + libadwaita">
 <img src="https://img.shields.io/badge/Python-3-0070D1?style=flat-square&logo=python&logoColor=white" alt="Python 3">
-<img src="https://img.shields.io/badge/status-planejamento-F5A623?style=flat-square" alt="Status: planejamento">
+<img src="https://img.shields.io/badge/status-v0.1_em_teste-0070D1?style=flat-square" alt="Status: v0.1 em teste">
 
 [Recursos](#-recursos) · [Como funciona](#-como-funciona) · [Instalação](#-instalação) · [Documentação](#-documentação) · [Roadmap](docs/desenvolvimento/ROADMAP.md) · [Contribuir](CONTRIBUTING.md)
 
@@ -21,9 +21,9 @@ App nativo para Arch Linux, em GTK4 + libadwaita.
 ---
 
 > [!NOTE]
-> **Status: documentação e planejamento.** Hoje o recurso funciona via scripts
-> (`~/.local/bin/ds4-audio-mirror` + serviço systemd de usuário). Este projeto transforma isso em um app
-> com interface gráfica, sem precisar do terminal.
+> **Status: v0.1 em teste.** Daemon, CLI `ds4ctl`, interface gráfica, `PKGBUILD` e `install.sh` estão
+> prontos e testados; falta publicar a primeira release (pacote assinado + `SHA256SUMS`). Até lá,
+> instale do código-fonte com `makepkg -si` (ver [instalação](docs/guia/INSTALL.md)).
 
 ## ✨ Recursos
 
@@ -32,7 +32,7 @@ App nativo para Arch Linux, em GTK4 + libadwaita.
 | 🔊 | Som do jogo **em paralelo** no alto-falante/fone do controle | ✅ | ⚠️ [não suportado pelo Linux hoje](docs/guia/AUDIO.md#cabo-usb--bluetooth) |
 | 🎚️ | Volume em dB com faixas verde/amarelo/vermelho e teto de segurança | ✅ | — |
 | 📳 | Vibração: força dos motores forte e fraco, teste dos motores | ✅ | ✅ |
-| 💡 | Cor da barra de luz, com cores pré-definidas *(planejado)* | ✅ | ✅ |
+| 💡 | Cor da barra de luz, com nove cores pré-definidas | ✅ | ✅ |
 | 🔌 | Detecção automática cabo ↔ Bluetooth | ✅ | ✅ |
 | 🔋 | Indicador de bateria | ✅ | ✅ |
 
@@ -61,7 +61,8 @@ Detalhes em [arquitetura](docs/arquitetura/ARCHITECTURE.md).
 ## 📦 Instalação
 
 > [!IMPORTANT]
-> O pacote ainda não existe. Os comandos abaixo mostram como vai ser.
+> A primeira release ainda não foi publicada: o comando abaixo passa a funcionar quando ela sair.
+> Por enquanto, use `makepkg -si` em `packaging/`.
 
 ```bash
 sudo pacman -U https://github.com/luizfelipe-pacifico/ds4-companion/releases/latest/download/ds4-companion.pkg.tar.zst
@@ -115,9 +116,9 @@ Visual: preto + azul PlayStation, ícones só em SVG ([design](docs/design/DESIG
 | Fase | Entrega | Status |
 |---|---|:-:|
 | 0 | Scripts: vibração no RPCS3 e áudio em paralelo por cabo | ✅ |
-| 1 · v0.1 | Daemon + CLI `ds4ctl` | ⏳ |
-| 2 · v0.2 | Interface gráfica, cor da luz e logo | ⏳ |
-| 3 · v0.3 | PKGBUILD e AUR | ⏳ |
+| 1 · v0.1 | Daemon + CLI `ds4ctl` | ✅ |
+| 2 · v0.2 | Interface gráfica, cor da luz e logo | ✅ (falta o ícone na bandeja) |
+| 3 · v0.3 | PKGBUILD, `install.sh` e AUR | 🔧 pacote e instalador prontos; falta release e AUR |
 | 4 · v0.4+ | Limitador, perfis por jogo, DualSense | ⏳ |
 
 Lista completa em [ROADMAP](docs/desenvolvimento/ROADMAP.md).

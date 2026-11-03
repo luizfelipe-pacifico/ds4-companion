@@ -71,6 +71,20 @@ Ao abrir, a janela consulta o GitHub Releases em segundo plano. Com versão nova
   vira "Atualização cancelada.", falha oferece copiar o comando.
 - Sem rede ou sem versão nova, nada aparece.
 
+## Carregamento
+```
+                 [ícone do app]
+                      ◌
+            Conectando ao serviço…
+         ( Ver registros do serviço )    ← só depois de 10 s
+```
+- Aparece ao abrir, enquanto a janela espera o daemon: "Conectando ao serviço…", "Iniciando o
+  serviço…" (primeira abertura ou **Iniciar serviço**) e "Lendo o estado do controle…".
+- O ícone aparece na hora; spinner e texto só depois de 400 ms, com fade de 150 ms, para uma
+  resposta rápida não piscar nada. As páginas só entram com o primeiro estado do daemon, nunca vazias.
+- Depois de 10 s: "O serviço está demorando para responder." e o botão dos registros. O espaço do
+  botão é reservado desde o início, para o ícone não pular.
+
 ## Comportamento
 - Estados vazios, avisos e erros usam `AdwStatusPage` com as ilustrações de [ILLUSTRATIONS.md](ILLUSTRATIONS.md);
   dentro de uma página (Áudio aguardando o jogo) a ilustração aparece pequena, ao lado do texto.

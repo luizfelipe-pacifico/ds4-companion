@@ -68,6 +68,12 @@ def main(out: Path, width: int, height: int) -> None:
     def run(_app: Adw.Application) -> None:
         window = app.get_active_window()
         window.set_default_size(width, height)
+        window.loading._reveal()
+        iterate()
+        save(window, out / "carregando.png")
+        window.loading._slow()
+        iterate()
+        save(window, out / "carregando-demorado.png")
         client.set_available(False)
         window._autostart = False  # type: ignore[attr-defined]
         client.set_available(False)

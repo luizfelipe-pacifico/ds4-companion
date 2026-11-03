@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 from conftest import spin, spin_until
 from fake_client import FakeClient, sample
-from gi.repository import Adw, Gio
+from gi.repository import Adw, Gio, Gtk
 
 from ds4_companion.app import client as client_mod
 from ds4_companion.app.window import Window
@@ -131,6 +131,7 @@ def test_window_first_open_enables_service(window: tuple[Window, FakeClient, lis
     client.set_available(False)  # daemon não está rodando: ativa o serviço uma vez
     assert commands[-1] == ["systemctl", "--user", "enable", "--now", "ds4-companion.service"]
     client.set_available(True)
+    client.push(sample())
     assert win.root.get_visible_child_name() == "main"
 
 
@@ -198,3 +199,71 @@ def test_application_activate_with_fake_client(monkeypatch: pytest.MonkeyPatch, 
     app.lookup_action("about").activate(None)
     spin(0.1)
     window.destroy()
+
+
+def test_window_waits_for_first_status_before_showing_pages(
+    window: tuple[Window, FakeClient, list[list[str]]],
+) -> None:
+    # Regressão: com o daemon no ar mas sem o primeiro estado, as páginas apareciam vazias
+    # ("Nenhum controle conectado") por um instante.
+    win, client, _commands = window
+    client.set_available(True)
+    assert win.root.get_visible_child_name() == "loading"
+    assert win.loading.phase == "reading"
+    client.push(sample())
+    assert win.root.get_visible_child_name() == "main"
+    # Depois do primeiro estado, o daemon cair e voltar não passa de novo pelo carregamento.
+    win._started_once = True
+    client.set_available(False)
+    client.set_available(True)
+    assert win.root.get_visible_child_name() == "main"
+
+
+def test_window_loading_phases_and_slow_service(window: tuple[Window, FakeClient, list[list[str]]]) -> None:
+    win, client, commands = window
+    loading = win.loading
+    assert loading.phase == "connecting"
+    assert not loading.details.get_reveal_child()  # nada de spinner piscando numa resposta rápida
+    before = loading.get_child().get_content().measure(Gtk.Orientation.VERTICAL, -1)[1]
+    loading._reveal()
+    assert loading.details.get_reveal_child()
+    assert loading.get_child().get_content().measure(Gtk.Orientation.VERTICAL, -1)[1] == before
+    assert loading.status.get_label() == "Conectando ao serviço…"
+
+    win._result["code"] = 0  # type: ignore[attr-defined]
+    client.set_available(False)  # primeira abertura: o app inicia o serviço
+    assert loading.phase == "starting"
+    assert loading.status.get_label() == "Iniciando o serviço…"
+
+    assert not loading.logs.get_sensitive()
+    assert loading.logs.get_opacity() == 0
+    height = loading.get_child().get_content().measure(Gtk.Orientation.VERTICAL, -1)[1]
+    loading._slow()
+    assert loading.logs.get_sensitive()
+    # O aviso de demora não muda a altura da coluna: o ícone fica parado.
+    assert loading.get_child().get_content().measure(Gtk.Orientation.VERTICAL, -1)[1] == height
+    assert "demorando" in loading.status.get_label()
+    loading.logs.emit("clicked")
+    assert commands[-1][0] == "journalctl"
+
+
+def test_window_leaves_stopped_screen_when_daemon_appears(
+    window: tuple[Window, FakeClient, list[list[str]]],
+) -> None:
+    # O serviço iniciado por fora (terminal) com a tela "Serviço parado" aberta.
+    win, client, _commands = window
+    win._started_once = True
+    client.set_available(False)
+    assert win.root.get_visible_child_name() == "stopped"
+    client.set_available(True)
+    assert win.root.get_visible_child_name() == "loading"
+    client.push(sample())
+    assert win.root.get_visible_child_name() == "main"
+
+
+def test_app_icon_resolves_from_resources() -> None:
+    from gi.repository import Gdk, Gtk
+
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
+    theme.add_resource_path("/io/github/luizfelipe_pacifico/DS4Companion/icons")
+    assert theme.has_icon("io.github.luizfelipe_pacifico.DS4Companion")

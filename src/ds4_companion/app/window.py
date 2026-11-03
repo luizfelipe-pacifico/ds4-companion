@@ -19,6 +19,7 @@ from .pages.light import LightPage
 from .pages.status import StatusPage
 from .pages.vibration import VibrationPage
 from .states import status_page
+from .widgets.loading_page import LoadingPage
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class Window(Adw.ApplicationWindow):
         self.client = client
         self._autostart = autostart
         self._started_once = False
+        self._has_status = False  # as páginas só aparecem depois do primeiro estado do daemon
 
         self.toasts = Adw.ToastOverlay()
         self.ctx = Context(client, self.toasts, self)
@@ -47,7 +49,8 @@ class Window(Adw.ApplicationWindow):
         ]
         self.root.add_named(self._build_main(), "main")
         self.root.add_named(self._build_stopped(), "stopped")
-        self.root.add_named(Adw.Spinner(), "loading")
+        self.loading = LoadingPage(self.advanced.show_logs)
+        self.root.add_named(self.loading, "loading")
         self.root.set_visible_child_name("loading")
 
         client.connect("status-changed", lambda _c, s: self.update(s))
@@ -136,30 +139,48 @@ class Window(Adw.ApplicationWindow):
     def update(self, s: Status) -> None:
         for page in self.pages:
             page.update(s)
+        if not self._has_status:
+            self._has_status = True
+            if self.root.get_visible_child_name() == "loading":
+                self._show("main")
         # O que a pessoa perde e como sair disso; o texto técnico do daemon fica na dica.
         self.banner.set_title(_("O PipeWire não respondeu: o som pode não chegar ao controle.") if s.error else "")
         self.banner.set_tooltip_text(s.error or None)
         self.banner.set_revealed(bool(s.error))
 
+    def _show(self, name: str) -> None:
+        if name == "loading":
+            if self.root.get_visible_child_name() != "loading":
+                self.loading.restart()
+        else:
+            self.loading.stop()
+        self.root.set_visible_child_name(name)
+
     def _on_availability(self, available: bool) -> None:
         if available:
-            self.root.set_visible_child_name("main")
+            if self._has_status:
+                self._show("main")
+            else:
+                self.loading.set_phase("reading")
+                self._show("loading")
             return
         if self._autostart and not self._started_once:
             # Primeira abertura (ADR 0005): ativa o serviço de usuário sem pedir comando.
             self._started_once = True
             self.start_service(enable=True, quiet=True)
             return
-        self.root.set_visible_child_name("stopped")
+        self._show("stopped")
 
     def start_service(self, *, enable: bool = False, quiet: bool = False) -> None:
         argv = ["systemctl", "--user", "enable", "--now", SERVICE_UNIT] if enable else None
         argv = argv or ["systemctl", "--user", "start", SERVICE_UNIT]
+        self.loading.set_phase("starting")
+        self._show("loading")
 
         def done(code: int, out: str) -> None:
             if code != 0:
                 log.warning("serviço não iniciou: %s", out.strip())
-                self.root.set_visible_child_name("stopped")
+                self._show("stopped")
                 if not quiet:
                     self.ctx.toast(
                         _("Não deu para iniciar o serviço. Veja: journalctl --user -u {unit}").format(unit=SERVICE_UNIT)

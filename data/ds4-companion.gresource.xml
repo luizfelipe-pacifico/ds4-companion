@@ -4,6 +4,8 @@
   <gresource prefix="/io/github/luizfelipe_pacifico/DS4Companion">
     <file>style.css</file>
     <file>icons/scalable/actions/ds4-vibration-symbolic.svg</file>
+    <!-- Ícone do app também no recurso: a tela de carregamento o mostra mesmo rodando do código. -->
+    <file alias="icons/scalable/apps/io.github.luizfelipe_pacifico.DS4Companion.svg">icons/hicolor/scalable/apps/io.github.luizfelipe_pacifico.DS4Companion.svg</file>
     <file>illustrations/all-set.svg</file>
     <file>illustrations/bluetooth-no-audio.svg</file>
     <file>illustrations/empty-list.svg</file>

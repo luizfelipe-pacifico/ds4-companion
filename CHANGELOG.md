@@ -34,6 +34,9 @@
   Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
+- Tela de carregamento ao abrir: ícone do app, fase em texto (conectando, iniciando o serviço,
+  lendo o estado), spinner só depois de 400 ms e, após 10 s, aviso de demora com os registros do
+  serviço. O ícone do app entra no GResource.
 - Som de outros apps no controle (Steam/Proton): a lista aceita padrões como `*.exe` (recusa os que
   pegariam tudo), a página Áudio sugere os apps tocando agora e o atalho "Jogos do Steam e Proton",
   e o `ds4ctl apps` lista, adiciona e remove. O estado do daemon traz `playing`.
@@ -74,6 +77,9 @@
   faixas de volume passam a usar texto + ícone em vez de verde/amarelo/vermelho.
 
 ### Corrigido
+- A janela não mostra mais as páginas vazias ("Nenhum controle conectado") entre o daemon
+  aparecer e o primeiro estado chegar, e sai da tela "Serviço parado" quando o serviço é iniciado
+  por fora.
 - Nomes de app, da saída de áudio, da pasta do RPCS3 e mensagens do daemon aparecem como texto:
   antes eram lidos como markup e um `&` ou `<` quebrava a linha ou formatava o texto.
 

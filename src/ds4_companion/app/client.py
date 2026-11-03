@@ -25,6 +25,7 @@ ERROR_PREFIX = f"{INTERFACE}.Error."
 SIGNATURES = {
     "Refresh": "()",
     "SetMirror": "(b)",
+    "SetLimiter": "(b)",
     "SetVolume": "(db)",
     "SetVibration": "(uub)",
     "SetPlayers": "(ai)",

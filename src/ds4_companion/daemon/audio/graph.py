@@ -16,6 +16,8 @@ from ...common.config import app_matches
 
 SINK = "Audio/Sink"
 STREAM = "Stream/Output/Audio"
+LIMITER_INPUT = "ds4_companion_limiter"  # nomes fixos do limitador.py (ADR 0010)
+LIMITER_OUTPUT = "ds4_companion_limiter.out"
 DS4_MARKERS = ("wireless_controller", "dualshock")
 
 # Downmix para o par estéreo do controle: o centro vai para os dois lados, traseiros para o
@@ -90,10 +92,27 @@ class Graph:
         return list(dict.fromkeys(name for name in names if name))
 
     def _output_streams(self) -> list[Node]:
-        return [n for n in sorted(self.nodes.values(), key=lambda n: n.id) if n.media_class == STREAM]
+        # A saída do próprio limitador é um stream, mas nunca um "app" a espelhar.
+        return [
+            n
+            for n in sorted(self.nodes.values(), key=lambda n: n.id)
+            if n.media_class == STREAM and n.name != LIMITER_OUTPUT
+        ]
 
     def ports_of(self, node_id: int, direction: str) -> list[Port]:
         return [p for p in self.ports if p.node_id == node_id and p.direction == direction and not p.monitor]
+
+    def limiter_input(self) -> Node | None:
+        for node in self.nodes.values():
+            if node.name == LIMITER_INPUT:
+                return node
+        return None
+
+    def mirror_target(self) -> Node | None:
+        """Para onde o som do jogo vai: o limitador, se estiver de pé, senão direto ao controle."""
+        if self.ds4_sink() is None:
+            return None
+        return self.limiter_input() or self.ds4_sink()
 
     def default_sink_node(self) -> Node | None:
         for node in self.nodes.values():
@@ -193,9 +212,12 @@ def _default_sink(entries: Any) -> str | None:
     return None
 
 
-def wanted_links(graph: Graph, apps: Iterable[str]) -> list[tuple[int, int]]:
-    """Todos os pares (porta de saída do jogo, porta de entrada do controle) que devem existir."""
-    sink = graph.ds4_sink()
+def wanted_links(graph: Graph, apps: Iterable[str], target: Node | None = None) -> list[tuple[int, int]]:
+    """Todos os pares (porta de saída do jogo, porta de entrada do destino) que devem existir.
+
+    O destino é o limitador quando ele existe, senão o sink do controle.
+    """
+    sink = target or graph.mirror_target()
     if sink is None:
         return []
     inputs = {p.channel: p.id for p in graph.ports_of(sink.id, "in")}
@@ -213,16 +235,37 @@ def missing_links(graph: Graph, apps: Iterable[str]) -> list[tuple[int, int]]:
     return [pair for pair in wanted_links(graph, apps) if pair not in existing]
 
 
-def mirror_links(graph: Graph, apps: Iterable[str]) -> list[tuple[int, int]]:
-    """Links jogo → controle que existem hoje e são do espelhamento (para desligar).
+def _existing(graph: Graph) -> set[tuple[int, int]]:
+    return {(link.output_port, link.input_port) for link in graph.links}
 
-    Se o controle for a saída padrão, esses links são do próprio WirePlumber e ficam.
-    """
+
+def direct_links(graph: Graph, apps: Iterable[str]) -> list[tuple[int, int]]:
+    """Links jogo → controle direto que são do espelhamento (não do WirePlumber)."""
     sink = graph.ds4_sink()
     if sink is None or sink.name == graph.default_sink:
         return []
-    existing = {(link.output_port, link.input_port) for link in graph.links}
-    return [pair for pair in wanted_links(graph, apps) if pair in existing]
+    existing = _existing(graph)
+    return [pair for pair in wanted_links(graph, apps, sink) if pair in existing]
+
+
+def stale_links(graph: Graph, apps: Iterable[str]) -> list[tuple[int, int]]:
+    """Com o limitador de pé, os links diretos antigos jogo → controle sobram e saem."""
+    if graph.limiter_input() is None:
+        return []
+    return direct_links(graph, apps)
+
+
+def mirror_links(graph: Graph, apps: Iterable[str]) -> list[tuple[int, int]]:
+    """Links do espelhamento que existem hoje (para desligar): ao limitador e direto ao controle.
+
+    Se o controle for a saída padrão, os links diretos são do próprio WirePlumber e ficam.
+    """
+    existing = _existing(graph)
+    via_limiter: list[tuple[int, int]] = []
+    limiter = graph.limiter_input()
+    if limiter is not None:
+        via_limiter = [pair for pair in wanted_links(graph, apps, limiter) if pair in existing]
+    return via_limiter + direct_links(graph, apps)
 
 
 def is_mirroring(graph: Graph, apps: Iterable[str]) -> bool:

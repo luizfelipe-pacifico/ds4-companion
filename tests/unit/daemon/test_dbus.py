@@ -80,6 +80,8 @@ def test_interface_over_session_bus(tmp_path: Path) -> None:
         assert await p.call_set_volume(-9.0, False) == -9.0
         await p.call_set_mirror(False)
         await p.call_set_mirror(True)
+        await p.call_set_limiter(False)
+        await p.call_set_limiter(True)
         await p.call_set_vibration(80, 90, False)
         await p.call_set_players([1])
         await p.call_test_rumble("both")

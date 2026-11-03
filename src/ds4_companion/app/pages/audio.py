@@ -49,6 +49,12 @@ class AudioPage(Page):
         volume_group = Adw.PreferencesGroup()
         self.volume = VolumeRow(self._on_volume, self._confirm_over_limit)
         volume_group.add(self.volume)
+        self.limiter = Adw.SwitchRow(
+            title=_("Limitador contra picos"),
+            subtitle=_("Nenhum pico passa de −1 dBFS no alto-falante do controle."),
+        )
+        self.limiter.connect("notify::active", self._on_limiter)
+        volume_group.add(self.limiter)
         self.tone = Adw.ButtonRow(title=_("Tocar apito de teste"), start_icon_name="media-playback-start-symbolic")
         self.tone.connect("activated", lambda _r: self.ctx.call("PlayTestTone"))
         volume_group.add(self.tone)
@@ -94,6 +100,7 @@ class AudioPage(Page):
         self.state(None)
         self._syncing = True
         self.mirror.set_active(s.mirror_enabled)
+        self.limiter.set_active(s.limiter)
         self._syncing = False
         self.waiting.set_visible(s.mirror_enabled and not s.mirror_active)
         self.volume.update(s.volume_db, s.max_db)
@@ -172,6 +179,10 @@ class AudioPage(Page):
     def _on_mirror(self, row: Adw.SwitchRow, _pspec: object) -> None:
         if not self._syncing:
             self.ctx.call("SetMirror", row.get_active())
+
+    def _on_limiter(self, row: Adw.SwitchRow, _pspec: object) -> None:
+        if not self._syncing:
+            self.ctx.call("SetLimiter", row.get_active())
 
     def _on_volume(self, db: float, confirmed: bool) -> None:
         self.ctx.call("SetVolume", db, confirmed)

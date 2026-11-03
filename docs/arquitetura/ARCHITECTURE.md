@@ -64,8 +64,9 @@ RPCS3 (Stream/Output/Audio)
 
 1. Volume do sink do controle via `wpctl set-volume` (convertido de/para dB).
 2. Teto rígido (`max_db`) aplicado pelo daemon: qualquer volume acima é rebaixado.
-3. v1: filtro `filter-chain` do PipeWire com limitador (LADSPA `fast_lookahead_limiter`
-   ou `builtin` compressor) entre o jogo e o controle, para segurar picos.
+3. Limitador: um `filter-chain` do PipeWire (processo filho do daemon) com o `clamp` em −1 dBFS
+   entre o jogo e o controle; os links passam a ser jogo → limitador → controle
+   ([ADR 0010](adr/0010-limitador-com-filter-chain.md)).
 
 ## Vibração
 

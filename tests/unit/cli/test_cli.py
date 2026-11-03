@@ -110,6 +110,8 @@ def test_confirm_handles_eof() -> None:
 def test_mirror_led_rumble_tone(proxy: FakeProxy) -> None:
     assert ds4ctl("mirror", "off") == (0, "Som no controle desligado.\n")
     assert ds4ctl("mirror", "on")[0] == 0
+    assert ds4ctl("limiter", "off") == (0, "Limitador desligado.\n")
+    assert ("call_set_limiter", False) in proxy.calls
     assert ds4ctl("led", "rosa")[0] == 0
     assert ds4ctl("test-rumble")[0] == 0
     assert ds4ctl("test-tone")[0] == 0
@@ -177,3 +179,8 @@ def test_apps_list_add_remove(proxy: FakeProxy) -> None:
     code, _ = ds4ctl("apps", "remove", "steam")
     assert code == 1
     assert ds4ctl("apps", "add")[0] == 1
+
+
+def test_status_shows_limiter() -> None:
+    assert "limitador desligado" in cli.format_status(Status(limiter=False))
+    assert "picos até −1 dBFS" in cli.format_status(Status(limiter=True, limiter_active=True))

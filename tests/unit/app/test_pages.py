@@ -135,6 +135,8 @@ def test_audio_page(ctx: Ctx, client: FakeClient) -> None:
 
     page.mirror.set_active(False)
     assert client.calls[-1] == ("SetMirror", False)
+    page.limiter.set_active(False)
+    assert client.calls[-1] == ("SetLimiter", False)
     page.tone.emit("activated")
     assert client.calls[-1] == ("PlayTestTone",)
 

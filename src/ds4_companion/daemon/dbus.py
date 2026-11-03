@@ -77,6 +77,10 @@ class DaemonInterface(ServiceInterface):
         return result
 
     @method()
+    async def SetLimiter(self, enabled: "b") -> None:
+        await self._call(self._daemon.set_limiter(enabled))
+
+    @method()
     async def SetVibration(self, large: "u", small: "u", swap: "b") -> None:
         await self._call(self._daemon.set_vibration(large, small, swap))
 

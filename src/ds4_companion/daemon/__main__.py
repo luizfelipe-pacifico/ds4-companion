@@ -43,6 +43,7 @@ async def serve() -> int:
     from dbus_next.constants import BusType, RequestNameReply
     from dbus_next.errors import DBusError
 
+    from .audio.limiter import Limiter
     from .audio.pipewire import PipeWire
     from .dbus import DaemonInterface
     from .device import DeviceMonitor
@@ -51,7 +52,7 @@ async def serve() -> int:
     bus = await MessageBus(bus_type=BusType.SESSION).connect()
     devices = DeviceMonitor()
     audio = PipeWire()
-    daemon = Daemon(audio, devices)
+    daemon = Daemon(audio, devices, limiter=Limiter())
     bus.export(OBJECT_PATH, DaemonInterface(daemon))
     reply = await bus.request_name(BUS_NAME)
     if reply not in (RequestNameReply.PRIMARY_OWNER, RequestNameReply.ALREADY_OWNER):
@@ -91,6 +92,7 @@ async def serve() -> int:
         task.cancel()
     devices.stop()
     daemon.stop_motors()
+    await daemon.stop_limiter()
     bus.disconnect()
     return 0
 

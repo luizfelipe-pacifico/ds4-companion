@@ -2,6 +2,8 @@
 
 ## [Não lançado]
 ### Adicionado
+- Limitador contra picos acima de −1 dBFS entre o jogo e o controle: `filter-chain` do PipeWire com
+  `clamp`, sem dependência nova (ADR 0010); interruptor em Áudio, `ds4ctl limiter on|off`.
 - Pacote Python (`pyproject.toml`, layout `src/`) com ruff, `mypy --strict` e pytest configurados.
 - `common/`: conversão volume ↔ dB pela curva cúbica do PipeWire, faixas livre/alto/acima do limite,
   cores da barra de luz e `config.toml` com validação, padrões e gravação atômica.

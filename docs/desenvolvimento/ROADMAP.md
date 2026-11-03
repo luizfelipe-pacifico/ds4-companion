@@ -55,7 +55,7 @@
 - [x] Migração automática dos scripts da Fase 0 (pelo `install.sh`)
 
 ## Fase 4 — Recursos extras (v0.4+)
-- [ ] Limitador via `filter-chain` do PipeWire
+- [x] Limitador via `filter-chain` do PipeWire (`clamp` em −1 dBFS, ADR 0010)
 - [ ] Perfis por jogo (ex.: FIFA com mais som no controle, Tekken só vibração)
 - [ ] Barra de luz além das cores fixas: cor personalizada, cor por jogador, cor por perfil de jogo e modo bateria
 - [ ] Suporte a DualSense (PS5): vibração háptica/gatilhos quando o RPCS3 suportar

@@ -39,7 +39,7 @@ cada faixa é indicada por texto e ícone, nunca só por cor.
 
 - **Fone na entrada do controle:** perfil separado com teto padrão de −6 dB (proteção auditiva).
 - **Ao conectar o controle**, o daemon reaplica o volume salvo (nunca começa no máximo).
-- **Limitador** (v1) contra picos acima de −1 dBFS.
+- **Limitador** contra picos acima de −1 dBFS (`filter-chain` do PipeWire, [ADR 0010](docs/arquitetura/adr/0010-limitador-com-filter-chain.md)); desligável em Áudio.
 
 ## Proteção dos motores
 

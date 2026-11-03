@@ -39,6 +39,7 @@ RUMBLE_MAX_SECONDS = 2.0
 RUMBLE_COOLDOWN = 1.0
 POLL_SECONDS = 3.0
 DEBOUNCE_SECONDS = 0.15
+LIMITER_SETTLE_SECONDS = 0.3
 VOLUME_TOLERANCE_DB = 0.3
 MAX_PLAYING = 16
 
@@ -59,6 +60,11 @@ class AudioBackend(Protocol):
     async def play(self, path: Path, target: str) -> None: ...
 
 
+class LimiterProcess(Protocol):
+    async def ensure(self, target: str | None) -> bool: ...
+    async def stop(self) -> None: ...
+
+
 class Devices(Protocol):
     def scan(self) -> list[Controller]: ...
 
@@ -77,8 +83,12 @@ class Daemon:
         read_report: Callable[[str], bytes | None] = hidraw.read_report,
         rpcs3_running: Callable[[], bool] = process.is_running,
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
+        limiter: LimiterProcess | None = None,
     ) -> None:
         self._audio = audio
+        # Sem limitador por padrão: só o executável do daemon passa o processo real (testes não
+        # sobem um PipeWire de verdade).
+        self._limiter = limiter
         self._devices = devices
         self._config_path = config_path or cfg.default_path()
         self._write_report = write_report
@@ -198,10 +208,17 @@ class Daemon:
             self._sink_id = None
 
         try:
+            if await self._sync_limiter(sink):
+                await self._sleep(LIMITER_SETTLE_SECONDS)  # os nós do limitador aparecem logo depois
+                self.graph = await self._audio.dump()
             if self.config.audio.mirror_enabled:
-                pairs = audio_graph.missing_links(self.graph, apps)
+                pairs = audio_graph.stale_links(self.graph, apps)
                 for out_port, in_port in pairs:
+                    await self._audio.unlink(out_port, in_port)
+                missing = audio_graph.missing_links(self.graph, apps)
+                for out_port, in_port in missing:
                     await self._audio.link(out_port, in_port)
+                pairs = pairs + missing
             else:
                 pairs = audio_graph.mirror_links(self.graph, apps)
                 for out_port, in_port in pairs:
@@ -214,6 +231,18 @@ class Daemon:
             self.status.error = str(exc)
             return
         self.status.error = ""
+
+    async def _sync_limiter(self, sink: audio_graph.Node | None) -> bool:
+        """Liga o limitador apontado para o controle quando o espelhamento está ligado."""
+        if self._limiter is None:
+            return False
+        audio = self.config.audio
+        want = sink.name if sink is not None and audio.mirror_enabled and audio.limiter else None
+        return await self._limiter.ensure(want)
+
+    async def stop_limiter(self) -> None:
+        if self._limiter is not None:
+            await self._limiter.stop()
 
     async def _enforce_ceiling(self) -> bool:
         sink = self.graph.ds4_sink()
@@ -282,6 +311,8 @@ class Daemon:
             output_name=(default.description or default.name) if default else "",
             apps=list(apps),
             playing=self.graph.playing()[:MAX_PLAYING],
+            limiter=audio.limiter,
+            limiter_active=self.graph.limiter_input() is not None,
             large_percent=vib.large_percent,
             small_percent=vib.small_percent,
             swap_motors=vib.swap_motors,
@@ -328,6 +359,11 @@ class Daemon:
             await self._audio.set_volume(sink.id, db_to_volume(clamp_db(db, self.effective_max_db)))
         except PipeWireError as exc:
             raise DaemonError("Failed", f"Não deu para mudar o volume: {exc}") from exc
+
+    async def set_limiter(self, enabled: bool) -> None:
+        self.config.audio.limiter = enabled
+        self._save()
+        await self.refresh()
 
     async def set_vibration(self, large: int, small: int, swap: bool) -> None:
         for value in (large, small):

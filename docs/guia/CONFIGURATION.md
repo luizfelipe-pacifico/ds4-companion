@@ -9,7 +9,7 @@ apps = ["rpcs3", "AppRun.wrapped"]
 volume_db = -6.0               # volume do controle
 max_db = 0.0                   # teto rígido (nunca passa disso)
 headphone_max_db = -6.0        # teto quando há fone na entrada do controle
-limiter = true                 # (v1) limitador contra picos
+limiter = true                 # limitador: nenhum pico acima de −1 dBFS no controle
 
 [vibration]
 large_percent = 100
@@ -56,6 +56,7 @@ Fala com o `ds4-companiond` pelo D-Bus, com as mesmas regras da interface.
 ```bash
 ds4ctl status                       # conexão, bateria, áudio, vibração e luz
 ds4ctl mirror on|off                # som do jogo no controle
+ds4ctl limiter on|off               # limitador contra picos acima de −1 dBFS
 ds4ctl volume -6                    # em dB; acima de 0 dB pede confirmação (ou --yes)
 ds4ctl vibration --large 80 --small 100 [--swap|--no-swap] [--players 1 2]
 ds4ctl test-rumble [strong|weak|both]

@@ -467,3 +467,54 @@ def test_only_one_backup_per_daemon_run(env: Env, monkeypatch: pytest.MonkeyPatc
     run(env.daemon.set_led("green"))
     assert len(list(env.yml.parent.glob("Default.yml.bak-*"))) == 1
     assert "Large Vibration Motor Multiplier: 120" in env.yml.read_text()
+
+
+class FakeLimiter:
+    def __init__(self) -> None:
+        self.targets: list[str | None] = []
+        self.current: str | None = None
+        self.stopped = False
+
+    async def ensure(self, target: str | None) -> bool:
+        self.targets.append(target)
+        changed = target != self.current
+        self.current = target
+        return changed
+
+    async def stop(self) -> None:
+        self.stopped = True
+
+
+def test_limiter_follows_mirror_and_setting(tmp_path: Path) -> None:
+    env = Env(tmp_path)
+    fake = FakeLimiter()
+    env.daemon._limiter = fake
+    run(env.daemon.refresh())
+    assert fake.current == fx.DS4_SINK
+    assert env.daemon.status.limiter
+    run(env.daemon.set_limiter(False))
+    assert fake.current is None
+    assert not cfg.load(env.config_path)[0].audio.limiter
+    run(env.daemon.set_limiter(True))
+    run(env.daemon.set_mirror(False))
+    assert fake.current is None  # sem espelhamento, sem limitador
+    run(env.daemon.stop_limiter())
+    assert fake.stopped
+
+
+def test_mirror_goes_through_limiter_and_drops_direct_links(tmp_path: Path) -> None:
+    from ds4_companion.daemon.audio import graph as g
+
+    objs = fx.dump(mirrored=True)
+    objs += [
+        fx.node(150, g.LIMITER_INPUT, "Stream/Input/Audio"),
+        fx.port(151, 150, "in", "FL"),
+        fx.port(152, 150, "in", "FR"),
+    ]
+    env = Env(tmp_path, objs)
+    env.daemon._limiter = FakeLimiter()
+    run(env.daemon.refresh())
+    assert ("unlink", 121, 99) in env.audio.calls
+    assert ("link", 121, 151) in env.audio.calls
+    assert env.daemon.status.limiter_active
+    assert env.daemon.status.mirror_active

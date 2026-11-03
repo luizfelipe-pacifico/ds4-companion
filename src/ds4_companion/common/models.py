@@ -91,6 +91,8 @@ class Status:
     output_name: str = ""
     apps: list[str] = field(default_factory=list)
     playing: list[str] = field(default_factory=list)
+    limiter: bool = True
+    limiter_active: bool = False
     """Apps tocando som agora (dado do PipeWire), para a interface sugerir."""
     large_percent: int = 100
     small_percent: int = 100

@@ -32,6 +32,9 @@ def build_parser() -> argparse.ArgumentParser:
     mirror = sub.add_parser("mirror", help="liga ou desliga o som do jogo no controle")
     mirror.add_argument("state", choices=["on", "off"])
 
+    limiter = sub.add_parser("limiter", help="limitador contra picos acima de −1 dBFS")
+    limiter.add_argument("state", choices=["on", "off"])
+
     volume = sub.add_parser("volume", help="volume do controle em dB (ex.: -6)")
     volume.add_argument("db", type=float)
     volume.add_argument("-y", "--yes", action="store_true", help="confirma volume acima de 0 dB sem perguntar")
@@ -79,6 +82,10 @@ def format_status(s: Status) -> str:
         audio = "ativo" if s.mirror_active else "ligado, aguardando o jogo"
     lines.append(f"Áudio no controle: {audio}")
     lines.append(f"Volume: {format_db(s.volume_db)}{ZONE_TEXT[zone_for(s.volume_db)]} · teto {format_db(s.max_db)}")
+    if not s.limiter:
+        lines.append("  limitador desligado")
+    elif s.limiter_active:
+        lines.append("  limitador ativo: picos até −1 dBFS")
     if s.headphones:
         lines.append("  fone conectado no controle")
     if s.output_name:
@@ -117,6 +124,9 @@ async def run(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
     if cmd == "status":
         raw = await proxy.get_status()
         print(format_status(Status.from_mapping({k: v.value for k, v in raw.items()})), file=out)
+    elif cmd == "limiter":
+        await proxy.call_set_limiter(args.state == "on")
+        print("Limitador " + ("ligado." if args.state == "on" else "desligado."), file=out)
     elif cmd == "mirror":
         await proxy.call_set_mirror(args.state == "on")
         print("Som no controle " + ("ligado." if args.state == "on" else "desligado."), file=out)

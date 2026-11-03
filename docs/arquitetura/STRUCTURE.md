@@ -97,7 +97,7 @@ src/ds4_companion/
 │   └── states.py           # telas de estado (AdwStatusPage + ilustrações)
 ├── daemon/                 # ds4-companiond
 │   ├── __main__.py         # python -m ds4_companion.daemon
-│   ├── audio/              # graph.py (pw-dump → links), pipewire.py (pw-link, wpctl, eventos)
+│   ├── audio/              # graph.py (pw-dump → links), pipewire.py (pw-link, wpctl, eventos), limiter.py
 │   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32), hidraw e bt_audio.py (protótipo 0x17 + SBC)
 │   ├── rpcs3/              # edição do Default.yml com backup; RPCS3 aberto (/proc)
 │   ├── device.py           # detecção cabo ↔ Bluetooth e bateria via udev

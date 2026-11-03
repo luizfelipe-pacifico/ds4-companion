@@ -89,6 +89,7 @@ Ao abrir, a janela consulta o GitHub Releases em segundo plano. Com versão nova
 - Estados vazios, avisos e erros usam `AdwStatusPage` com as ilustrações de [ILLUSTRATIONS.md](ILLUSTRATIONS.md);
   dentro de uma página (Áudio aguardando o jogo) a ilustração aparece pequena, ao lado do texto.
 - Bluetooth: a página Áudio vira o aviso "Som no controle precisa do cabo".
+- Limitador (Áudio): interruptor "Limitador contra picos", ligado por padrão (ADR 0010).
 - Volume: o slider para em 0 dB; passar disso exige confirmação e nunca vai além de `max_db`.
   O valor em dB acompanha o arraste; o daemon recebe o valor final do gesto.
 - Vibração: com o RPCS3 aberto aparece um banner dizendo que a mudança vale ao reabrir, e os testes

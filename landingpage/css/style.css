@@ -70,6 +70,10 @@ html {
   scrollbar-color: var(--black-2) var(--black-0);
 }
 
+[hidden] {
+  display: none !important;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -261,7 +265,8 @@ p {
   align-items: center;
   gap: 24px;
   height: 60px;
-  padding: 0 var(--gutter);
+  /* alinha com a coluna de conteúdo das seções */
+  padding: 0 max(var(--gutter), calc((100% - var(--content)) / 2 + var(--gutter)));
   transition: background-color 200ms ease-out, box-shadow 200ms ease-out;
 }
 
@@ -353,7 +358,7 @@ p {
 }
 
 .hero-copy {
-  max-width: var(--content);
+  max-width: calc(var(--content) - 2 * var(--gutter));
   margin: 0 auto;
 }
 
@@ -1091,7 +1096,9 @@ input[type="range"]::-moz-range-thumb {
   font-weight: 200;
   letter-spacing: -0.04em;
   line-height: 0.9;
-  min-width: 3.2ch;
+  display: inline-block;
+  min-width: 2.6ch;
+  text-align: right;
 }
 
 .big-readout .unit {
@@ -1208,6 +1215,10 @@ input[type="range"]::-moz-range-thumb {
   grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
   gap: clamp(32px, 6vw, 96px);
   align-items: center;
+}
+
+.conn-photo {
+  order: 2;
 }
 
 .conn-photo img {
@@ -1449,6 +1460,10 @@ input[type="range"]::-moz-range-thumb {
     grid-template-columns: 1fr;
   }
 
+  .conn-photo {
+    order: 0;
+  }
+
   .parallel-photo img {
     aspect-ratio: 16 / 10;
     object-position: 50% 70%;
@@ -1475,17 +1490,34 @@ input[type="range"]::-moz-range-thumb {
     min-height: 0;
   }
 
+  .hero-photo {
+    aspect-ratio: 4 / 3;
+  }
+
+  .hero-photo img {
+    object-position: 50% 80%;
+  }
+
+  .window-wrap {
+    margin-top: -56px;
+  }
+
   .win-sidebar {
-    flex-direction: row;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     border-right: 0;
     border-bottom: 1px solid var(--hairline);
-    padding: 8px;
+    padding: 6px;
   }
 
   .win-sidebar button {
-    flex: none;
-    gap: 8px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-height: 56px;
+    padding: 6px 4px;
+    font-size: 0.75rem;
+    text-align: center;
   }
 
   .win-content {
@@ -1507,6 +1539,16 @@ input[type="range"]::-moz-range-thumb {
 
   .bands {
     grid-template-columns: 1fr;
+  }
+
+  /* o grafo encolhe junto com o SVG; o texto compensa */
+  .n-title {
+    font-size: 22px;
+  }
+
+  .n-sub,
+  .n-label {
+    font-size: 18px;
   }
 
   .bands li,

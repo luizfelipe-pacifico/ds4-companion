@@ -41,6 +41,9 @@
   `sudo` no `pacman`, migra os scripts da Fase 0, `--uninstall`, `--no-service`).
   `python-cairo` é dependência direta: no Arch ele é só opcional do `python-gobject`, e sem ele a
   faixa de luz e as amostras de cor não desenham.
+- Workflow `release.yml`: na tag `vX.Y.Z` confere as versões, monta o pacote num Arch limpo e publica
+  pacote, nome fixo para `releases/latest/download/`, `SHA256SUMS`, `install.sh` e assinatura (com a
+  chave nos segredos).
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

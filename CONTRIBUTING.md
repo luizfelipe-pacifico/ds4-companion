@@ -48,3 +48,15 @@ python -m ds4_companion.app
 - `ruff` + `mypy --strict` no `src/`
 - Commits no formato `tipo: descrição` (`feat`, `fix`, `docs`, `refactor`)
 - Textos da interface em português, com suporte a tradução (gettext)
+
+## Release
+
+1. Atualize a versão em `pyproject.toml`, `src/ds4_companion/__init__.py` e `packaging/PKGBUILD`
+   (`pkgrel=1`), regenere o `.SRCINFO` (`makepkg --printsrcinfo > .SRCINFO`) e acrescente a versão no
+   `<releases>` do AppStream (`data/*.metainfo.xml`).
+2. Mova as entradas de *Não lançado* do `CHANGELOG.md` para a versão nova.
+3. Crie e envie a tag assinada: `git tag -s vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
+
+O workflow `release.yml` confere que as versões batem, monta o pacote num Arch limpo e publica o
+pacote (com versão e com o nome fixo `ds4-companion.pkg.tar.zst`), o `SHA256SUMS` e o `install.sh`.
+Com o segredo `GPG_PRIVATE_KEY` definido no repositório, também publica a assinatura `.sig`.

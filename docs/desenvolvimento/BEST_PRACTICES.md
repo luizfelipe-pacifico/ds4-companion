@@ -78,6 +78,9 @@ Em **todo push e PR**, em qualquer branch (detalhes e motivos na [ADR 0007](../a
 8. Segurança: gitleaks no histórico inteiro, CodeQL (Python e Actions), revisão de dependências e licenças
 9. OpenSSF Scorecard na `main`
 
+Na tag `vX.Y.Z`, o `release.yml` publica pacote, `SHA256SUMS`, `install.sh` e, com a chave GPG nos
+segredos, a assinatura (passo a passo em [CONTRIBUTING](../../CONTRIBUTING.md#release)).
+
 Actions fixadas por SHA, permissões mínimas (`permissions: contents: read`), imagem do Arch fixada por digest.
 Os checks obrigatórios na `main` são **CI ok** e **Segurança ok**. Localmente: `scripts/check.sh` e `pre-commit`.
 

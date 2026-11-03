@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
+#
+# Release (ADR 0005): ao enviar a tag vX.Y.Z, monta o pacote do Arch num container limpo e publica
+# no GitHub Releases o pacote (com versão e com o nome fixo que `releases/latest/download/` usa),
+# a assinatura GPG (se o segredo GPG_PRIVATE_KEY existir), o SHA256SUMS e o install.sh.
+# Tag, pyproject.toml e PKGBUILD precisam ter a mesma versão.
+
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Pacote do Arch
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container:
+      image: archlinux:base-devel@sha256:767de6eaa40dcfeda5263a48737ea03a782caabdf3a403b6e6a203c7fd333681
+    steps:
+      - run: pacman -Syu --noconfirm --needed git
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Versão da tag igual à do código
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version=${TAG#v}
+          grep -qx "version = \"$version\"" pyproject.toml || { echo "pyproject.toml não está em $version"; exit 1; }
+          grep -qx "pkgver=$version" packaging/PKGBUILD || { echo "PKGBUILD não está em $version"; exit 1; }
+      - name: Build como usuário comum
+        run: |
+          useradd -m builder
+          echo 'builder ALL=(ALL) NOPASSWD: /usr/bin/pacman' > /etc/sudoers.d/builder
+          chown -R builder: .
+          cd packaging && su builder -c 'makepkg --syncdeps --noconfirm --cleanbuild'
+      - name: Arquivos da release
+        run: |
+          mkdir dist
+          cp packaging/*.pkg.tar.zst dist/
+          cp dist/*.pkg.tar.zst dist/ds4-companion.pkg.tar.zst
+          cp install.sh dist/
+          cd dist && sha256sum ./*.pkg.tar.zst install.sh | sed 's#  \./#  #' > SHA256SUMS
+          cat SHA256SUMS
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    name: Publicar no GitHub Releases
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write # criar a release e anexar os arquivos
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release
+          path: dist
+      - name: Assinar (se houver chave)
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          if [ -z "$GPG_PRIVATE_KEY" ]; then
+            echo "::warning title=Release sem assinatura::defina o segredo GPG_PRIVATE_KEY para assinar o pacote"
+            exit 0
+          fi
+          printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --import
+          for f in dist/*.pkg.tar.zst; do gpg --batch --yes --detach-sign "$f"; done
+      - name: Criar a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          url="https://github.com/$REPO/releases/latest/download/ds4-companion.pkg.tar.zst"
+          gh release create "$TAG" dist/* --repo "$REPO" --title "DS4 Companion ${TAG#v}" \
+            --notes "Notas em CHANGELOG.md. Instalação: sudo pacman -U $url"

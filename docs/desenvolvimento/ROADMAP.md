@@ -47,7 +47,8 @@
 ## Fase 3 — Empacotamento (v0.3)
 - [x] `PKGBUILD` (instala app, serviço, regra udev, .desktop, ícone SVG)
 - [ ] Publicar no AUR
-- [ ] Release no GitHub com `.pkg.tar.zst` assinado, `SHA256SUMS` e `install.sh`
+- [ ] Release no GitHub com `.pkg.tar.zst` assinado, `SHA256SUMS` e `install.sh` — workflow `release.yml`
+      pronto; falta a chave GPG nos segredos e a primeira tag
       (instalação por um comando: `sudo pacman -U <url>`, ver [ADR 0005](../arquitetura/adr/0005-instalacao-por-um-comando.md))
 - [x] `install.sh`: instala, migra scripts da Fase 0, ativa o serviço; `--uninstall`; `shellcheck` + teste em container no CI
 - [x] App ativa o serviço de usuário na primeira abertura

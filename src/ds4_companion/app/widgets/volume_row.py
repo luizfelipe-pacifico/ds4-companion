@@ -60,6 +60,7 @@ class VolumeRow(Adw.PreferencesRow):
             hexpand=True,
         )
         self.scale.update_property([Gtk.AccessibleProperty.LABEL], [_("Volume do controle em dB")])
+        self.scale.add_css_class("volume-scale")
         self.scale.connect("value-changed", self._on_value)
         box.append(self.scale)
         note = Gtk.Label(

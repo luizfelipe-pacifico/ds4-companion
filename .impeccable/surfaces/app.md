@@ -26,7 +26,9 @@ nele; ajusta com um gesto e entende o que vale agora e o que vale ao reabrir o R
 
 FIRST VIEWPORT: barra lateral `black-1` com Status, Áudio, Vibração, Luz, Avançado; à direita, a
 página Status abre com o cartão do controle (faixa de luz no topo, nome, conexão, bateria) seguido
-das linhas RPCS3, Áudio no controle e Saída principal. Nenhum botão principal na página Status.
+das linhas Áudio no controle, Volume do controle, RPCS3 e Saída principal. Nenhum botão principal
+na página Status. (Áudio e Volume vieram para cima na construção: a STORY põe "o som está chegando
+no controle" como a primeira pergunta, e o volume com o teto é o dado de segurança que se confere.)
 
 FORM: barra lateral + AdwPreferencesPage (padrão GNOME), posição 1 da lista; seed: none (unavailable).
 Movimento-assinatura: a faixa de luz do cartão acende na cor real do LED ao conectar (300 ms) e

@@ -20,6 +20,8 @@ def audio_summary(s: Status) -> tuple[str, bool]:
     """(texto, está tocando agora)."""
     if s.connection == Connection.BLUETOOTH:
         return _("Indisponível por Bluetooth — conecte o cabo"), False
+    if s.error:
+        return _("Com problema — veja o aviso acima"), False
     if not s.mirror_enabled:
         return _("Desligado"), False
     if s.mirror_active:

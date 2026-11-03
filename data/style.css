@@ -82,7 +82,9 @@ button:active { transition: none; }
 /* botões: principal azul, secundário black-2, plano só texto */
 button { border-radius: 6px; }
 button.suggested-action { background-color: var(--led-blue); color: #FFFFFF; }
-button:not(.suggested-action):not(.flat):not(.circular):not(.image-button) { background-color: var(--black-2); }
+button:not(.suggested-action):not(.flat):not(.circular):not(.image-button):not(.swatch):not(.player-toggle) {
+  background-color: var(--black-2);
+}
 button.destructive-action { background-color: var(--black-2); color: #FFFFFF; font-weight: 500; }
 
 /* interruptor fino: 36 × 20, botão 14 */
@@ -95,6 +97,8 @@ scale trough { min-height: 2px; background-color: var(--black-2); border-radius:
 scale highlight { background-color: var(--led-blue); }
 scale slider { min-width: 14px; min-height: 14px; margin: -6px; background-color: #FFFFFF; box-shadow: none; }
 scale marks indicator { min-height: 6px; min-width: 1px; background-color: alpha(#FFFFFF, 0.32); }
+/* a última marca do volume é o limite de 0 dB: branco cheio */
+scale.volume-scale marks.bottom > mark:last-child > indicator { background-color: #FFFFFF; }
 scale.over-limit highlight, scale.over-limit slider { background-color: #FFFFFF; }
 
 /* cartão do controle */
@@ -112,14 +116,14 @@ scale.over-limit highlight, scale.over-limit slider { background-color: #FFFFFF;
 .zone-label.over-limit { font-weight: 600; }
 
 /* amostras da barra de luz: a cor é dado do hardware, o resto é tema */
-.swatch { padding: 8px; border-radius: 10px; background: none; }
-.swatch:hover { background-color: var(--black-2); }
-.swatch:checked { background-color: alpha(#2B6CF6, 0.16); }
-.swatch:checked .swatch-name { font-weight: 500; }
-.swatch-name { font-size: 86%; }
+button.swatch { padding: 8px; border-radius: 10px; background-color: transparent; }
+button.swatch:hover { background-color: var(--black-2); }
+button.swatch:checked { background-color: alpha(#2B6CF6, 0.16); }
+.swatch-name { font-size: 86%; font-weight: 400; }
+button.swatch:checked .swatch-name { font-weight: 500; }
 
 /* jogadores */
-.player-toggle { min-width: 28px; padding: 6px 4px; font-feature-settings: "tnum"; }
+.player-toggle { min-width: 28px; padding: 6px 4px; font-feature-settings: "tnum"; background-color: var(--black-2); }
 .player-toggle:checked { background-color: var(--led-blue); color: #FFFFFF; }
 
 /* estados */
@@ -140,13 +144,6 @@ statuspage.compact .title { font-size: 107%; font-weight: 500; letter-spacing: -
 
 /* estado dentro da página (ilustração pequena ao lado do texto) */
 .inline-state { padding: 4px 0 8px 0; }
-
-/* amostras não herdam o fundo do botão secundário */
-button.swatch { background-color: transparent; }
-button.swatch:hover { background-color: var(--black-2); }
-button.swatch:checked { background-color: alpha(#2B6CF6, 0.16); }
-.swatch-name { font-weight: 400; }
-button.swatch:checked .swatch-name { font-weight: 500; }
 
 /* jogadores: botões finos, iguais */
 .players { padding: 8px; }

@@ -71,11 +71,20 @@ def test_summaries() -> None:
     assert "Bluetooth" in audio_summary(sample(connection=Connection.BLUETOOTH))[0]
     assert "áudio do controle" in audio_summary(sample(sink_present=False))[0]
     assert audio_summary(sample())[0] == "Ligado, aguardando o jogo"
+    assert "problema" in audio_summary(sample(error="x"))[0]
     assert rpcs3_summary(sample()) == "Fechado"
     assert rpcs3_summary(sample(rpcs3_running=True)) == "Aberto"
     assert rpcs3_summary(sample(rpcs3_running=True, game_running=True)) == "Aberto · jogo tocando"
     assert battery_icon(-1, False) == "battery-missing-symbolic"
     assert battery_icon(84, True) == "battery-level-80-charging-symbolic"
+    # Regressão: 100 % carregando não existe no Adwaita; o nome é "charged".
+    assert battery_icon(100, True) == "battery-level-100-charged-symbolic"
+    from gi.repository import Gdk, Gtk
+
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
+    for level in range(0, 101, 10):
+        for charging in (False, True):
+            assert theme.has_icon(battery_icon(level, charging)), (level, charging)
     assert zone_text(VolumeZone.FREE) == ("", None)
     assert zone_text(VolumeZone.OVER_LIMIT)[0] == "acima do limite"
 
@@ -180,6 +189,8 @@ def test_vibration_page(ctx: Ctx, client: FakeClient) -> None:
     page.update(sample(large_percent=150, players=[1, 3]))
     assert page.large.value.get_label() == "150 %"
     assert page.large.warning.get_visible()
+    assert page.large.warning_label.get_visible()  # aviso por texto + ícone, não só ícone
+    assert not page.small.warning_label.get_visible()
     assert [t.get_active() for t in page.players][:3] == [True, False, True]
     assert page.large.test.get_sensitive()
 

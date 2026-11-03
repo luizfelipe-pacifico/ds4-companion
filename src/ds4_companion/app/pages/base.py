@@ -33,5 +33,13 @@ class Page(Gtk.Stack):
             self.add_named(self._states[key], key)
         self.set_visible_child_name(key)
 
+    def top_bars(self) -> list[Gtk.Widget]:
+        """Barras (ex.: banner) que ficam no topo da janela enquanto esta página está à vista."""
+        return []
+
+    def set_active(self, active: bool) -> None:
+        for bar in self.top_bars():
+            bar.set_visible(active)
+
     def update(self, status: Status) -> None:
         raise NotImplementedError

@@ -22,6 +22,8 @@ def battery_icon(level: int, charging: bool) -> str:
     if level < 0:
         return "battery-missing-symbolic"
     step = min(100, max(0, round(level / 10) * 10))
+    if step == 100 and charging:
+        return "battery-level-100-charged-symbolic"  # nome do Adwaita para "cheia, na tomada"
     return f"battery-level-{step}{'-charging' if charging else ''}-symbolic"
 
 

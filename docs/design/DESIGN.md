@@ -223,6 +223,13 @@ Prefira os widgets do libadwaita (`AdwPreferencesPage`, `AdwActionRow`, `AdwSwit
   plano (`.flat`) só texto. No máximo um botão principal por tela.
 - **Interruptores:** fino (36 × 20), trilho `black-2` desligado e `led-blue` ligado.
 - **Barra lateral:** `black-1`; item selecionado com fundo `led-blue` 16% e ícone em `led-blue`.
+  O cabeçalho dela não tem título (o nome cortaria com os botões da janela à esquerda).
+- **Amostras de cor da luz:** círculo na cor real do LED; a escolhida ganha fundo `led-blue` 16%,
+  anel branco de 2 px e rótulo em peso 500 (a seleção nunca depende só de cor).
+- **Jogadores:** botões finos lado a lado, `black-2` desligado e `led-blue` ligado.
+- **Estado dentro de uma página:** ilustração de 96 px ao lado do título e da descrição (ex.:
+  Áudio aguardando o RPCS3); a tela inteira usa 176 px.
+- **Avisos acima de 100 % (vibração) e de −6 dB (volume):** ícone + rótulo "alto" em peso 500.
 - **Navegação pelo controle (v0.4):** D-pad move o foco, ✕ confirma, ◯ volta. O foco é sempre
   visível (contorno azul + linha `black-2`).
 

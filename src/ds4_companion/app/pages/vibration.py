@@ -29,11 +29,15 @@ class PercentRow(Adw.PreferencesRow):
         header = Gtk.Box(spacing=8)
         header.append(Gtk.Label(label=title, xalign=0, hexpand=True))
         self.warning = Gtk.Image(icon_name="dialog-warning-symbolic", visible=False)
+        self.warning_label = Gtk.Label(label=_("alto"), visible=False)
+        self.warning_label.add_css_class("zone-label")
+        self.warning_label.add_css_class("high")
         self.value = Gtk.Label(xalign=1, width_chars=6)
         self.value.add_css_class("numeric")
         self.test = Gtk.Button(label=_("Testar"))
         self.test.connect("clicked", lambda _b: on_test())
         header.append(self.warning)
+        header.append(self.warning_label)
         header.append(self.value)
         box.append(header)
         row = Gtk.Box(spacing=12)
@@ -67,12 +71,15 @@ class PercentRow(Adw.PreferencesRow):
             self._on_change()
 
     def _show(self) -> None:
+        high = self.percent > 100
         self.value.set_label(f"{self.percent} %")
-        self.warning.set_visible(self.percent > 100)
+        self.warning.set_visible(high)
+        self.warning_label.set_visible(high)
         self.warning.set_tooltip_text(
             _("Acima de 100 % o motor fica mais tempo no máximo e gasta mais bateria.") if self.percent > 100 else None
         )
-        self.scale.update_property([Gtk.AccessibleProperty.VALUE_TEXT], [f"{self.percent} %"])
+        text = f"{self.percent} % {_('alto')}" if high else f"{self.percent} %"
+        self.scale.update_property([Gtk.AccessibleProperty.VALUE_TEXT], [text])
 
 
 class VibrationPage(Page):
@@ -125,13 +132,10 @@ class VibrationPage(Page):
         players.add(row)
         self.prefs.add(players)
 
-        # O banner fica acima das preferências, fora da rolagem.
-        self.remove(self.prefs)
-        wrapper = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        wrapper.append(self.banner)
-        self.prefs.set_vexpand(True)
-        wrapper.append(self.prefs)
-        self.add_named(wrapper, "content")
+        self.banner.set_visible(False)  # a janela mostra só enquanto esta página está à vista
+
+    def top_bars(self) -> list[Gtk.Widget]:
+        return [self.banner]
 
     def update(self, s: Status) -> None:
         self.banner.set_revealed(s.rpcs3_running)

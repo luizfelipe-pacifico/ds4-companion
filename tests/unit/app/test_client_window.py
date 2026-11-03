@@ -147,15 +147,24 @@ def test_window_service_stopped_and_start(window: tuple[Window, FakeClient, list
 
 
 def test_window_pages_and_banner(window: tuple[Window, FakeClient, list[list[str]]]) -> None:
-    win, client, _ = window
+    win, client, commands = window
     client.set_available(True)
     client.push(sample(error="pw-dump falhou"))
     assert win.banner.get_revealed()
-    assert "pw-dump falhou" in win.banner.get_title()
+    assert "som pode não chegar" in win.banner.get_title()
+    assert win.banner.get_tooltip_text() == "pw-dump falhou"  # o técnico fica na dica
+    win.banner.emit("button-clicked")
+    assert commands[-1][:3] == ["systemctl", "--user", "restart"]
     for page in win.pages:
         win.show_page(page.page_id)
         assert win.stack.get_visible_child() is page
         assert win.content_page.get_title() == page.title
+    vibration = win.pages[2]
+    win.show_page("vibration")
+    assert all(bar.get_visible() for bar in vibration.top_bars())
+    win.show_page("status")
+    assert not any(bar.get_visible() for bar in vibration.top_bars())
+    assert win.sidebar.get_selected_row() is win.sidebar.get_row_at_index(0)
     row = win.sidebar.get_row_at_index(1)
     win.sidebar.emit("row-activated", row)
     assert win.stack.get_visible_child() is win.pages[1]

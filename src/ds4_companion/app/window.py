@@ -37,12 +37,13 @@ class Window(Adw.ApplicationWindow):
         self.toasts.set_child(self.root)
         self.set_content(self.toasts)
 
+        self.advanced = AdvancedPage(self.ctx)
         self.pages: list[Page] = [
             StatusPage(self.ctx),
             AudioPage(self.ctx),
             VibrationPage(self.ctx),
             LightPage(self.ctx),
-            AdvancedPage(self.ctx),
+            self.advanced,
         ]
         self.root.add_named(self._build_main(), "main")
         self.root.add_named(self._build_stopped(), "stopped")
@@ -69,7 +70,8 @@ class Window(Adw.ApplicationWindow):
 
         menu = Gtk.MenuButton(icon_name="open-menu-symbolic", tooltip_text=_("Menu principal"))
         menu.set_menu_model(self._menu())
-        side_header = Adw.HeaderBar()
+        # Sem título centralizado: com os botões da janela à esquerda ele só caberia cortado.
+        side_header = Adw.HeaderBar(show_title=False)
         side_header.pack_end(menu)
         side_view = Adw.ToolbarView(content=Gtk.ScrolledWindow(child=self.sidebar))
         side_view.add_top_bar(side_header)
@@ -78,10 +80,14 @@ class Window(Adw.ApplicationWindow):
         self.stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE, transition_duration=150)
         for page in self.pages:
             self.stack.add_named(page, page.page_id)
-        self.banner = Adw.Banner()
+        self.banner = Adw.Banner(button_label=_("Reiniciar serviço"))
+        self.banner.connect("button-clicked", lambda _b: self.advanced.restart_service())
         content_view = Adw.ToolbarView(content=self.stack)
         content_view.add_top_bar(Adw.HeaderBar())
         content_view.add_top_bar(self.banner)
+        for page in self.pages:
+            for bar in page.top_bars():
+                content_view.add_top_bar(bar)
         self.content_page = Adw.NavigationPage(title=self.pages[0].title, child=content_view, tag="content")
 
         self.split = Adw.NavigationSplitView(sidebar=sidebar_page, content=self.content_page)
@@ -120,6 +126,8 @@ class Window(Adw.ApplicationWindow):
         if self.sidebar.get_selected_row() is not row:
             self.sidebar.select_row(row)
         self.stack.set_visible_child(page)
+        for other in self.pages:
+            other.set_active(other is page)
         self.content_page.set_title(page.title)
         self.split.set_show_content(True)
 
@@ -128,7 +136,9 @@ class Window(Adw.ApplicationWindow):
     def update(self, s: Status) -> None:
         for page in self.pages:
             page.update(s)
-        self.banner.set_title(_("Problema no áudio: {error}").format(error=s.error) if s.error else "")
+        # O que a pessoa perde e como sair disso; o texto técnico do daemon fica na dica.
+        self.banner.set_title(_("O PipeWire não respondeu: o som pode não chegar ao controle.") if s.error else "")
+        self.banner.set_tooltip_text(s.error or None)
         self.banner.set_revealed(bool(s.error))
 
     def _on_availability(self, available: bool) -> None:

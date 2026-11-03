@@ -14,10 +14,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts" / "ci"))
 
-import check_commits  # noqa: E402
-import check_sensitive  # noqa: E402
-import check_spdx  # noqa: E402
-import check_svg  # noqa: E402
+import check_commits
+import check_sensitive
+import check_spdx
+import check_svg
 
 SVG_OK = b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 0h16v16H0z"/></svg>'
 SIGNOFF = "Signed-off-by: Pessoa <pessoa@example.com>"
@@ -37,7 +37,7 @@ class SvgTest(unittest.TestCase):
                 self.assertTrue(check_svg.check_svg("a.svg", svg(f"<{tag}/>")))
 
     def test_bloqueia_evento(self) -> None:
-        self.assertTrue(check_svg.check_svg("a.svg", svg('<path on' + 'load="x()" d="M0 0"/>')))
+        self.assertTrue(check_svg.check_svg("a.svg", svg("<path on" + 'load="x()" d="M0 0"/>')))
 
     def test_bloqueia_href_externo_e_data_uri(self) -> None:
         for href in ("https://exemplo.invalid/a.png", "data:image/png;base64,AAAA", "javascript:x()"):
@@ -93,8 +93,17 @@ class SensitiveTest(unittest.TestCase):
         self.assertEqual(check_sensitive.check_text("x", f"{pessoal}  # ds4-allow-sensitive"), [])
 
     def test_arquivos_proibidos(self) -> None:
-        for path in (".env", ".env.local", "a/b.pem", "pw-dump-2026.json", "hid-dump.bin",
-                     "daemon.log", "Default.yml.bak-1", "x.pkg.tar.zst", ".claude/settings.local.json"):
+        for path in (
+            ".env",
+            ".env.local",
+            "a/b.pem",
+            "pw-dump-2026.json",
+            "hid-dump.bin",
+            "daemon.log",
+            "Default.yml.bak-1",
+            "x.pkg.tar.zst",
+            ".claude/settings.local.json",
+        ):
             with self.subTest(path=path):
                 self.assertTrue(check_sensitive.forbidden_file(path))
         for path in (".env.example", "README.md", "data/x.svg"):
@@ -107,8 +116,7 @@ class SensitiveTest(unittest.TestCase):
 
 class SpdxTest(unittest.TestCase):
     HEADER = (
-        "# SPDX-License-Identifier: GPL-3.0-or-later\n"
-        "# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion\n"
+        "# SPDX-License-Identifier: GPL-3.0-or-later\n# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion\n"
     )
 
     def test_com_cabecalho(self) -> None:

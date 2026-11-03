@@ -21,7 +21,7 @@ from pathlib import Path
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import ROOT, Problem, report  # noqa: E402
+from _common import ROOT, Problem, report
 
 TYPES = "feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|security"
 TITLE = re.compile(rf"^(?:{TYPES})(?:\([a-z0-9._/-]+\))?!?: \S.{{0,99}}$")
@@ -64,7 +64,10 @@ def check_message(sha: str, author_email: str, message: str) -> list[Problem]:
 def commits(rev_args: list[str]) -> list[tuple[str, str, str]]:
     out = subprocess.run(
         ["git", "log", "--no-merges", f"--format=%H%x1f%ae%x1f%B{SEP}", *rev_args],
-        cwd=ROOT, check=True, capture_output=True, text=True,
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
     ).stdout
     result = []
     for chunk in out.split(SEP):
@@ -79,9 +82,7 @@ def check_message_file(path: str) -> int:
     message = Path(path).read_text(encoding="utf-8")
     # Linhas de comentário do editor do Git não fazem parte da mensagem.
     message = "\n".join(ln for ln in message.splitlines() if not ln.startswith("#"))
-    email = subprocess.run(
-        ["git", "config", "user.email"], cwd=ROOT, capture_output=True, text=True
-    ).stdout.strip()
+    email = subprocess.run(["git", "config", "user.email"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     return report("Mensagem de commit", check_message("novo" + "0" * 36, email, message))
 
 

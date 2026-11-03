@@ -141,8 +141,7 @@ tela. Os textos são o ponto de partida para o `gettext`.
 
 ```python
 page = Adw.StatusPage(
-    paintable=Gdk.Texture.new_from_resource(
-        "/<app-id>/illustrations/no-controller.svg"),  # via GResource
+    paintable=Gdk.Texture.new_from_resource("/<app-id>/illustrations/no-controller.svg"),  # via GResource
     title=_("Nenhum controle conectado"),
     description=_("Ligue o DualShock 4 pelo cabo USB ou pareie por Bluetooth."),
 )

@@ -12,14 +12,14 @@ ds4-companion/
 ├── README.md  CONTRIBUTING.md  CODE_OF_CONDUCT.md     ✅ arquivos de comunidade (GitHub)
 ├── SECURITY.md  CHANGELOG.md  LICENSE                 ✅
 ├── CLAUDE.md                                          ✅ guia para o Claude Code
-├── pyproject.toml                                     🗓️ metadados, dependências e config das ferramentas
+├── pyproject.toml                                     ✅ metadados, dependências e config das ferramentas
 ├── install.sh                                         🗓️ instalador executável (ADR 0005)
 │
-├── src/ds4_companion/                                 🗓️ código Python
+├── src/ds4_companion/                                 ✅ código Python
 │   ├── app/                                           🗓️ GUI (GTK4/libadwaita)
 │   ├── daemon/                                        🗓️ ds4-companiond
 │   ├── cli/                                           🗓️ ds4ctl
-│   └── common/                                        🗓️ código compartilhado
+│   └── common/                                        ✅ código compartilhado
 │
 ├── data/                                              arquivos instalados que não são código
 │   ├── icons/hicolor/                                 ✅ ícone do app (SVG)
@@ -29,7 +29,7 @@ ds4-companion/
 ├── po/                                                🗓️ traduções (gettext)
 ├── tests/                                             testes automatizados
 │   ├── ci/                                            ✅ testes dos verificadores do CI
-│   ├── unit/                                          🗓️
+│   ├── unit/                                          ✅
 │   └── integration/                                   🗓️
 ├── packaging/                                         🗓️ PKGBUILD e arquivos do AUR
 ├── scripts/                                           scripts de desenvolvimento e CI
@@ -54,7 +54,7 @@ Só o que o GitHub, o Python ou o usuário procuram na raiz. Todo o resto vai pa
 | `CHANGELOG.md` | Keep a Changelog, com a seção *Não lançado* no topo |
 | `LICENSE` | GPL-3.0-or-later |
 | `CLAUDE.md` | Regras e comandos para o Claude Code |
-| `pyproject.toml` 🗓️ | Fonte única de metadados e config de `ruff`, `mypy` e `pytest` |
+| `pyproject.toml` ✅ | Fonte única de metadados e config de `ruff`, `mypy` e `pytest` |
 | `install.sh` 🗓️ | Instalador para usuário comum ([ADR 0005](adr/0005-instalacao-por-um-comando.md)) |
 | `.editorconfig`, `.gitattributes`, `.gitignore` | Formatação, fim de linha LF, o que nunca vai para o Git |
 
@@ -99,8 +99,9 @@ src/ds4_companion/
 │   └── __main__.py
 └── common/                 # usado por todos
     ├── config.py           # config.toml: leitura, validação, padrões
-    ├── db.py               # conversão dB ↔ volume linear
-    └── models.py           # tipos compartilhados
+    ├── db.py               # conversão dB ↔ volume do PipeWire (escala cúbica)
+    ├── models.py           # tipos compartilhados (estado, cores da luz)
+    └── names.py            # app ID e nomes do D-Bus (ADR 0008)
 ```
 
 - Um módulo por responsabilidade; nomes em `snake_case` e em inglês.
@@ -132,7 +133,7 @@ Espelha `src/`: o teste de `daemon/hid/` fica em `tests/unit/daemon/test_hid.py`
 
 | Pasta | O quê |
 |---|---|
-| `unit/` 🗓️ | Rápidos e sem hardware: conversão dB, relatórios HID e CRC32, parser de config, edição do YAML |
+| `unit/` ✅ | Rápidos e sem hardware: conversão dB, relatórios HID e CRC32, parser de config, edição do YAML |
 | `integration/` 🗓️ | PipeWire de teste com `pw-play` fingindo ser o RPCS3 |
 | `fixtures/` 🗓️ | Dados de exemplo **sintéticos** (nunca dumps reais de dispositivo) |
 | `ci/` ✅ | Testes dos scripts de CI |

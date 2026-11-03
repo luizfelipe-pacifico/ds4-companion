@@ -17,12 +17,25 @@ from pathlib import Path
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import ROOT, Problem, is_vendored, report, tracked_files  # noqa: E402
+from _common import ROOT, Problem, is_vendored, report, tracked_files
 
 FORBIDDEN_FILES = (
-    ".env", ".env.*", "*.pem", "*.key", "*.p12", "*.pfx", "id_rsa*", "id_ed25519*",
-    "*.log", "*.bak", "*.bak-*", "pw-dump*.json", "hid-dump*", "config.local.toml",
-    "*.pkg.tar.*", ".claude/settings.local.json",
+    ".env",
+    ".env.*",
+    "*.pem",
+    "*.key",
+    "*.p12",
+    "*.pfx",
+    "id_rsa*",
+    "id_ed25519*",
+    "*.log",
+    "*.bak",
+    "*.bak-*",
+    "pw-dump*.json",
+    "hid-dump*",
+    "config.local.toml",
+    "*.pkg.tar.*",
+    ".claude/settings.local.json",
 )
 ALLOWED_FILES = (".env.example",)
 

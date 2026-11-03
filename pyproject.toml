@@ -1,0 +1,94 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ds4-companion"
+version = "0.1.0"
+description = "Som do RPCS3 em paralelo no DualShock 4, volume em dB com teto e força da vibração"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+authors = [{ name = "Contribuidores do DS4 Companion" }]
+classifiers = [
+    "Environment :: X11 Applications :: GTK",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Games/Entertainment",
+    "Topic :: Multimedia :: Sound/Audio",
+]
+# PyGObject, GTK4 e libadwaita vêm do pacman (python-gobject, gtk4, libadwaita).
+dependencies = ["pyudev>=0.24", "dbus-next>=0.2.3"]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "ruff", "mypy", "setuptools>=69", "build"]
+
+[project.scripts]
+ds4ctl = "ds4_companion.cli.__main__:main"
+ds4-companiond = "ds4_companion.daemon.__main__:main"
+
+[project.gui-scripts]
+ds4-companion = "ds4_companion.app.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/luizfelipe-pacifico/ds4-companion"
+Issues = "https://github.com/luizfelipe-pacifico/ds4-companion/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = [".claude"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "S", "RUF", "PIE", "PT", "RET"]
+# S603/S607: subprocess sempre com lista e sem shell (regra do projeto); o alerta genérico só faz ruído.
+# RUF001-003: textos em português usam "−", "×" e aspas tipográficas de propósito.
+ignore = ["S603", "S607", "RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S108"]
+"tests/ci/**" = ["PT"]
+"scripts/**" = ["S"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+files = ["src"]
+
+# PyGObject e pyudev não têm tipos; a GUI herda de classes do GTK.
+[[tool.mypy.overrides]]
+module = ["gi", "gi.*", "pyudev", "pyudev.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["ds4_companion.app", "ds4_companion.app.*"]
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+
+# dbus-next lê a assinatura D-Bus das anotações ("d", "b", "as"...), que não são tipos Python.
+[[tool.mypy.overrides]]
+module = ["ds4_companion.daemon.dbus"]
+disable_error_code = ["name-defined", "valid-type"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers -ra --import-mode=importlib"
+markers = [
+    "gui: precisa de display (GTK)",
+    "hardware: precisa de um DualShock 4 conectado (manual)",
+]
+
+[tool.coverage.run]
+source = ["ds4_companion"]
+branch = true
+
+[tool.coverage.report]
+exclude_also = ["if __name__ == .__main__.:", "if TYPE_CHECKING:"]

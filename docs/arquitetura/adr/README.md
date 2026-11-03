@@ -13,6 +13,7 @@ antiga como *Substituída por NNNN*.
 | [0005](0005-instalacao-por-um-comando.md) | Instalação por um comando (`sudo pacman -U`) ou `install.sh` | Aceita |
 | [0006](0006-organizacao-dos-arquivos.md) | Organização dos arquivos do repositório | Aceita |
 | [0007](0007-ci-e-verificacoes-de-seguranca.md) | CI e verificações de segurança em todo commit | Aceita |
+| [0008](0008-app-id-e-api-dbus.md) | App ID `io.github.luizfelipe_pacifico.DS4Companion` e API D-Bus do daemon | Aceita |
 
 ## Modelo
 

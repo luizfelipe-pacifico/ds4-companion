@@ -9,7 +9,7 @@ from pathlib import Path
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import ROOT, Problem, is_vendored, report, tracked_files  # noqa: E402
+from _common import ROOT, Problem, is_vendored, report, tracked_files
 
 CODE_SUFFIXES = (".py", ".sh")
 CODE_NAMES = ("install.sh", "PKGBUILD")

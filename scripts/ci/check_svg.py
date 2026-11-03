@@ -16,7 +16,7 @@ from pathlib import Path
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import ROOT, Problem, is_vendored, report, tracked_files  # noqa: E402
+from _common import ROOT, Problem, is_vendored, report, tracked_files
 
 FORBIDDEN_TAGS = {"script", "image", "text", "foreignObject", "iframe", "embed", "object"}
 EXTERNAL_REF = re.compile(r"^\s*(https?:|//|data:|javascript:|file:)", re.IGNORECASE)

@@ -38,6 +38,8 @@
   Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
+- Uma cor por jogador no RPCS3, como no PS4 (`[led] per_player`, chave na página Luz,
+  `ds4ctl led-per-player`); um perfil com cor própria pinta todos os jogadores daquele jogo.
 - Perfis por jogo (ADR 0012): som no controle, volume, motores e cor da luz por jogo, em
   `[profiles.<ID>]`. Som e volume valem com o jogo aberto; vibração e luz vão para o arquivo por
   jogo do RPCS3 (`input_configs/<ID>/Default.yml`). D-Bus `GetProfiles`/`SetProfile`/`DeleteProfile`

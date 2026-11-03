@@ -59,7 +59,7 @@
 - [x] Perfis por jogo (ex.: FIFA com mais som no controle, Tekken só vibração): página Jogos,
       `ds4ctl profile` e o arquivo por jogo do RPCS3 ([ADR 0012](../arquitetura/adr/0012-perfis-por-jogo.md))
 - [x] Barra de luz além das cores fixas: cor personalizada (`#RRGGBB`) e modo bateria
-- [ ] Barra de luz por jogador e por perfil de jogo (junto com os perfis por jogo)
+- [x] Barra de luz por jogador (como no PS4) e por perfil de jogo
 - [x] Suporte a DualSense (PS5) e DualSense Edge: detecção, vibração compatível, luz, fone, áudio
       por cabo e handler `DualSense` do RPCS3 ([ADR 0011](../arquitetura/adr/0011-suporte-ao-dualsense.md))
 - [ ] DualSense: vibração háptica e gatilhos adaptativos, quando o RPCS3 tiver algo para mandar a eles

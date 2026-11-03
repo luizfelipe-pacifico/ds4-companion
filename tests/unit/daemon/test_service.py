@@ -781,3 +781,27 @@ def test_profile_file_write_error_stays_pending(env: Env) -> None:
         per_game.parent.parent.chmod(0o700)
     run(env.daemon.refresh())
     assert "Large Vibration Motor Multiplier: 20" in per_game.read_text()
+
+
+def test_led_per_player_writes_ps4_colors_to_each_player(env: Env) -> None:
+    from ds4_companion.daemon.rpcs3 import input_config as ic
+
+    run(env.daemon.set_led_per_player(True))
+    run(env.daemon.refresh())
+    assert env.daemon.status.led_per_player
+    text = env.yml.read_text()
+    p1, p2 = ic.read_values(text, 1), ic.read_values(text, 2)
+    assert (p1["Color Value R"], p1["Color Value G"], p1["Color Value B"]) == ("0", "0", "255")  # azul
+    assert (p2["Color Value R"], p2["Color Value G"], p2["Color Value B"]) == ("255", "0", "0")  # vermelho
+    # O controle conectado (fora do jogo) segue com a cor escolhida.
+    assert env.reports[-1][6:9] == bytes([0, 0, 0xFF])
+    assert cfg.load(env.config_path)[0].led.per_player
+
+    # Um perfil com cor própria pinta todos os jogadores daquele jogo.
+    run(env.daemon.set_profile("BLUS30001", {"led_color": "green"}))
+    run(env.daemon.refresh())
+    per_game = ic.read_values((env.yml.parent.parent / "BLUS30001" / "Default.yml").read_text(), 2)
+    assert (per_game["Color Value R"], per_game["Color Value G"]) == ("0", "255")
+    run(env.daemon.set_led_per_player(False))
+    run(env.daemon.refresh())
+    assert ic.read_values(env.yml.read_text(), 2)["Color Value R"] == "0"  # todos com a cor geral (azul)

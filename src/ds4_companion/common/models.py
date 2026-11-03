@@ -78,6 +78,10 @@ BATTERY_LOW_RGB = (0xFF, 0x00, 0x00)
 BATTERY_MID_RGB = (0xFF, 0x80, 0x00)
 
 
+# Uma cor por jogador, como no PS4 (1 azul, 2 vermelho, 3 verde, 4 rosa); 5 a 7 seguem a paleta.
+PLAYER_LEDS = {1: "blue", 2: "red", 3: "green", 4: "pink", 5: "cyan", 6: "orange", 7: "purple"}
+
+
 def led_preset(color_id: str) -> LedPreset:
     """Cor pelo nome (pt ou en) ou personalizada em `#RRGGBB`."""
     if HEX_COLOR.match(color_id):
@@ -143,6 +147,7 @@ class Status:
     vibration_pending: bool = False
     led_color: str = DEFAULT_LED
     led_mode: str = "fixed"
+    led_per_player: bool = False
     rpcs3_config_dir: str = ""
     backup_before_edit: bool = True
     error: str = ""

@@ -132,6 +132,12 @@ class LightPage(Page):
         )
         self.battery.connect("notify::active", self._on_battery)
         more.add(self.battery)
+        self.per_player = Adw.SwitchRow(
+            title=_("Uma cor por jogador"),
+            subtitle=_("Como no PS4: 1 azul, 2 vermelho, 3 verde, 4 rosa. Vale nos jogos do RPCS3."),
+        )
+        self.per_player.connect("notify::active", self._on_per_player)
+        more.add(self.per_player)
         self.prefs.add(more)
 
     def update(self, s: Status) -> None:
@@ -148,6 +154,7 @@ class LightPage(Page):
         else:
             self.custom.set_subtitle(_("Qualquer cor, escolhida no seletor."))
         self.battery.set_active(s.led_mode == "battery")
+        self.per_player.set_active(s.led_per_player)
         self._syncing = False
         if s.rpcs3_running:
             self.note.set_label(_("O RPCS3 está aberto: a cor vai para o controle quando ele fechar."))
@@ -165,6 +172,10 @@ class LightPage(Page):
     def _on_battery(self, row: Adw.SwitchRow, _pspec: object) -> None:
         if not self._syncing:
             self.ctx.call("SetLedMode", "battery" if row.get_active() else "fixed")
+
+    def _on_per_player(self, row: Adw.SwitchRow, _pspec: object) -> None:
+        if not self._syncing:
+            self.ctx.call("SetLedPerPlayer", row.get_active())
 
     def _on_toggled(self, swatch: Swatch) -> None:
         if swatch.get_active() and not self._syncing:

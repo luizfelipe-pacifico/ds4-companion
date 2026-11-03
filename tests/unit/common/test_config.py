@@ -194,3 +194,22 @@ def test_profiles_section_must_be_tables(tmp_path: Path) -> None:
     c, warnings = cfg.load(path)
     assert c.profiles == {}
     assert warnings
+
+
+def test_led_per_player_option(tmp_path: Path) -> None:
+    path = tmp_path / "config.toml"
+    path.write_text("[led]\nper_player = true\n")
+    c, warnings = cfg.load(path)
+    assert c.led.per_player
+    assert warnings == []
+    path.write_text('[led]\nper_player = "sim"\n')
+    c, warnings = cfg.load(path)
+    assert not c.led.per_player
+    assert warnings
+
+
+def test_player_colors_follow_ps4() -> None:
+    from ds4_companion.common.models import PLAYER_LEDS
+
+    assert [PLAYER_LEDS[n] for n in (1, 2, 3, 4)] == ["blue", "red", "green", "pink"]
+    assert set(PLAYER_LEDS) == set(range(1, 8))

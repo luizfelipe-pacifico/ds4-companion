@@ -250,3 +250,13 @@ def test_profile_over_limit_asks_before_calling(proxy: FakeProxy, monkeypatch: p
     assert "BLUS99999" not in proxy.profiles
     assert ds4ctl("profile", "set", "--game", "BLUS99999", "--volume", "2", "--yes")[0] == 0
     assert ds4ctl("profile", "set", "--game", "BLUS99999", "--led", "magenta")[0] == 1
+
+
+def test_led_per_player(proxy: FakeProxy) -> None:
+    code, text = ds4ctl("led-per-player", "on")
+    assert code == 0
+    assert proxy.calls[-1] == ("call_set_led_per_player", True)
+    assert "jogador" in text
+    assert ds4ctl("led-per-player", "off")[0] == 0
+    assert proxy.calls[-1] == ("call_set_led_per_player", False)
+    assert "uma cor por jogador" in cli.format_status(Status(led_per_player=True))

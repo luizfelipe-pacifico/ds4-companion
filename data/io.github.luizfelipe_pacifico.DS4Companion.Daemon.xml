@@ -27,6 +27,9 @@
     <method name="SetLedMode">
       <arg name="mode" direction="in" type="s"/>
     </method>
+    <method name="SetLedPerPlayer">
+      <arg name="enabled" direction="in" type="b"/>
+    </method>
     <method name="SetLimiter">
       <arg name="enabled" direction="in" type="b"/>
     </method>

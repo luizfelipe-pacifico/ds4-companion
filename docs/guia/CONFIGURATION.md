@@ -20,6 +20,7 @@ players = [1, 2]               # jogadores do RPCS3 que usam DS4 ou DualSense
 [led]
 color = "blue"                 # blue, red, green, pink, purple, cyan, orange, white, off ou "#RRGGBB"
 mode = "fixed"                 # fixed, ou battery: laranja abaixo de 50 %, vermelha abaixo de 20 %
+per_player = false             # no RPCS3, uma cor por jogador como no PS4 (1 azul, 2 vermelho, 3 verde, 4 rosa)
 
 [rpcs3]
 config_dir = "~/.config/rpcs3"
@@ -86,6 +87,7 @@ ds4ctl vibration --large 80 --small 100 [--swap|--no-swap] [--players 1 2]
 ds4ctl test-rumble [strong|weak|both]
 ds4ctl led rosa                     # azul, vermelho, …, desligada ou "#FF8800"
 ds4ctl led-mode battery             # a luz mostra a bateria (fixed volta à cor escolhida)
+ds4ctl led-per-player on            # no RPCS3, uma cor por jogador (5 a 7: ciano, laranja, roxo)
 ds4ctl test-tone                    # apito só no controle
 ds4ctl apps                         # apps no controle e o que está tocando agora
 ds4ctl apps add '*.exe'             # nome do processo ou padrão (Proton: *.exe)

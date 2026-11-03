@@ -25,7 +25,7 @@ from typing import Protocol
 
 from ..common import config as cfg
 from ..common.db import LIMIT_DB, clamp_db, db_to_volume, volume_to_db
-from ..common.models import LED_MODES, Connection, Model, Motor, Status, led_preset, led_rgb
+from ..common.models import LED_MODES, PLAYER_LEDS, Connection, Model, Motor, Status, led_preset, led_rgb
 from .audio import graph as audio_graph
 from .audio.pipewire import PipeWireError, write_test_tone
 from .device import EDGE_PRODUCT, Controller, pick, read_battery, redact
@@ -349,6 +349,7 @@ class Daemon:
             vibration_pending=self._rpcs3_pending,
             led_color=self.config.led.color,
             led_mode=self.config.led.mode,
+            led_per_player=self.config.led.per_player,
             rpcs3_config_dir=self.config.rpcs3.config_dir,
             backup_before_edit=self.config.rpcs3.backup_before_edit,
         )
@@ -458,7 +459,7 @@ class Daemon:
             with contextlib.suppress(OSError):
                 path.parent.rmdir()  # só se ficou vazia
         self._orphan_rpcs3_files = []
-        vib, led = self.config.vibration, self.config.led
+        vib = self.config.vibration
         for serial, profile in self.config.profiles.items():
             path = self._per_game_file(serial)
             wants = any(getattr(profile, k) is not None for k in RPCS3_PROFILE_FIELDS)
@@ -478,8 +479,7 @@ class Daemon:
                 vib.swap_motors if profile.swap_motors is None else profile.swap_motors,
             )
             text, _ = input_config.apply_vibration(text, vib.players, vibration)
-            color = led.color if profile.led_color is None else profile.led_color
-            text, _ = input_config.apply_color(text, vib.players, led_preset(color).rgb)
+            text, _ = self._apply_rpcs3_color(text, profile.led_color)
             if exists:
                 input_config.write_with_backup(path, text, backup=False)
             else:
@@ -632,6 +632,25 @@ class Daemon:
             raise DaemonError("Busy", "Feche o RPCS3 para testar: ele está usando o controle.")
         return c
 
+    async def set_led_per_player(self, enabled: bool) -> None:
+        """Uma cor por jogador no RPCS3 (como no PS4); o controle fora do jogo segue com a cor escolhida."""
+        self.config.led.per_player = enabled
+        self._rpcs3_pending = True
+        self._save()
+        await self.refresh()
+
+    def _apply_rpcs3_color(self, text: str, color: str | None) -> tuple[str, list[str]]:
+        """Cor da luz no Default.yml: `color` (do perfil) em todos, ou uma por jogador, ou a geral."""
+        players = self.config.vibration.players
+        if color is None and self.config.led.per_player:
+            warnings: list[str] = []
+            for player in players:
+                rgb = led_preset(PLAYER_LEDS.get(player, self.config.led.color)).rgb
+                text, found = input_config.apply_color(text, [player], rgb)
+                warnings += found
+            return text, warnings
+        return input_config.apply_color(text, players, led_preset(color or self.config.led.color).rgb)
+
     async def set_led_mode(self, mode: str) -> None:
         if mode not in LED_MODES:
             raise DaemonError("InvalidArgument", "Modo da luz precisa ser fixed ou battery.")
@@ -690,7 +709,7 @@ class Daemon:
             text, warnings = input_config.apply_vibration(
                 text, vib.players, input_config.Vibration(vib.large_percent, vib.small_percent, vib.swap_motors)
             )
-            text, color_warnings = input_config.apply_color(text, vib.players, led_preset(self.config.led.color).rgb)
+            text, color_warnings = self._apply_rpcs3_color(text, None)
             for warning in dict.fromkeys(warnings + color_warnings):
                 log.warning("RPCS3: %s", warning)
             want_backup = self.config.rpcs3.backup_before_edit and not self._backed_up

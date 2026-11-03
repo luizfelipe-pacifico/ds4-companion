@@ -37,7 +37,7 @@ SHOTS = [
     ("vibracao", "vibration", {"large_percent": 150, "players": [1, 2]}),
     ("audio-acima", "audio", {"volume_db": 2.0, "max_db": 3.0, "configured_max_db": 3.0}),
     ("vibracao-rpcs3-aberto", "vibration", {"rpcs3_running": True, "vibration_pending": True}),
-    ("luz", "light", {"led_color": "pink"}),
+    ("luz", "light", {"led_color": "pink", "led_per_player": True}),
     ("luz-personalizada", "light", {"led_color": "#FF8800", "led_mode": "battery"}),
     (
         "jogos",

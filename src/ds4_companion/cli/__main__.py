@@ -63,6 +63,8 @@ def build_parser() -> argparse.ArgumentParser:
     led.add_argument("color", help="azul, vermelho, verde, rosa, roxo, ciano, laranja, branco, desligada ou #RRGGBB")
     led_mode = sub.add_parser("led-mode", help="luz fixa ou mostrando a bateria")
     led_mode.add_argument("mode", choices=["fixed", "battery"])
+    per_player = sub.add_parser("led-per-player", help="uma cor por jogador no RPCS3, como no PS4")
+    per_player.add_argument("state", choices=["on", "off"])
 
     sub.add_parser("test-tone", help="toca um apito só no controle")
 
@@ -128,7 +130,8 @@ def format_status(s: Status) -> str:
     players = ", ".join(str(p) for p in s.players) or "nenhum"
     lines.append(f"  jogadores {players}{' · vale ao fechar o RPCS3' if s.vibration_pending else ''}")
     mode = " · mostra a bateria" if s.led_mode == "battery" else ""
-    lines.append(f"Luz: {LED_NAMES.get(s.led_color, s.led_color)}{mode}")
+    per_player = " · uma cor por jogador no RPCS3" if s.led_per_player else ""
+    lines.append(f"Luz: {LED_NAMES.get(s.led_color, s.led_color)}{mode}{per_player}")
     if s.error:
         lines.append(f"Aviso: {s.error}")
     return "\n".join(lines)
@@ -170,6 +173,14 @@ async def run(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
         await proxy.call_set_led_mode(args.mode)
         text = "mostra a bateria" if args.mode == "battery" else "fica na cor escolhida"
         print(await led_outcome(proxy, f"A luz {text}."), file=out)
+    elif cmd == "led-per-player":
+        await proxy.call_set_led_per_player(args.state == "on")
+        text = (
+            "No RPCS3, cada jogador ganha a sua cor (1 azul, 2 vermelho, 3 verde, 4 rosa)."
+            if args.state == "on"
+            else "No RPCS3, todos os jogadores usam a cor escolhida."
+        )
+        print(await led_outcome(proxy, text), file=out)
     elif cmd == "limiter":
         await proxy.call_set_limiter(args.state == "on")
         print("Limitador " + ("ligado." if args.state == "on" else "desligado."), file=out)

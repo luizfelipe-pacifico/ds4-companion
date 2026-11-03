@@ -526,3 +526,14 @@ def test_profile_editor_shows_values_without_expanding(ctx: Ctx) -> None:
     # Perfil novo: nada a apagar.
     new = ProfileEditor(ctx, "BLES00003", "Novo", {}, max_db=0.0)
     assert not new.delete_row.get_visible()
+
+
+def test_light_page_per_player_switch(ctx: Ctx, client: FakeClient) -> None:
+    page = LightPage(ctx)
+    page.update(sample(led_per_player=True))
+    assert page.per_player.get_active()
+    page.per_player.set_active(False)
+    assert client.calls[-1] == ("SetLedPerPlayer", False)
+    calls = len(client.calls)
+    page.update(sample(led_per_player=True))  # vindo do daemon: não manda de volta
+    assert len(client.calls) == calls

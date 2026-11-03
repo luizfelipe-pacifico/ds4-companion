@@ -60,6 +60,7 @@ class VibrationConfig:
 class LedConfig:
     color: str = DEFAULT_LED
     mode: str = "fixed"
+    per_player: bool = False
 
 
 @dataclass
@@ -207,7 +208,7 @@ SCHEMA: dict[str, dict[str, Validator]] = {
         "swap_motors": _bool,
         "players": validate_players,
     },
-    "led": {"color": _led, "mode": _led_mode},
+    "led": {"color": _led, "mode": _led_mode, "per_player": _bool},
     "rpcs3": {"config_dir": _path, "backup_before_edit": _bool},
     "ui": {"start_minimized": _bool, "tray_icon": _bool},
     "updates": {"check_on_start": _bool},

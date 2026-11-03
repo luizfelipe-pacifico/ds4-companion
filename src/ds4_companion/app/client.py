@@ -32,6 +32,7 @@ SIGNATURES = {
     "TestRumble": "(s)",
     "SetLed": "(s)",
     "SetLedMode": "(s)",
+    "SetLedPerPlayer": "(b)",
     "PlayTestTone": "()",
     "SetApps": "(as)",
     "SetRpcs3Dir": "(s)",

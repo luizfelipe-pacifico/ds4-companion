@@ -52,6 +52,9 @@ Capturas com estados sintéticos, sem daemon nem hardware: `dbus-run-session -- 
 ```
 - Abaixo das amostras: **Cor personalizada** (seletor de cor do GTK; marcada com ✓ e o código `#RRGGBB`)
   e **Mostrar a bateria na luz** (laranja abaixo de 50 %, vermelha abaixo de 20 %).
+- **Uma cor por jogador:** no RPCS3, cada jogador ganha a sua cor, como no PS4 (1 azul, 2 vermelho,
+  3 verde, 4 rosa; 5 a 7 ciano, laranja e roxo). O controle fora do jogo segue com a cor escolhida, e
+  um perfil com cor própria pinta todos os jogadores daquele jogo.
 - As amostras mostram a cor real do LED (exceção da paleta). A escolhida ganha anel branco e rótulo
   em peso 500, além do fundo azul 16 %: a seleção não depende só de cor.
 

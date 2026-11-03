@@ -1,0 +1,25 @@
+# Arquivo sintético no formato do RPCS3 (não é cópia de nenhuma máquina real).
+Player 1 Input:
+  Handler: DualShock 4
+  Device: "DS4 Pad #1"
+  Config:
+    Left Stick Left: LS X-
+    Large Vibration Motor Multiplier: 100
+    Small Vibration Motor Multiplier: 100
+    Switch Vibration Motors: false
+    Color Value R: 0
+    Color Value G: 0
+    Color Value B: 20
+  Buddy Device: "Null"
+Player 2 Input:
+  Handler: DualShock 4
+  Device: "DS4 Pad #2"
+  Config:
+    # comentário dentro do bloco
+    Large Vibration Motor Multiplier: 80
+
+Player 3 Input:
+  Handler: Keyboard
+  Device: Keyboard
+  Config:
+    Large Vibration Motor Multiplier: 100

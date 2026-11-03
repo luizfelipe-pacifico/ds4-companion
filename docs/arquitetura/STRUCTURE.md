@@ -92,7 +92,7 @@ src/ds4_companion/
 │   ├── __main__.py         # python -m ds4_companion.daemon
 │   ├── audio/              # links do PipeWire, volume em dB, teto, limitador
 │   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32) e acesso ao hidraw
-│   ├── rpcs3/              # leitura/edição do Default.yml com backup
+│   ├── rpcs3/              # edição do Default.yml com backup; RPCS3 aberto (/proc)
 │   ├── device.py           # detecção cabo ↔ Bluetooth e bateria via udev
 │   └── dbus.py             # serviço D-Bus exposto para GUI e CLI
 ├── cli/                    # ds4ctl
@@ -135,7 +135,7 @@ Espelha `src/`: o teste de `daemon/hid/` fica em `tests/unit/daemon/test_hid.py`
 |---|---|
 | `unit/` ✅ | Rápidos e sem hardware: conversão dB, relatórios HID e CRC32, parser de config, edição do YAML |
 | `integration/` 🗓️ | PipeWire de teste com `pw-play` fingindo ser o RPCS3 |
-| `fixtures/` 🗓️ | Dados de exemplo **sintéticos** (nunca dumps reais de dispositivo) |
+| `fixtures/` ✅ | Dados de exemplo **sintéticos** (nunca dumps reais de dispositivo) |
 | `ci/` ✅ | Testes dos scripts de CI |
 
 Testes com hardware real são manuais (checklist em [CONTRIBUTING](../../CONTRIBUTING.md#testes)).

@@ -10,6 +10,9 @@
   estado do controle (fone, cabo) e escrita no `hidraw` com erro claro quando falta permissão.
 - Detecção do DualShock 4 pelo udev (cabo, Bluetooth e adaptador sem fio), bateria pelo
   `power_supply` e MAC sempre mascarado nos logs.
+- Edição do `Default.yml` do RPCS3 por linha (vibração e cor da luz), só em jogadores com
+  DualShock 4, com backup `Default.yml.bak-AAAAMMDD-HHMMSS` e gravação atômica; detecção do
+  RPCS3 aberto pelo `/proc`.
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

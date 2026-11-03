@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Avisos do pacman depois de instalar, atualizar e remover.
+
+post_install() {
+  echo ">>> Desconecte e conecte o DualShock 4 para a regra de permissão valer."
+  echo ">>> Abra o DS4 Companion no menu de apps: ele ativa o serviço na primeira abertura."
+  echo ">>> Se você usava os scripts antigos (ds4-audio-mirror), rode o install.sh ou veja INSTALL.md."
+}
+
+post_upgrade() {
+  echo ">>> Reinicie o serviço para usar a versão nova: systemctl --user restart ds4-companion.service"
+}
+
+post_remove() {
+  echo ">>> Para parar o serviço desta sessão: systemctl --user disable --now ds4-companion.service"
+  echo ">>> Suas configurações ficam em ~/.config/ds4-companion (apague se quiser)."
+}

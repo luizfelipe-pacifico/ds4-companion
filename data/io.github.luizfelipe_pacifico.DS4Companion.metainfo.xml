@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<component type="desktop-application">
+  <id>io.github.luizfelipe_pacifico.DS4Companion</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>DS4 Companion</name>
+  <summary>O som do RPCS3 também no DualShock 4</summary>
+  <developer id="io.github.luizfelipe_pacifico">
+    <name>Contribuidores do DS4 Companion</name>
+  </developer>
+  <description>
+    <p>
+      Manda o som do emulador RPCS3 em paralelo para o alto-falante ou o fone do DualShock 4,
+      sem trocar a saída de áudio que você já usa.
+    </p>
+    <ul>
+      <li>Volume do controle em dB, com teto que protege o alto-falante</li>
+      <li>Força da vibração dos motores e teste no controle</li>
+      <li>Cor da barra de luz</li>
+      <li>Cabo USB e Bluetooth, com indicador de bateria</li>
+    </ul>
+    <p>
+      PlayStation e DualShock são marcas da Sony Interactive Entertainment. Este projeto não é
+      afiliado à Sony.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.github.luizfelipe_pacifico.DS4Companion.desktop</launchable>
+  <url type="homepage">https://github.com/luizfelipe-pacifico/ds4-companion</url>
+  <url type="bugtracker">https://github.com/luizfelipe-pacifico/ds4-companion/issues</url>
+  <url type="vcs-browser">https://github.com/luizfelipe-pacifico/ds4-companion</url>
+  <categories>
+    <category>Settings</category>
+    <category>HardwareSettings</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  <provides>
+    <binary>ds4-companion</binary>
+    <binary>ds4ctl</binary>
+    <binary>ds4-companiond</binary>
+  </provides>
+  <releases>
+    <release version="0.1.0" date="2026-11-02">
+      <description>
+        <p>Primeira versão: daemon, CLI ds4ctl e interface gráfica.</p>
+      </description>
+    </release>
+  </releases>
+</component>

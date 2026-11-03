@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="data/icons/hicolor/scalable/apps/ds4-companion.svg" width="128" height="128" alt="Ícone do DS4 Companion: controle azul sobre fundo preto">
+<img src="data/icons/hicolor/scalable/apps/io.github.luizfelipe_pacifico.DS4Companion.svg" width="128" height="128" alt="Ícone do DS4 Companion: controle azul sobre fundo preto">
 
 # DS4 Companion
 

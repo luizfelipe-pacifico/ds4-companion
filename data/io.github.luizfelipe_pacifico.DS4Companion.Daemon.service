@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Ativação D-Bus: o ds4ctl sobe o daemon pelo systemd se ele não estiver rodando.
+[D-BUS Service]
+Name=io.github.luizfelipe_pacifico.DS4Companion.Daemon
+Exec=/usr/bin/ds4-companiond --foreground
+SystemdService=ds4-companion.service

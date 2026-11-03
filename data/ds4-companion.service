@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Serviço de usuário do ds4-companiond. Ativado pelo app na primeira abertura ou por:
+#   systemctl --user enable --now ds4-companion.service
+[Unit]
+Description=DS4 Companion (som do RPCS3 no DualShock 4, volume e vibração)
+Documentation=https://github.com/luizfelipe-pacifico/ds4-companion
+PartOf=graphical-session.target
+After=graphical-session.target pipewire.service wireplumber.service
+
+[Service]
+Type=dbus
+BusName=io.github.luizfelipe_pacifico.DS4Companion.Daemon
+ExecStart=/usr/bin/ds4-companiond --foreground
+# Se o daemon cair no meio de um teste de vibração, os motores param (SECURITY.md).
+ExecStopPost=/usr/bin/ds4-companiond --stop-motors
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+LockPersonality=yes
+RestrictSUIDSGID=yes
+
+[Install]
+WantedBy=graphical-session.target

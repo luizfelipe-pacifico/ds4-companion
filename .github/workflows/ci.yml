@@ -263,8 +263,8 @@ jobs:
           pacman -U --noconfirm ./*.pkg.tar.zst
           ds4ctl --version
           ds4-companion --version
-          desktop-file-validate /usr/share/applications/*ds4-companion*.desktop
-          appstreamcli validate --no-net /usr/share/metainfo/*ds4-companion*.metainfo.xml
+          desktop-file-validate /usr/share/applications/io.github.luizfelipe_pacifico.DS4Companion.desktop
+          appstreamcli validate --no-net /usr/share/metainfo/io.github.luizfelipe_pacifico.DS4Companion.metainfo.xml
           systemd-analyze verify --user /usr/lib/systemd/user/ds4-companion.service
           udevadm verify /usr/lib/udev/rules.d/70-ds4-companion.rules
           pacman -R --noconfirm ds4-companion

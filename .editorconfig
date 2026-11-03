@@ -16,3 +16,7 @@ trim_trailing_whitespace = false
 
 [PKGBUILD]
 indent_size = 2
+
+# Gerado por makepkg --printsrcinfo: o formato usa tabulação.
+[.SRCINFO]
+indent_style = tab

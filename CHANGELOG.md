@@ -35,6 +35,10 @@
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
 - `PRODUCT.md` e o contrato de direção da interface em `.impeccable/surfaces/app.md`.
+- Empacotamento: `packaging/PKGBUILD` (+ `.SRCINFO` e avisos pós-instalação), `.desktop`, AppStream,
+  serviço de usuário com `ExecStopPost` que para os motores, ativação D-Bus para o `ds4ctl`, regra
+  udev com `uaccess` (cabo, Bluetooth e adaptador) e `install.sh` (confere `SHA256SUMS`, só usa
+  `sudo` no `pacman`, migra os scripts da Fase 0, `--uninstall`, `--no-service`).
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.
@@ -50,6 +54,7 @@
 - `CLAUDE.md` e skills de design (`impeccable`, `apple-design`) em `.claude/`.
 
 ### Alterado
+- Ícones renomeados para o app ID: `data/icons/hicolor/*/apps/io.github.luizfelipe_pacifico.DS4Companion*.svg` (ADR 0008).
 - Documentação reorganizada em `docs/` por assunto: `guia/`, `arquitetura/`, `design/`, `desenvolvimento/`.
   `ARCHITECTURE.md` e `ROADMAP.md` saíram da raiz.
 - README reescrito: ícone, badges, diagrama do fluxo de áudio e índice visual da documentação.

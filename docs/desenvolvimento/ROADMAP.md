@@ -45,13 +45,13 @@
       [DESIGN.md](../design/DESIGN.md): desenho próprio, faixa de luz `led-blue` sobre `black-0`, sem logotipo da PlayStation
 
 ## Fase 3 — Empacotamento (v0.3)
-- [ ] `PKGBUILD` (instala app, serviço, regra udev, .desktop, ícone SVG)
+- [x] `PKGBUILD` (instala app, serviço, regra udev, .desktop, ícone SVG)
 - [ ] Publicar no AUR
 - [ ] Release no GitHub com `.pkg.tar.zst` assinado, `SHA256SUMS` e `install.sh`
       (instalação por um comando: `sudo pacman -U <url>`, ver [ADR 0005](../arquitetura/adr/0005-instalacao-por-um-comando.md))
-- [ ] `install.sh`: instala, migra scripts da Fase 0, ativa o serviço; `--uninstall`; `shellcheck` + teste em container no CI
+- [x] `install.sh`: instala, migra scripts da Fase 0, ativa o serviço; `--uninstall`; `shellcheck` + teste em container no CI
 - [x] App ativa o serviço de usuário na primeira abertura
-- [ ] Migração automática dos scripts da Fase 0
+- [x] Migração automática dos scripts da Fase 0 (pelo `install.sh`)
 
 ## Fase 4 — Recursos extras (v0.4+)
 - [ ] Limitador via `filter-chain` do PipeWire

@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
+# Maintainer: luizfelipe-pacifico (https://github.com/luizfelipe-pacifico)
+#
+# Monta o pacote a partir deste repositório (packaging/..). É o que o CI e o `makepkg -si`
+# local usam. Para o AUR, `source` passa a apontar para o tarball da tag vX.Y.Z (ver INSTALL.md).
+
+pkgname=ds4-companion
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="O som do RPCS3 em paralelo no DualShock 4, com volume em dB, vibração e cor da luz"
+arch=('any')
+url="https://github.com/luizfelipe-pacifico/ds4-companion"
+license=('GPL-3.0-or-later')
+depends=(
+  'python'
+  'python-gobject'
+  'gtk4'
+  'libadwaita'
+  'python-pyudev'
+  'python-dbus-next'
+  'inter-font'
+  'pipewire'
+  'wireplumber'
+  'systemd'
+)
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel' 'glib2')
+optdepends=(
+  'rpcs3-bin: o emulador cujo som vai para o controle'
+  'gamemode: desempenho ao abrir o RPCS3'
+  'bluez: controle por Bluetooth'
+)
+install=ds4-companion.install
+
+_app_id=io.github.luizfelipe_pacifico.DS4Companion
+
+build() {
+  local _root="$startdir/.."
+  python -m build --wheel --no-isolation --outdir "$srcdir/dist" "$_root"
+  glib-compile-resources --sourcedir="$_root/data" --target="$srcdir/ds4-companion.gresource" \
+    "$_root/data/ds4-companion.gresource.xml"
+}
+
+package() {
+  local _root="$startdir/.."
+  local _data="$_root/data"
+  python -m installer --destdir="$pkgdir" "$srcdir"/dist/*.whl
+
+  install -Dm644 "$srcdir/ds4-companion.gresource" "$pkgdir/usr/share/ds4-companion/ds4-companion.gresource"
+  install -Dm644 "$_data/$_app_id.desktop" "$pkgdir/usr/share/applications/$_app_id.desktop"
+  install -Dm644 "$_data/$_app_id.metainfo.xml" "$pkgdir/usr/share/metainfo/$_app_id.metainfo.xml"
+  install -Dm644 "$_data/icons/hicolor/scalable/apps/$_app_id.svg" \
+    "$pkgdir/usr/share/icons/hicolor/scalable/apps/$_app_id.svg"
+  install -Dm644 "$_data/icons/hicolor/symbolic/apps/$_app_id-symbolic.svg" \
+    "$pkgdir/usr/share/icons/hicolor/symbolic/apps/$_app_id-symbolic.svg"
+  install -Dm644 "$_data/ds4-companion.service" "$pkgdir/usr/lib/systemd/user/ds4-companion.service"
+  install -Dm644 "$_data/$_app_id.Daemon.service" "$pkgdir/usr/share/dbus-1/services/$_app_id.Daemon.service"
+  install -Dm644 "$_data/$_app_id.Daemon.xml" "$pkgdir/usr/share/dbus-1/interfaces/$_app_id.Daemon.xml"
+  install -Dm644 "$_data/70-ds4-companion.rules" "$pkgdir/usr/lib/udev/rules.d/70-ds4-companion.rules"
+  install -Dm644 "$_root/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

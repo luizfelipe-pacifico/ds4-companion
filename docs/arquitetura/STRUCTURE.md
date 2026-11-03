@@ -13,7 +13,7 @@ ds4-companion/
 ├── SECURITY.md  CHANGELOG.md  LICENSE                 ✅
 ├── CLAUDE.md                                          ✅ guia para o Claude Code
 ├── pyproject.toml                                     ✅ metadados, dependências e config das ferramentas
-├── install.sh                                         🗓️ instalador executável (ADR 0005)
+├── install.sh                                         ✅ instalador executável (ADR 0005)
 │
 ├── src/ds4_companion/                                 ✅ código Python
 │   ├── app/                                           ✅ GUI (GTK4/libadwaita)
@@ -24,14 +24,14 @@ ds4-companion/
 ├── data/                                              arquivos instalados que não são código
 │   ├── icons/hicolor/                                 ✅ ícone do app (SVG)
 │   ├── illustrations/                                 ✅ ilustrações das telas de estado (SVG)
-│   └── …                                              🗓️ .desktop, AppStream, serviço, udev, D-Bus, CSS
+│   └── …                                              ✅ .desktop, AppStream, serviço, udev, D-Bus, CSS
 │
 ├── po/                                                🗓️ traduções (gettext)
 ├── tests/                                             testes automatizados
 │   ├── ci/                                            ✅ testes dos verificadores do CI
 │   ├── unit/                                          ✅
 │   └── integration/                                   ✅
-├── packaging/                                         🗓️ PKGBUILD e arquivos do AUR
+├── packaging/                                         ✅ PKGBUILD e arquivos do AUR
 ├── scripts/                                           scripts de desenvolvimento e CI
 │   ├── check.sh                                       ✅ roda as verificações do CI localmente
 │   └── ci/                                            ✅ verificadores (SVG, dados sensíveis, SPDX, commits)
@@ -55,7 +55,7 @@ Só o que o GitHub, o Python ou o usuário procuram na raiz. Todo o resto vai pa
 | `LICENSE` | GPL-3.0-or-later |
 | `CLAUDE.md` | Regras e comandos para o Claude Code |
 | `pyproject.toml` ✅ | Fonte única de metadados e config de `ruff`, `mypy` e `pytest` |
-| `install.sh` 🗓️ | Instalador para usuário comum ([ADR 0005](adr/0005-instalacao-por-um-comando.md)) |
+| `install.sh` ✅ | Instalador para usuário comum ([ADR 0005](adr/0005-instalacao-por-um-comando.md)) |
 | `.editorconfig`, `.gitattributes`, `.gitignore` | Formatação, fim de linha LF, o que nunca vai para o Git |
 
 ## `docs/` — documentação
@@ -116,19 +116,20 @@ Tudo que o pacote instala e não é Python. Nomes em `kebab-case` e em inglês.
 
 | Caminho | Instala em | Status |
 |---|---|---|
-| `icons/hicolor/scalable/apps/ds4-companion.svg` | `/usr/share/icons/hicolor/scalable/apps/` | ✅ |
-| `icons/hicolor/symbolic/apps/ds4-companion-symbolic.svg` | `/usr/share/icons/hicolor/symbolic/apps/` | ✅ |
+| `icons/hicolor/scalable/apps/io.github.luizfelipe_pacifico.DS4Companion.svg` | `/usr/share/icons/hicolor/scalable/apps/` | ✅ |
+| `icons/hicolor/symbolic/apps/io.github.luizfelipe_pacifico.DS4Companion-symbolic.svg` | `/usr/share/icons/hicolor/symbolic/apps/` | ✅ |
 | `icons/scalable/actions/*-symbolic.svg` (ícones próprios da interface) | GResource | ✅ |
 | `illustrations/*.svg` ([catálogo](../design/ILLUSTRATIONS.md)) | GResource | ✅ |
 | `style.css` (CSS do [DESIGN.md](../design/DESIGN.md#aplicação-no-gtk4libadwaita)) | GResource | ✅ |
 | `ds4-companion.gresource.xml` | compilado para `/usr/share/ds4-companion/ds4-companion.gresource` | ✅ |
-| `<app-id>.desktop.in` | `/usr/share/applications/` | 🗓️ |
-| `<app-id>.metainfo.xml.in` | `/usr/share/metainfo/` | 🗓️ |
-| `ds4-companion.service` | `/usr/lib/systemd/user/` | 🗓️ |
-| `70-ds4-companion.rules` | `/usr/lib/udev/rules.d/` | 🗓️ |
+| `io.github.luizfelipe_pacifico.DS4Companion.desktop` | `/usr/share/applications/` | ✅ |
+| `io.github.luizfelipe_pacifico.DS4Companion.metainfo.xml` | `/usr/share/metainfo/` | ✅ |
+| `ds4-companion.service` | `/usr/lib/systemd/user/` | ✅ |
+| `io.github.luizfelipe_pacifico.DS4Companion.Daemon.service` (ativação D-Bus) | `/usr/share/dbus-1/services/` | ✅ |
+| `70-ds4-companion.rules` | `/usr/lib/udev/rules.d/` | ✅ |
 | `io.github.luizfelipe_pacifico.DS4Companion.Daemon.xml` (interface D-Bus) | `/usr/share/dbus-1/interfaces/` | ✅ |
 
-Os arquivos com `<app-id>` e o ícone `ds4-companion*.svg` são renomeados quando o app ID for definido.
+Os nomes seguem o app ID da [ADR 0008](adr/0008-app-id-e-api-dbus.md).
 
 ## `tests/` — testes
 
@@ -143,7 +144,7 @@ Espelha `src/`: o teste de `daemon/hid/` fica em `tests/unit/daemon/test_hid.py`
 
 Testes com hardware real são manuais (checklist em [CONTRIBUTING](../../CONTRIBUTING.md#testes)).
 
-## `packaging/` — empacotamento 🗓️
+## `packaging/` — empacotamento ✅
 
 | Arquivo | Para quê |
 |---|---|

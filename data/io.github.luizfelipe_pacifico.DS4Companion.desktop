@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=DS4 Companion
+GenericName=Som e vibração do DualShock 4
+Comment=O som do RPCS3 também no DualShock 4, com volume em dB, vibração e cor da luz
+Exec=ds4-companion
+Icon=io.github.luizfelipe_pacifico.DS4Companion
+Terminal=false
+Categories=Settings;HardwareSettings;
+Keywords=DualShock;DS4;RPCS3;controle;gamepad;áudio;vibração;PS4;
+StartupNotify=true

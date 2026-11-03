@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# DualShock 4 (054c: 05c4, 09cc e o adaptador 0ba0): acesso ao hidraw só para quem está na sessão
+# ativa (uaccess), nunca MODE="0666" (SECURITY.md). Precisa vir antes de 73-seat-late.rules.
+
+# Cabo USB e adaptador sem fio
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="05c4|09cc|0ba0", TAG+="uaccess"
+
+# Bluetooth (o pai HID se chama 0005:054C:<produto>.<n>)
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:054C:05C4.*|0005:054C:09CC.*", TAG+="uaccess"

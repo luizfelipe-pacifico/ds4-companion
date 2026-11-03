@@ -171,10 +171,16 @@ jobs:
             --cov-fail-under=80 --junitxml=junit.xml
       - name: Vulnerabilidades nas dependências Python
         # O próprio pacote está instalado como editável e o --strict trataria isso como falha;
-        # por isso a auditoria lê o freeze sem ele (inclui os pacotes do Arch do venv).
+        # por isso a auditoria lê o freeze sem ele. O venv enxerga todos os pacotes Python do
+        # Arch (--system-site-packages), e alguns não existem no PyPI (ex.: nftables), o que o
+        # --strict também reprova: audita o que o pip instalou no venv (--local) mais as
+        # dependências do app que vêm do pacman. O resto do sistema é responsabilidade do Arch.
         # Em caso de falha, cada linha da saída vira uma anotação, visível sem acesso aos logs.
         run: |
-          .venv/bin/pip freeze --exclude-editable > "$RUNNER_TEMP/requisitos.txt"
+          {
+            .venv/bin/pip freeze --local --exclude-editable
+            .venv/bin/pip freeze --exclude-editable | grep -iE '^(pyudev|dbus[-_]next|pygobject)=='
+          } | sort -u > "$RUNNER_TEMP/requisitos.txt"
           if ! .venv/bin/pip-audit --strict --disable-pip --no-deps -r "$RUNNER_TEMP/requisitos.txt" \
               > "$RUNNER_TEMP/pip-audit.txt" 2>&1; then
             cat "$RUNNER_TEMP/requisitos.txt" "$RUNNER_TEMP/pip-audit.txt"

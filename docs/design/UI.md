@@ -1,6 +1,6 @@
 # Interface
 
-Janela GTK4/libadwaita com 5 páginas na barra lateral (Status, Áudio, Vibração, Luz, Avançado). Cores e
+Janela GTK4/libadwaita com 6 páginas na barra lateral (Status, Áudio, Vibração, Luz, Jogos, Avançado). Cores e
 fonte em [DESIGN.md](DESIGN.md). Abaixo de 600 sp a barra lateral vira navegação com voltar.
 
 Capturas com estados sintéticos, sem daemon nem hardware: `dbus-run-session -- scripts/screenshots.sh <pasta>`
@@ -54,6 +54,22 @@ Capturas com estados sintéticos, sem daemon nem hardware: `dbus-run-session -- 
   e **Mostrar a bateria na luz** (laranja abaixo de 50 %, vermelha abaixo de 20 %).
 - As amostras mostram a cor real do LED (exceção da paleta). A escolhida ganha anel branco e rótulo
   em peso 500, além do fundo azul 16 %: a seleção não depende só de cor.
+
+## Jogos
+```
+ Jogo aberto
+   Jogo de Teste · BLUS30001                     [ Criar perfil | Editar perfil ]
+ Perfis — cada jogo pode ter som, volume, vibração e luz próprios
+   Jogo de Luta     NPEB00002 · Som no controle desligado · Luz Vermelho        ›
+   Jogo de Teste    Ativo agora · BLUS30001 · Volume −3 dB · Motor forte 150 %   ›
+```
+- Sem jogo aberto, o topo diz "Abra um jogo no RPCS3 para criar o perfil dele"; sem perfis, a
+  lista mostra o estado vazio "Nenhum perfil ainda".
+- O editor (`AdwDialog`) tem **Som no controle** (Como no geral / Ligado / Desligado) e três linhas
+  opcionais com chave: **Volume próprio**, **Motores próprios** e **Cor própria**. Desligada, vale o
+  geral; o valor fica no subtítulo, sem precisar expandir. **Salvar** no cabeçalho; volume acima de
+  0 dB pede confirmação; **Apagar perfil** (com confirmação) só aparece num perfil que já existe.
+- O título do jogo vem do log do RPCS3: aparece como texto puro, nunca como markup.
 
 ## Avançado
 - Pasta do RPCS3 (seletor de pasta), backup antes de editar, ver registros do serviço

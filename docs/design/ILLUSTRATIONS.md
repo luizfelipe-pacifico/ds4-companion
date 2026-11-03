@@ -89,9 +89,9 @@ tela. Os textos são o ponto de partida para o `gettext`.
 - **Texto alternativo:** "Lista vazia"
 - **Título:** depende da lista: *Nenhum app extra* / *Nenhum perfil ainda*
 - **Descrição:** *Só o RPCS3 vai para o controle. Adicione outros apps se quiser.* /
-  *Crie um perfil para mudar volume e vibração por jogo.*
+  *Com um jogo aberto no RPCS3, crie o perfil dele aqui. Sem perfil, vale o ajuste geral.*
 - **Botão:** ＋ Adicionar
-- **Onde:** Áudio → Apps espelhados; Perfis (v0.4).
+- **Onde:** Áudio → Apps espelhados; Jogos → Perfis.
 
 ### `bluetooth-no-audio.svg` — aviso
 - **Desenho:** controle presente com a faixa de luz acesa (vibração e luz funcionam), selo ativo de

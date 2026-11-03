@@ -36,6 +36,7 @@ App nativo para Arch Linux, em GTK4 + libadwaita.
 | 🔌 | Detecção automática cabo ↔ Bluetooth | ✅ | ✅ |
 | 🔋 | Indicador de bateria | ✅ | ✅ |
 | 🎮 | DualShock 4 e DualSense (PS5), inclusive o Edge | ✅ | ✅ |
+| 🕹️ | Perfis por jogo: som, volume, vibração e luz próprios de cada jogo do RPCS3 | ✅ | ✅ |
 
 **"Em paralelo"** quer dizer: a saída que você usa (notebook, monitor HDMI, fone de ouvido) **não muda**.
 O controle recebe uma cópia do som do jogo ao mesmo tempo.

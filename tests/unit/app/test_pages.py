@@ -399,3 +399,130 @@ def test_audio_suggestion_comes_back_when_daemon_refuses(ctx: Ctx, client: FakeC
     assert ctx.toasts_seen[-1] == "Não deu para salvar a configuração."
     assert page._suggestion_rows[0].get_visible()
     assert page.suggestions.get_visible()
+
+
+# --- Jogos (perfis, ADR 0012) ---------------------------------------------------------------
+
+from gi.repository import GLib  # noqa: E402
+
+from ds4_companion.app.pages.games import GamesPage, ProfileEditor, profile_summary  # noqa: E402
+
+PROFILES = {
+    "BLUS30001": {"title": "Jogo & Cia", "volume_db": -3.0, "large_percent": 150},
+    "NPEB00002": {"title": "Outro", "mirror_enabled": False},
+}
+
+
+def test_profile_summary() -> None:
+    assert profile_summary(PROFILES["BLUS30001"]) == "Volume −3 dB · Motor forte 150 %"
+    assert profile_summary(PROFILES["NPEB00002"]) == "Som no controle desligado"
+    assert profile_summary({"title": "x"}) == "Sem ajustes próprios: vale o geral"
+
+
+def test_games_page_lists_profiles_and_running_game(ctx: Ctx, client: FakeClient) -> None:
+    client.results["GetProfiles"] = PROFILES
+    page = GamesPage(ctx)
+    page.update(sample(profiles=sorted(PROFILES)))
+    assert client.calls[-1] == ("GetProfiles",)
+    rows = page._profile_rows
+    assert [r.get_title() for r in rows] == ["Jogo & Cia", "Outro"]
+    assert not any(r.get_use_markup() for r in rows)  # títulos vêm do log do RPCS3
+    assert "BLUS30001" in rows[0].get_subtitle()
+
+    # Sem jogo aberto: estado inline, nada de botão.
+    assert page.no_game.get_visible()
+    assert not page.current.get_visible()
+
+    page.update(
+        sample(
+            rpcs3_running=True,
+            game_serial="BLUS30001",
+            game_title="Jogo & Cia",
+            profile="BLUS30001",
+            profiles=sorted(PROFILES),
+        )
+    )
+    assert page.current.get_visible()
+    assert page.current_button.get_label() == "Editar perfil"
+    assert "Ativo agora" in page._profile_rows[0].get_subtitle()
+
+    page.update(sample(rpcs3_running=True, game_serial="BLES00003", game_title="Novo", profiles=sorted(PROFILES)))
+    assert page.current_button.get_label() == "Criar perfil"
+    editor = page.open_editor("BLES00003")
+    assert editor.serial == "BLES00003"
+    assert editor.title_text == "Novo"
+
+
+def test_games_page_empty(ctx: Ctx, client: FakeClient) -> None:
+    client.results["GetProfiles"] = {}
+    page = GamesPage(ctx)
+    page.update(sample())
+    assert page.empty.get_visible()
+    assert page._profile_rows == []
+
+
+def test_profile_editor_builds_values(ctx: Ctx, client: FakeClient) -> None:
+    editor = ProfileEditor(ctx, "BLUS30001", "Jogo", PROFILES["BLUS30001"], max_db=0.0)
+    assert editor.volume.get_enable_expansion()
+    assert editor.volume_db.get_value() == -3.0
+    assert editor.motors.get_enable_expansion()
+    assert not editor.color.get_enable_expansion()
+    assert editor.values() == {
+        "title": "Jogo",
+        "volume_db": -3.0,
+        "large_percent": 150,
+        "small_percent": 100,
+        "swap_motors": False,
+    }
+
+    editor.mirror.set_selected(2)  # desligado
+    editor.motors.set_enable_expansion(False)
+    editor.color.set_enable_expansion(True)
+    editor.color_choice.set_selected(1)  # vermelho
+    assert editor.values() == {"title": "Jogo", "mirror_enabled": False, "volume_db": -3.0, "led_color": "red"}
+
+    editor.save()
+    method, serial, values, confirm = client.calls[-1]
+    assert (method, serial, confirm) == ("SetProfile", "BLUS30001", False)
+    assert {k: v.unpack() for k, v in values.items()}["led_color"] == "red"
+    assert isinstance(values["volume_db"], GLib.Variant)
+    assert values["volume_db"].get_type_string() == "d"
+    assert ctx.toasts_seen[-1] == "Perfil de Jogo salvo."
+
+
+def test_profile_editor_over_limit_asks_first_and_delete_confirms(ctx: Ctx, client: FakeClient) -> None:
+    editor = ProfileEditor(ctx, "BLUS30001", "Jogo", {"title": "Jogo", "volume_db": 2.0}, max_db=3.0)
+    calls = len(client.calls)
+    editor.save()
+    assert len(client.calls) == calls  # pede confirmação antes
+    heading, accept = ctx.confirms[-1]
+    assert "0 dB" in heading
+    accept()
+    assert client.calls[-1][0] == "SetProfile"
+    assert client.calls[-1][3] is True
+
+    editor.confirm_delete()
+    heading, accept = ctx.confirms[-1]
+    assert "Apagar" in heading
+    accept()
+    assert client.calls[-1] == ("DeleteProfile", "BLUS30001")
+
+
+def test_profile_editor_shows_values_without_expanding(ctx: Ctx) -> None:
+    editor = ProfileEditor(ctx, "BLUS30001", "Jogo", PROFILES["BLUS30001"], max_db=0.0)
+    assert editor.volume.get_subtitle() == "−3 dB"
+    assert editor.motors.get_subtitle() == "Forte 150 % · fraco 100 %"
+    assert editor.color.get_subtitle() == "Como no geral"
+    editor.volume_db.set_value(-9.0)
+    assert editor.volume.get_subtitle() == "−9 dB"
+    editor.swap.set_active(True)
+    assert editor.motors.get_subtitle() == "Forte 150 % · fraco 100 % · invertidos"
+    editor.color.set_enable_expansion(True)
+    editor.color_choice.set_selected(1)
+    assert editor.color.get_subtitle() == "Vermelho"
+    editor.volume.set_enable_expansion(False)
+    assert editor.volume.get_subtitle() == "Como no geral"
+    assert editor.delete_row.get_visible()
+    # Perfil novo: nada a apagar.
+    new = ProfileEditor(ctx, "BLES00003", "Novo", {}, max_db=0.0)
+    assert not new.delete_row.get_visible()

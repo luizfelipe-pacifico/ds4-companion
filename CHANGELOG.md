@@ -41,7 +41,7 @@
 - Perfis por jogo (ADR 0012): som no controle, volume, motores e cor da luz por jogo, em
   `[profiles.<ID>]`. Som e volume valem com o jogo aberto; vibração e luz vão para o arquivo por
   jogo do RPCS3 (`input_configs/<ID>/Default.yml`). D-Bus `GetProfiles`/`SetProfile`/`DeleteProfile`
-  e `ds4ctl profile`.
+  e `ds4ctl profile`. Página **Jogos** com o jogo aberto, a lista de perfis e o editor.
 - Jogo aberto no RPCS3 (título e ID, lidos do `RPCS3.log`) na página Status e no `ds4ctl status`.
 - Suporte ao DualSense e ao DualSense Edge (ADR 0011): detecção por cabo e Bluetooth, relatórios
   HID próprios (USB `0x02`, Bluetooth `0x31` com sequência e CRC32), vibração v1/v2 pela versão

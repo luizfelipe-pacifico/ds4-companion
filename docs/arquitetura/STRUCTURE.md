@@ -91,7 +91,7 @@ src/ds4_companion/
 │   ├── resources.py        # GResource instalado ou compilado do código-fonte
 │   ├── window.py
 │   ├── updates.py          # pop-up de versão nova (ADR 0009)
-│   ├── pages/              # status.py, audio.py, vibration.py, light.py, advanced.py
+│   ├── pages/              # status.py, audio.py, vibration.py, light.py, games.py, advanced.py
 │   ├── widgets/            # cartão do controle (faixa de luz), volume em dB
 │   ├── tray.py             # ícone na bandeja (StatusNotifierItem)
 │   └── states.py           # telas de estado (AdwStatusPage + ilustrações)

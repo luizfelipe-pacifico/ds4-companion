@@ -39,6 +39,17 @@ SHOTS = [
     ("vibracao-rpcs3-aberto", "vibration", {"rpcs3_running": True, "vibration_pending": True}),
     ("luz", "light", {"led_color": "pink"}),
     ("luz-personalizada", "light", {"led_color": "#FF8800", "led_mode": "battery"}),
+    (
+        "jogos",
+        "games",
+        {
+            "rpcs3_running": True,
+            "game_serial": "BLUS30001",
+            "game_title": "Jogo de Teste",
+            "profiles": ["BLUS30001", "NPEB00002"],
+            "profile": "BLUS30001",
+        },
+    ),
     ("avancado", "advanced", {}),
     ("erro-pipewire", "status", {"error": "pw-dump não respondeu em 5 s"}),
 ]
@@ -64,6 +75,10 @@ def save(window: Gtk.Window, path: Path) -> None:
 def main(out: Path, width: int, height: int) -> None:
     out.mkdir(parents=True, exist_ok=True)
     client = FakeClient()
+    client.results["GetProfiles"] = {
+        "BLUS30001": {"title": "Jogo de Teste", "volume_db": -3.0, "large_percent": 150},
+        "NPEB00002": {"title": "Jogo de Luta", "mirror_enabled": False, "led_color": "red"},
+    }
     app = Application(client_factory=lambda: client)
 
     def run(_app: Adw.Application) -> None:
@@ -87,6 +102,12 @@ def main(out: Path, width: int, height: int) -> None:
             window.show_page(page)
             iterate()
             save(window, out / f"{name}.png")
+            if page == "games":
+                editor = window.stack.get_visible_child().open_editor("BLUS30001")
+                iterate()
+                save(window, out / "jogos-editor.png")
+                editor.close()
+                iterate()
         app.quit()
 
     app.connect("activate", lambda a: GLib.idle_add(lambda: run(a) or False))

@@ -75,6 +75,12 @@ def catalog() -> dict[str, State]:
             _("Nenhum app no controle"),
             _("Adicione o RPCS3 ou outro app para o som dele ir para o controle."),
         ),
+        "empty-profiles": State(
+            "empty-list",
+            _("Lista vazia"),
+            _("Nenhum perfil ainda"),
+            _("Com um jogo aberto no RPCS3, crie o perfil dele aqui. Sem perfil, vale o ajuste geral."),
+        ),
     }
 
 

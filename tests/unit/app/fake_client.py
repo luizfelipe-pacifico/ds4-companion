@@ -47,6 +47,7 @@ class FakeClient(GObject.Object):
         self.available = False
         self.calls: list[tuple[Any, ...]] = []
         self.errors: dict[str, tuple[str, str]] = {}
+        self.results: dict[str, Any] = {}  # valor devolvido por método (ex.: GetProfiles)
 
     def set_available(self, available: bool) -> None:
         self.available = available
@@ -64,4 +65,4 @@ class FakeClient(GObject.Object):
                 done(code, message, None)
             return
         if done:
-            done(None, "", args[0] if method == "SetVolume" else None)
+            done(None, "", self.results.get(method, args[0] if method == "SetVolume" else None))

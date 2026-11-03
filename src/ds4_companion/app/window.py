@@ -15,6 +15,7 @@ from .context import Client, Context
 from .pages.advanced import AdvancedPage
 from .pages.audio import AudioPage
 from .pages.base import Page
+from .pages.games import GamesPage
 from .pages.light import LightPage
 from .pages.status import StatusPage
 from .pages.vibration import VibrationPage
@@ -45,6 +46,7 @@ class Window(Adw.ApplicationWindow):
             AudioPage(self.ctx),
             VibrationPage(self.ctx),
             LightPage(self.ctx),
+            GamesPage(self.ctx),
             self.advanced,
         ]
         self.root.add_named(self._build_main(), "main")

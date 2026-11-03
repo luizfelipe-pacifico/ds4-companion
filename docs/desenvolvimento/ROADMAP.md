@@ -56,7 +56,8 @@
 
 ## Fase 4 — Recursos extras (v0.4+)
 - [x] Limitador via `filter-chain` do PipeWire (`clamp` em −1 dBFS, ADR 0010)
-- [ ] Perfis por jogo (ex.: FIFA com mais som no controle, Tekken só vibração)
+- [x] Perfis por jogo (ex.: FIFA com mais som no controle, Tekken só vibração): página Jogos,
+      `ds4ctl profile` e o arquivo por jogo do RPCS3 ([ADR 0012](../arquitetura/adr/0012-perfis-por-jogo.md))
 - [x] Barra de luz além das cores fixas: cor personalizada (`#RRGGBB`) e modo bateria
 - [ ] Barra de luz por jogador e por perfil de jogo (junto com os perfis por jogo)
 - [x] Suporte a DualSense (PS5) e DualSense Edge: detecção, vibração compatível, luz, fone, áudio

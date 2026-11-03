@@ -149,7 +149,7 @@ jobs:
       - name: Dependências do Arch (só repositório extra)
         run: |
           pacman -Syu --noconfirm --needed git python python-pip python-gobject python-cairo gtk4 libadwaita \
-            python-pyudev python-dbus-next inter-font xorg-server-xvfb dbus
+            python-pyudev python-dbus-next inter-font xorg-server-xvfb dbus sbc
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false

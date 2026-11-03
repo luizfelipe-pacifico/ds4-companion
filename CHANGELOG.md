@@ -34,6 +34,10 @@
   Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
+- Pesquisa de áudio por Bluetooth: protocolo (relatórios 0x11/0x17, SBC 32 kHz), orçamento de
+  latência e riscos em `docs/desenvolvimento/BLUETOOTH_AUDIO.md`; codificador SBC pela `libsbc` e
+  relatórios em `daemon/hid/bt_audio.py` e protótipo `scripts/bt_audio_prototype.py`, ainda sem
+  teste com o controle e fora do app.
 - `PRODUCT.md` e o contrato de direção da interface em `.impeccable/surfaces/app.md`.
 - Empacotamento: `packaging/PKGBUILD` (+ `.SRCINFO` e avisos pós-instalação), `.desktop`, AppStream,
   serviço de usuário com `ExecStopPost` que para os motores, ativação D-Bus para o `ds4ctl`, regra

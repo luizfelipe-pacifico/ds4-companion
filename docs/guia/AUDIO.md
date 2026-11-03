@@ -42,7 +42,8 @@ nem o PipeWire implementam isso. Quando o controle está por Bluetooth, o app:
 - mantém vibração, luz e bateria funcionando;
 - volta a espelhar sozinho quando o cabo é ligado.
 
-Implementar isso em espaço de usuário está na seção *Pesquisa* do [ROADMAP](../desenvolvimento/ROADMAP.md).
+Implementar isso em espaço de usuário está na seção *Pesquisa* do [ROADMAP](../desenvolvimento/ROADMAP.md);
+o protocolo e o protótipo estão em [BLUETOOTH_AUDIO.md](../desenvolvimento/BLUETOOTH_AUDIO.md).
 
 ## Testar
 

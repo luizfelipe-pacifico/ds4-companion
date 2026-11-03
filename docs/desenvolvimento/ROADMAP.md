@@ -62,7 +62,9 @@
 - [ ] Espelhar áudio de outros apps (Steam/Proton) — lista configurável
 
 ## Pesquisa — Áudio por Bluetooth
-- [ ] Avaliar viabilidade: o DS4 recebe áudio por Bluetooth em relatórios HID (0x14–0x19) com
-      frames SBC, não por perfil A2DP. Não há suporte no kernel nem no PipeWire.
-- [ ] Protótipo em espaço de usuário: capturar stream → codificar SBC → enviar via `hidraw`.
+- [x] Avaliar viabilidade: o DS4 recebe áudio por Bluetooth em relatórios HID (0x14–0x19) com
+      frames SBC, não por perfil A2DP. Não há suporte no kernel nem no PipeWire. Viável em espaço
+      de usuário; protocolo e riscos em [BLUETOOTH_AUDIO.md](BLUETOOTH_AUDIO.md)
+- [x] Protótipo em espaço de usuário: capturar stream → codificar SBC → enviar via `hidraw`
+      (`scripts/bt_audio_prototype.py`) — falta o checklist com o controle na mão
 - [ ] Só entra no app se tiver latência aceitável (< 60 ms) e não atrapalhar entrada/vibração.

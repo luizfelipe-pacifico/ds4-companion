@@ -5,7 +5,7 @@
 | [guia/](guia/) | Quem usa o app | [Instalação](guia/INSTALL.md) · [Configuração](guia/CONFIGURATION.md) · [Áudio](guia/AUDIO.md) · [Vibração](guia/VIBRATION.md) · [Solução de problemas](guia/TROUBLESHOOTING.md) |
 | [arquitetura/](arquitetura/) | Quem mexe no código | [Arquitetura](arquitetura/ARCHITECTURE.md) · [Estrutura de arquivos](arquitetura/STRUCTURE.md) · [ADRs](arquitetura/adr/README.md) |
 | [design/](design/) | Interface e visual | [Telas](design/UI.md) · [Paleta e tipografia](design/DESIGN.md) · [Ilustrações](design/ILLUSTRATIONS.md) |
-| [desenvolvimento/](desenvolvimento/) | Contribuidores e mantenedores | [Boas práticas](desenvolvimento/BEST_PRACTICES.md) · [Roadmap](desenvolvimento/ROADMAP.md) |
+| [desenvolvimento/](desenvolvimento/) | Contribuidores e mantenedores | [Boas práticas](desenvolvimento/BEST_PRACTICES.md) · [Roadmap](desenvolvimento/ROADMAP.md) · [Pesquisa: áudio por Bluetooth](desenvolvimento/BLUETOOTH_AUDIO.md) |
 
 Na raiz do repositório ficam os arquivos de comunidade que o GitHub reconhece:
 [README](../README.md), [CONTRIBUTING](../CONTRIBUTING.md), [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md),

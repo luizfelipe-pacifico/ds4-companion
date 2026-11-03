@@ -34,6 +34,7 @@ ds4-companion/
 ├── packaging/                                         ✅ PKGBUILD e arquivos do AUR
 ├── scripts/                                           scripts de desenvolvimento e CI
 │   ├── check.sh                                       ✅ roda as verificações do CI localmente
+│   ├── bt_audio_prototype.py                          ✅ protótipo de áudio por Bluetooth (pesquisa)
 │   └── ci/                                            ✅ verificadores (SVG, dados sensíveis, SPDX, commits)
 │
 ├── docs/                                              ✅ documentação (ver abaixo)
@@ -69,7 +70,7 @@ em português. Índice em [docs/README.md](../README.md).
 | `arquitetura/` | Quem mexe no código | Arquitetura, esta estrutura, ADRs |
 | `arquitetura/adr/` | Quem decide | `NNNN-titulo-curto.md` + índice `README.md` |
 | `design/` | Interface e visual | Design system, telas, ilustrações |
-| `desenvolvimento/` | Contribuidores e mantenedores | Boas práticas, roadmap |
+| `desenvolvimento/` | Contribuidores e mantenedores | Boas práticas, roadmap, pesquisas |
 
 Imagens da documentação **não** ficam em `docs/`: os docs apontam para os SVGs de `data/`, para
 existir uma cópia só de cada imagem.
@@ -92,7 +93,7 @@ src/ds4_companion/
 ├── daemon/                 # ds4-companiond
 │   ├── __main__.py         # python -m ds4_companion.daemon
 │   ├── audio/              # graph.py (pw-dump → links), pipewire.py (pw-link, wpctl, eventos)
-│   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32) e acesso ao hidraw
+│   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32), hidraw e bt_audio.py (protótipo 0x17 + SBC)
 │   ├── rpcs3/              # edição do Default.yml com backup; RPCS3 aberto (/proc)
 │   ├── device.py           # detecção cabo ↔ Bluetooth e bateria via udev
 │   ├── service.py          # núcleo: estado, limites de volume e vibração, pendências do RPCS3

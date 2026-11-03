@@ -60,7 +60,12 @@ if ! $rapido && [[ -f pyproject.toml ]]; then
     ferramenta "ruff check" ruff check .
     ferramenta "ruff format" ruff format --check .
     ferramenta "mypy" mypy --strict src/
-    ferramenta "pytest" pytest --ignore=tests/integration --cov=ds4_companion --cov-fail-under=80
+    # A interface é testada num display invisível: nenhuma janela abre na sua sessão.
+    if command -v pytest >/dev/null 2>&1; then
+        etapa "pytest" scripts/headless.sh pytest --ignore=tests/integration --cov=ds4_companion --cov-fail-under=80
+    else
+        pulados+=("pytest (falta 'pytest')")
+    fi
 fi
 
 printf '\n'

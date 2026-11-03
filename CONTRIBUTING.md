@@ -23,7 +23,8 @@ sudo pacman -S --needed gitleaks shellcheck
 pre-commit install --hook-type pre-commit --hook-type commit-msg
 ```
 
-Antes de cada commit e push, rode `scripts/check.sh` (as mesmas verificações do CI que não precisam
+Antes de cada commit e push, rode `scripts/check.sh` (os testes da interface rodam num display
+invisível com `scripts/headless.sh`, sem abrir janelas na sua sessão) (as mesmas verificações do CI que não precisam
 de container). O CI completo está descrito em [BEST_PRACTICES.md](docs/desenvolvimento/BEST_PRACTICES.md#6-ci-github-actions).
 
 ## Rodando

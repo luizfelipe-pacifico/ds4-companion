@@ -24,6 +24,8 @@
   no controle), testa os motores por 0,5 s com intervalo mínimo e guarda vibração e cor como
   pendentes enquanto o RPCS3 está aberto. API no D-Bus de sessão
   (`data/io.github.luizfelipe_pacifico.DS4Companion.Daemon.xml`) e `--stop-motors` para o serviço.
+- `ds4ctl`: `status`, `mirror`, `volume` (confirmação acima de 0 dB), `vibration`, `test-rumble`,
+  `led` e `test-tone`, com mensagens em português e código de saída 3 quando o daemon não roda.
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

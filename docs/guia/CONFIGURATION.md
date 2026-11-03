@@ -51,10 +51,18 @@ e começa com os padrões.
 
 ## CLI (`ds4ctl`)
 
+Fala com o `ds4-companiond` pelo D-Bus, com as mesmas regras da interface.
+
 ```bash
-ds4ctl status                       # conexão, bateria, áudio, vibração
-ds4ctl mirror on|off
-ds4ctl volume -6                    # em dB; pede confirmação acima de 0
-ds4ctl vibration --large 80 --small 100
-ds4ctl test-rumble both
+ds4ctl status                       # conexão, bateria, áudio, vibração e luz
+ds4ctl mirror on|off                # som do jogo no controle
+ds4ctl volume -6                    # em dB; acima de 0 dB pede confirmação (ou --yes)
+ds4ctl vibration --large 80 --small 100 [--swap|--no-swap] [--players 1 2]
+ds4ctl test-rumble [strong|weak|both]
+ds4ctl led rosa                     # azul, vermelho, verde, rosa, roxo, ciano, laranja, branco, desligada
+ds4ctl test-tone                    # apito só no controle
 ```
+
+O volume nunca passa do teto (`max_db`): se pedir mais, o `ds4ctl` aplica o teto e avisa.
+Códigos de saída: `0` ok, `1` erro (a mensagem diz o motivo), `3` daemon não está rodando
+(`systemctl --user start ds4-companion.service`).

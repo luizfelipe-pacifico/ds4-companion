@@ -18,7 +18,7 @@ ds4-companion/
 ├── src/ds4_companion/                                 ✅ código Python
 │   ├── app/                                           🗓️ GUI (GTK4/libadwaita)
 │   ├── daemon/                                        ✅ ds4-companiond
-│   ├── cli/                                           🗓️ ds4ctl
+│   ├── cli/                                           ✅ ds4ctl
 │   └── common/                                        ✅ código compartilhado
 │
 ├── data/                                              arquivos instalados que não são código

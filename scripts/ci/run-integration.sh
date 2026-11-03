@@ -12,8 +12,26 @@ cd "$(dirname "$0")/../.."
 runtime=$(mktemp -d)
 chmod 700 "$runtime"
 export XDG_RUNTIME_DIR=$runtime
+# Os testes de integração só rodam com esta variável (nunca no PipeWire da sessão).
+export DS4_INTEGRATION=1
 # Sem isso o PipeWire de teste herdaria as variáveis do PipeWire da sessão.
 unset PIPEWIRE_REMOTE PULSE_SERVER
+
+# O WirePlumber de teste não encosta em hardware real (placas, Bluetooth, câmeras).
+export XDG_CONFIG_HOME=$runtime/config
+mkdir -p "$XDG_CONFIG_HOME/wireplumber/wireplumber.conf.d"
+cat > "$XDG_CONFIG_HOME/wireplumber/wireplumber.conf.d/sem-hardware.conf" <<'EOF'
+wireplumber.profiles = {
+  main = {
+    monitor.alsa = disabled
+    monitor.alsa-midi = disabled
+    monitor.bluez = disabled
+    monitor.bluez-midi = disabled
+    monitor.libcamera = disabled
+    monitor.v4l2 = disabled
+  }
+}
+EOF
 
 pipewire &
 pw_pid=$!

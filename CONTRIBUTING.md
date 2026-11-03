@@ -36,10 +36,10 @@ python -m ds4_companion.app
 ## Testes
 
 - Unitários: conversão dB ↔ volume linear, parser de config, gerador de relatórios HID (USB e BT com CRC32).
-- Integração: PipeWire de teste com `pw-play` fingindo ser o RPCS3:
+- Integração: PipeWire + WirePlumber isolados (sem tocar no áudio da sessão nem no hardware), com
+  null sinks no papel da saída e do controle e o `pw-play` fingindo ser o RPCS3:
   ```bash
-  pw-play --properties='{ node.name = "teste" application.name = "RPCS3" }' apito.wav
-  pw-link -l | grep -A3 '^teste:output_'
+  dbus-run-session -- scripts/ci/run-integration.sh
   ```
 - Hardware: checklist manual em cabo **e** Bluetooth antes de cada versão.
 

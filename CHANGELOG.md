@@ -16,6 +16,9 @@
 - Edição do `Default.yml` do RPCS3 por linha (vibração e cor da luz), só em jogadores com
   DualShock 4, com backup `Default.yml.bak-AAAAMMDD-HHMMSS` e gravação atômica; detecção do
   RPCS3 aberto pelo `/proc`.
+- Áudio em paralelo: leitura do `pw-dump`, plano dos links jogo → controle por ID de porta (com
+  downmix de 5.1/7.1 para o par estéreo), `pw-link`, `wpctl`, apito de teste e monitor de eventos
+  do PipeWire. Testes de integração num PipeWire isolado, sem hardware (`scripts/ci/run-integration.sh`).
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

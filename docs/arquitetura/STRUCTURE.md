@@ -30,7 +30,7 @@ ds4-companion/
 ├── tests/                                             testes automatizados
 │   ├── ci/                                            ✅ testes dos verificadores do CI
 │   ├── unit/                                          ✅
-│   └── integration/                                   🗓️
+│   └── integration/                                   ✅
 ├── packaging/                                         🗓️ PKGBUILD e arquivos do AUR
 ├── scripts/                                           scripts de desenvolvimento e CI
 │   ├── check.sh                                       ✅ roda as verificações do CI localmente
@@ -90,7 +90,7 @@ src/ds4_companion/
 │   └── states.py           # telas de estado (AdwStatusPage + ilustrações)
 ├── daemon/                 # ds4-companiond
 │   ├── __main__.py         # python -m ds4_companion.daemon
-│   ├── audio/              # links do PipeWire, volume em dB, teto, limitador
+│   ├── audio/              # graph.py (pw-dump → links), pipewire.py (pw-link, wpctl, eventos)
 │   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32) e acesso ao hidraw
 │   ├── rpcs3/              # edição do Default.yml com backup; RPCS3 aberto (/proc)
 │   ├── device.py           # detecção cabo ↔ Bluetooth e bateria via udev
@@ -135,7 +135,7 @@ Espelha `src/`: o teste de `daemon/hid/` fica em `tests/unit/daemon/test_hid.py`
 | Pasta | O quê |
 |---|---|
 | `unit/` ✅ | Rápidos e sem hardware: conversão dB, relatórios HID e CRC32, parser de config, edição do YAML |
-| `integration/` 🗓️ | PipeWire de teste com `pw-play` fingindo ser o RPCS3 |
+| `integration/` ✅ | PipeWire de teste com `pw-play` fingindo ser o RPCS3 |
 | `fixtures/` ✅ | Dados de exemplo **sintéticos** (nunca dumps reais de dispositivo) |
 | `ci/` ✅ | Testes dos scripts de CI |
 

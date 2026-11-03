@@ -170,7 +170,11 @@ jobs:
             --cov=ds4_companion --cov-branch --cov-report=term-missing --cov-report=xml \
             --cov-fail-under=80 --junitxml=junit.xml
       - name: Vulnerabilidades nas dependências Python
-        run: .venv/bin/pip-audit --skip-editable --strict
+        # O próprio pacote está instalado como editável e o --strict trataria isso como falha;
+        # por isso a auditoria lê o freeze sem ele (inclui os pacotes do Arch do venv).
+        run: |
+          .venv/bin/pip freeze --exclude-editable > "$RUNNER_TEMP/requisitos.txt"
+          .venv/bin/pip-audit --strict --disable-pip --no-deps -r "$RUNNER_TEMP/requisitos.txt"
       - name: Build do pacote Python (sdist + wheel)
         run: .venv/bin/python -m build --no-isolation --outdir dist/
       - if: always()

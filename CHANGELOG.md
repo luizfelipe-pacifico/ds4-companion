@@ -38,6 +38,8 @@
   Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
+- Jogo aberto no RPCS3 (título e ID, lidos do `RPCS3.log`) na página Status e no `ds4ctl status`;
+  base dos perfis por jogo (ADR 0012).
 - Suporte ao DualSense e ao DualSense Edge (ADR 0011): detecção por cabo e Bluetooth, relatórios
   HID próprios (USB `0x02`, Bluetooth `0x31` com sequência e CRC32), vibração v1/v2 pela versão
   do firmware, cor da luz, fone pelo relatório de entrada, áudio só nos canais FL/FR (RL/RR são
@@ -87,6 +89,8 @@
   faixas de volume passam a usar texto + ícone em vez de verde/amarelo/vermelho.
 
 ### Corrigido
+- A interface não era avisada quando só o RPCS3 abria ou fechava (o aviso da página Vibração
+  podia não aparecer): o daemon comparava o estado novo com ele mesmo já alterado.
 - A janela não mostra mais as páginas vazias ("Nenhum controle conectado") entre o daemon
   aparecer e o primeiro estado chegar, e sai da tela "Serviço parado" quando o serviço é iniciado
   por fora.

@@ -79,6 +79,13 @@ RPCS3 (Stream/Output/Audio)
   - Bluetooth: relatório `0x11` (78 bytes) com CRC32 no final.
 - O daemon nunca envia vibração enquanto o RPCS3 está com jogo aberto (evita brigar pelo dispositivo).
 
+## Jogo aberto e perfis
+
+Enquanto o RPCS3 está aberto, o daemon lê o `~/.cache/rpcs3/RPCS3.log` aos poucos e acha o jogo
+pelas linhas `SYS: Title:` e `SYS: Serial:` (e `SYS: Stopping emulator...` ao parar). O estado
+publica `game_serial` e `game_title`. Os perfis por jogo usam isso
+([ADR 0012](adr/0012-perfis-por-jogo.md)).
+
 ## Cabo vs Bluetooth
 
 | | USB | Bluetooth |

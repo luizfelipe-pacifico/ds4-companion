@@ -18,6 +18,7 @@ from ds4_companion.daemon.audio import graph as g
 from ds4_companion.daemon.audio.pipewire import PipeWireError
 from ds4_companion.daemon.device import Controller
 from ds4_companion.daemon.hid import hidraw
+from ds4_companion.daemon.rpcs3.game import LogWatcher
 
 sys.path.insert(0, str(Path(__file__).parent))
 import pwfixtures as fx
@@ -103,6 +104,7 @@ class Env:
         self.audio = FakeAudio(objs if objs is not None else fx.dump())
         self.devices = FakeDevices([Controller(str(self.hidraw), connection, product, str(battery))])
         self.feature: bytes = b""
+        self.log = tmp_path / "RPCS3.log"
         self.feature_reads = 0
         self.reports: list[bytes] = []
         self.rpcs3 = False
@@ -137,6 +139,7 @@ class Env:
             write_report=write,
             read_report=read,
             read_feature=feature,
+            game_watcher=LogWatcher(self.log),
             rpcs3_running=lambda: self.rpcs3,
             sleep=no_sleep,
         )
@@ -608,3 +611,33 @@ def test_dualsense_headphones_lower_the_ceiling(dualsense: Env) -> None:
     dualsense.input = bytes(report)
     run(dualsense.daemon.refresh())
     assert not dualsense.daemon.status.headphones
+
+
+def test_running_game_comes_from_rpcs3_log(env: Env) -> None:
+    env.log.write_text("·! 0:00:01 SYS: Title: Jogo de Teste\n·! 0:00:01 SYS: Serial: BLUS30001\n")
+    run(env.daemon.refresh())
+    assert env.daemon.status.game_serial == ""  # RPCS3 fechado: o log é de uma execução antiga
+    env.rpcs3 = True
+    run(env.daemon.refresh())
+    assert (env.daemon.status.game_serial, env.daemon.status.game_title) == ("BLUS30001", "Jogo de Teste")
+    env.rpcs3 = False
+    run(env.daemon.refresh())
+    assert (env.daemon.status.game_serial, env.daemon.status.game_title) == ("", "")
+
+
+def test_listeners_hear_when_only_rpcs3_or_game_changes(env: Env) -> None:
+    # Regressão: campos alterados direto em self.status (RPCS3 aberto, jogo) não avisavam a GUI,
+    # porque o estado "novo" era comparado com o próprio estado já alterado.
+    run(env.daemon.refresh())
+    seen = len(env.statuses)
+    env.rpcs3 = True
+    run(env.daemon.refresh())
+    assert len(env.statuses) == seen + 1
+    assert env.statuses[-1].rpcs3_running
+    env.log.write_text("·! 0:00:01 SYS: Title: Jogo\n·! 0:00:01 SYS: Serial: BLUS30001\n")
+    run(env.daemon.refresh())
+    assert env.statuses[-1].game_serial == "BLUS30001"
+    env.rpcs3 = False
+    run(env.daemon.refresh())
+    assert not env.statuses[-1].rpcs3_running
+    assert env.statuses[-1].game_serial == ""

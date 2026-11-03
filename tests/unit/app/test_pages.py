@@ -75,6 +75,9 @@ def test_summaries() -> None:
     assert rpcs3_summary(sample()) == "Fechado"
     assert rpcs3_summary(sample(rpcs3_running=True)) == "Aberto"
     assert rpcs3_summary(sample(rpcs3_running=True, game_running=True)) == "Aberto · jogo tocando"
+    game = sample(rpcs3_running=True, game_running=True, game_serial="BLUS30001", game_title="Jogo & Cia")
+    assert rpcs3_summary(game) == "Jogo & Cia · tocando"
+    assert rpcs3_summary(sample(rpcs3_running=True, game_serial="BLUS30001", game_title="Jogo")) == "Jogo"
     assert battery_icon(-1, False) == "battery-missing-symbolic"
     assert battery_icon(84, True) == "battery-level-80-charging-symbolic"
     # Regressão: 100 % carregando não existe no Adwaita; o nome é "charged".
@@ -344,6 +347,7 @@ def test_external_text_rows_are_not_markup(ctx: Ctx) -> None:
     status.update(sample(output_name="TV <Sala> & Cia"))
     assert status.output.get_subtitle() == "TV <Sala> & Cia"
     assert not status.output.get_use_markup()
+    assert not status.rpcs3.get_use_markup()  # o título do jogo vem do log do RPCS3
     advanced = AdvancedPage(ctx)
     advanced.update(sample(rpcs3_config_dir="~/Jogos & Emuladores/rpcs3"))
     assert not advanced.folder.get_use_markup()

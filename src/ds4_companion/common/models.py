@@ -117,6 +117,9 @@ class Status:
     hid_access: bool = True
     headphones: bool = False
     rpcs3_running: bool = False
+    game_serial: str = ""
+    """Jogo aberto no RPCS3 (ID do PS3, ex.: BLUS30001), lido do RPCS3.log."""
+    game_title: str = ""
     game_running: bool = False
     mirror_enabled: bool = True
     mirror_active: bool = False

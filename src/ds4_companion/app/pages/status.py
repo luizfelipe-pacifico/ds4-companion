@@ -34,6 +34,8 @@ def audio_summary(s: Status) -> tuple[str, bool]:
 def rpcs3_summary(s: Status) -> str:
     if not s.rpcs3_running:
         return _("Fechado")
+    if s.game_title:
+        return _("{game} · tocando").format(game=s.game_title) if s.game_running else s.game_title
     return _("Aberto · jogo tocando") if s.game_running else _("Aberto")
 
 
@@ -53,7 +55,8 @@ class StatusPage(Page):
         self.audio = Adw.ActionRow(title=_("Áudio no controle"))
         self.audio_dot = Gtk.Box(valign=Gtk.Align.CENTER)
         self.audio.add_prefix(self.audio_dot)
-        self.rpcs3 = Adw.ActionRow(title=_("RPCS3"))
+        # O título do jogo vem do log do RPCS3: texto puro, nunca markup.
+        self.rpcs3 = Adw.ActionRow(title=_("RPCS3"), use_markup=False)
         self.output = Adw.ActionRow(title=_("Saída principal"), subtitle_selectable=True, use_markup=False)
         self.volume = Adw.ActionRow(title=_("Volume do controle"))
         self.volume_value = Gtk.Label()

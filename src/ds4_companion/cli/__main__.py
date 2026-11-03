@@ -75,7 +75,9 @@ def format_status(s: Status) -> str:
         lines.append(f"  {battery}")
         if not s.hid_access:
             lines.append("  sem acesso ao controle: desconecte e conecte de novo")
-    lines.append(f"RPCS3: {'aberto' if s.rpcs3_running else 'fechado'}{' · jogo tocando' if s.game_running else ''}")
+    game = f" · {s.game_title} ({s.game_serial})" if s.rpcs3_running and s.game_serial else ""
+    playing = " · jogo tocando" if s.game_running else ""
+    lines.append(f"RPCS3: {'aberto' if s.rpcs3_running else 'fechado'}{game}{playing}")
     if s.connection == Connection.BLUETOOTH:
         audio = "indisponível por Bluetooth — conecte o cabo"
     elif not s.mirror_enabled:

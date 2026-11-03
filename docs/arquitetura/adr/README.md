@@ -17,6 +17,7 @@ antiga como *Substituída por NNNN*.
 | [0009](0009-aviso-de-atualizacao.md) | Aviso de atualização ao abrir o app, com botão e comando para o terminal | Aceita |
 | [0010](0010-limitador-com-filter-chain.md) | Limitador contra picos com `filter-chain` + `clamp` do PipeWire | Aceita |
 | [0011](0011-suporte-ao-dualsense.md) | Suporte ao DualSense no mesmo app, como segundo modelo de controle | Aceita |
+| [0012](0012-perfis-por-jogo.md) | Perfis por jogo: jogo aberto lido do `RPCS3.log`, vibração e luz no arquivo por jogo do RPCS3 | Aceita |
 
 ## Modelo
 

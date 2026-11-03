@@ -30,7 +30,7 @@ from .audio import graph as audio_graph
 from .audio.pipewire import PipeWireError, write_test_tone
 from .device import EDGE_PRODUCT, Controller, pick, read_battery, redact
 from .hid import hidraw, reports
-from .rpcs3 import input_config, process
+from .rpcs3 import game, input_config, process
 
 log = logging.getLogger(__name__)
 
@@ -83,6 +83,7 @@ class Daemon:
         read_report: Callable[[str], bytes | None] = hidraw.read_report,
         read_feature: Callable[[str, int, int], bytes] = hidraw.get_feature,
         rpcs3_running: Callable[[], bool] = process.is_running,
+        game_watcher: game.LogWatcher | None = None,
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
         limiter: LimiterProcess | None = None,
     ) -> None:
@@ -97,6 +98,7 @@ class Daemon:
         self._read_feature = read_feature
         self._vibration_v2: bool | None = None  # DualSense: lido do firmware uma vez por conexão
         self._rpcs3_running = rpcs3_running
+        self._game_watcher = game_watcher or game.LogWatcher()
         self._sleep = sleep
         self.config, warnings = cfg.load(self._config_path)
         for warning in warnings:
@@ -104,6 +106,9 @@ class Daemon:
         self.controller: Controller | None = None
         self.graph = audio_graph.Graph()
         self.status = Status()
+        # O que os ouvintes viram por último. Alguns campos mudam direto em self.status (RPCS3
+        # aberto, jogo, fone): comparar com ele mesmo escondia essas mudanças.
+        self._published: Status | None = None
         self._listeners: list[Listener] = []
         self._sink_id: int | None = None
         self._last_rumble = -math.inf
@@ -190,7 +195,13 @@ class Daemon:
         running = await asyncio.to_thread(self._rpcs3_running)
         self.status.rpcs3_running = running
         if running:
+            current = await asyncio.to_thread(self._game_watcher.poll)
+            self.status.game_serial = current.serial if current else ""
+            self.status.game_title = current.title if current else ""
             return  # o RPCS3 só lê o Default.yml ao abrir e usa o controle: fica pendente
+        # Fechado: o log que sobrou é de uma execução que acabou.
+        self._game_watcher.reset()
+        self.status.game_serial = self.status.game_title = ""
         if self._rpcs3_pending:
             self._write_rpcs3()
         # Modo bateria: a faixa de carga mudou, a cor no controle muda junto.
@@ -335,8 +346,9 @@ class Daemon:
         )
         if c is not None and c.hidraw and not hidraw.can_write(c.hidraw):
             new.hid_access = False
-        if new != self.status:
-            self.status = new
+        self.status = new
+        if new != self._published:
+            self._published = replace(new)
             for listener in list(self._listeners):
                 listener(new)
 

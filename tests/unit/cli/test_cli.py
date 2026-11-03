@@ -75,6 +75,9 @@ def test_status(proxy: FakeProxy) -> None:
     assert "bateria 80 %" in text
     assert "Saída principal: TV" in text
     assert "jogadores 1, 2" in text
+    proxy.status.rpcs3_running = True
+    proxy.status.game_serial, proxy.status.game_title = "BLUS30001", "Jogo de Teste"
+    assert "RPCS3: aberto · Jogo de Teste (BLUS30001)" in ds4ctl("status")[1]
 
 
 def test_volume_and_ceiling(proxy: FakeProxy) -> None:

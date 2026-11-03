@@ -54,7 +54,7 @@ class StatusPage(Page):
         self.audio_dot = Gtk.Box(valign=Gtk.Align.CENTER)
         self.audio.add_prefix(self.audio_dot)
         self.rpcs3 = Adw.ActionRow(title=_("RPCS3"))
-        self.output = Adw.ActionRow(title=_("Saída principal"), subtitle_selectable=True)
+        self.output = Adw.ActionRow(title=_("Saída principal"), subtitle_selectable=True, use_markup=False)
         self.volume = Adw.ActionRow(title=_("Volume do controle"))
         self.volume_value = Gtk.Label()
         self.volume_value.add_css_class("numeric")

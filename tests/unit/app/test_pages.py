@@ -309,3 +309,36 @@ def test_volume_row_standalone() -> None:
     assert row.scale.get_value() == 0.0
     spin(0.2)
     assert sent[-1] == (0.0, False)
+
+
+def test_app_names_are_text_not_markup(ctx: Ctx) -> None:
+    # Regressão: o nome do processo vinha como markup Pango; "&" ou "<" quebravam a linha ou
+    # formatavam o texto (nomes de processo são dados de fora).
+    page = AudioPage(ctx)
+    names = ["Fish & Chips.exe", "<b>jogo</b>"]
+    page.update(sample(apps=names))
+    rows = page._app_rows
+    assert [r.get_title() for r in rows] == names
+    assert not any(r.get_use_markup() for r in rows)
+
+
+def test_external_text_rows_are_not_markup(ctx: Ctx) -> None:
+    # Mesma regressão para o nome da saída (vem do PipeWire) e o caminho da pasta do RPCS3.
+    status = StatusPage(ctx)
+    status.update(sample(output_name="TV <Sala> & Cia"))
+    assert status.output.get_subtitle() == "TV <Sala> & Cia"
+    assert not status.output.get_use_markup()
+    advanced = AdvancedPage(ctx)
+    advanced.update(sample(rpcs3_config_dir="~/Jogos & Emuladores/rpcs3"))
+    assert not advanced.folder.get_use_markup()
+
+
+def test_daemon_messages_in_toasts_are_not_markup(client: FakeClient) -> None:
+    # As mensagens de erro do daemon podem trazer o stderr do pw-link/wpctl.
+    overlay = Adw.ToastOverlay()
+    real = Context(client, overlay, Gtk.Box())
+    shown: list[Adw.Toast] = []
+    overlay.add_toast = shown.append  # type: ignore[method-assign]
+    real.toast("pw-link falhou: <porta> & cia")
+    assert shown[0].get_title() == "pw-link falhou: <porta> & cia"
+    assert not shown[0].get_use_markup()

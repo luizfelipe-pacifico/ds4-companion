@@ -29,7 +29,8 @@ class Context:
         self.parent = parent
 
     def toast(self, text: str) -> None:
-        self.toasts.add_toast(Adw.Toast(title=text, timeout=4))
+        # As mensagens do daemon podem trazer stderr do PipeWire: texto puro, nunca markup.
+        self.toasts.add_toast(Adw.Toast(title=text, timeout=4, use_markup=False))
 
     def call(self, method: str, *args: Any, ok: str | None = None, done: Callable[[Any], None] | None = None) -> None:
         """Chama o daemon; erro vira toast com a mensagem dele, sucesso opcionalmente também."""

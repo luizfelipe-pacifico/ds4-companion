@@ -92,7 +92,8 @@ class AudioPage(Page):
             self.apps_group.remove(row)
         self._app_rows = []
         for app in apps:
-            row = Adw.ActionRow(title=app, title_selectable=True)
+            # Nome de processo é dado de fora: texto puro, nunca markup.
+            row = Adw.ActionRow(title=app, title_selectable=True, use_markup=False)
             remove = Gtk.Button(icon_name="user-trash-symbolic", valign=Gtk.Align.CENTER, tooltip_text=_("Remover"))
             remove.add_css_class("flat")
             remove.update_property([Gtk.AccessibleProperty.LABEL], [_("Remover {app}").format(app=app)])

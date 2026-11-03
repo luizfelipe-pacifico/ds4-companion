@@ -27,7 +27,7 @@ class AdvancedPage(Page):
         self._syncing = False
 
         rpcs3 = Adw.PreferencesGroup(title=_("RPCS3"))
-        self.folder = Adw.ActionRow(title=_("Pasta de configuração"), subtitle_selectable=True)
+        self.folder = Adw.ActionRow(title=_("Pasta de configuração"), subtitle_selectable=True, use_markup=False)
         choose = Gtk.Button(label=_("Escolher…"), valign=Gtk.Align.CENTER)
         choose.connect("clicked", self._choose_folder)
         self.folder.add_suffix(choose)

@@ -70,6 +70,10 @@
 - Design system reduzido a cinco cores (três pretos, azul da barra de luz, branco), visual *slim*;
   faixas de volume passam a usar texto + ícone em vez de verde/amarelo/vermelho.
 
+### Corrigido
+- Nomes de app, da saída de áudio, da pasta do RPCS3 e mensagens do daemon aparecem como texto:
+  antes eram lidos como markup e um `&` ou `<` quebrava a linha ou formatava o texto.
+
 ## [0.0.0] — 2026-11-02 (scripts)
 - Vibração do DualShock 4 configurada no RPCS3 (Jogadores 1 e 2).
 - `ds4-audio-mirror`: áudio do RPCS3 em paralelo no controle via PipeWire (USB).

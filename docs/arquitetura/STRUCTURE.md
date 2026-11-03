@@ -85,6 +85,7 @@ src/ds4_companion/
 ├── app/                    # ds4-companion (GUI)
 │   ├── __main__.py         # python -m ds4_companion.app
 │   ├── window.py
+│   ├── updates.py          # pop-up de versão nova (ADR 0009)
 │   ├── pages/              # status.py, audio.py, vibration.py, light.py, advanced.py
 │   ├── widgets/            # componentes próprios (slider em dB, cartão do controle, …)
 │   └── states.py           # telas de estado (AdwStatusPage + ilustrações)

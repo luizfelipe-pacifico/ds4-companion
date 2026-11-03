@@ -35,6 +35,20 @@ Janela GTK4/libadwaita com 4 páginas na barra lateral. Cores e fonte em [DESIGN
 ## Avançado
 - Pasta do RPCS3, backups, logs do daemon, reiniciar serviço, restaurar padrões.
 
+## Atualização
+Ao abrir, a janela consulta o GitHub Releases em segundo plano. Com versão nova, abre um
+`AdwAlertDialog` ([ADR 0009](../arquitetura/adr/0009-aviso-de-atualizacao.md)):
+```
+ Nova versão disponível
+ O DS4 Companion 0.2.0 já pode ser instalado. Você está usando a versão 0.1.0.
+ Ou cole no terminal:
+ sudo pacman -U https://github.com/…/ds4-companion-0.2.0-1-any.pkg.tar.zst
+ [ Agora não ]  [ Copiar comando ]  [ Atualizar agora ]
+```
+- **Atualizar agora** pede a senha (polkit) e mostra o resultado num `AdwToast`; senha cancelada
+  vira "Atualização cancelada.", falha oferece copiar o comando.
+- Sem rede ou sem versão nova, nada aparece.
+
 ## Comportamento
 - Estados vazios, avisos e erros usam `AdwStatusPage` com as ilustrações de [ILLUSTRATIONS.md](ILLUSTRATIONS.md).
 - Bluetooth: cartão de áudio vira aviso "conecte o cabo para ter som no controle".

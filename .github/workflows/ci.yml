@@ -265,7 +265,8 @@ jobs:
           ds4-companion --version
           desktop-file-validate /usr/share/applications/io.github.luizfelipe_pacifico.DS4Companion.desktop
           appstreamcli validate --no-net /usr/share/metainfo/io.github.luizfelipe_pacifico.DS4Companion.metainfo.xml
-          systemd-analyze verify --user /usr/lib/systemd/user/ds4-companion.service
+          # Sem sessão de usuário no container, o verify precisa de um XDG_RUNTIME_DIR qualquer.
+          XDG_RUNTIME_DIR="$(mktemp -d)" systemd-analyze verify --user /usr/lib/systemd/user/ds4-companion.service
           udevadm verify /usr/lib/udev/rules.d/70-ds4-companion.rules
           pacman -R --noconfirm ds4-companion
           test ! -e /usr/bin/ds4ctl

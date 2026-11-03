@@ -45,6 +45,8 @@
   relatórios em `daemon/hid/bt_audio.py` e protótipo `scripts/bt_audio_prototype.py`, ainda sem
   teste com o controle e fora do app.
 - `PRODUCT.md` e o contrato de direção da interface em `.impeccable/surfaces/app.md`.
+- Ícone na bandeja (StatusNotifierItem via Gio, sem dependência nova): abre a janela, dica com
+  conexão, bateria e áudio, `ui.tray_icon` e `ui.start_minimized` respeitados.
 - Empacotamento: `packaging/PKGBUILD` (+ `.SRCINFO` e avisos pós-instalação), `.desktop`, AppStream,
   serviço de usuário com `ExecStopPost` que para os motores, ativação D-Bus para o `ds4ctl`, regra
   udev com `uaccess` (cabo, Bluetooth e adaptador) e `install.sh` (confere `SHA256SUMS`, só usa

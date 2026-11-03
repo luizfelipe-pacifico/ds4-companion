@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import logging
 from gettext import gettext as _
+from typing import Any
 
 import gi
 
@@ -28,7 +29,9 @@ class Application(Adw.Application):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
         self.add_main_option("version", 0, 0, 0, _("Mostra a versão e sai"), None)  # 0 = GLib.OptionArg.NONE
         self._client_factory = client_factory
+        self._tray_options: dict[str, Any] = {}  # testes trocam o barramento e o watcher
         self.client: object = None
+        self.tray: object = None
 
     def do_handle_local_options(self, options: object) -> int:
         if options.contains("version"):  # type: ignore[attr-defined]
@@ -56,23 +59,32 @@ class Application(Adw.Application):
         self.set_accels_for_action("app.quit", ["<Control>q"])
 
     def do_activate(self) -> None:
-        window = self.get_active_window()
-        if window is not None:
-            window.present()
+        # A janela pode estar escondida na bandeja: abrir de novo só a traz de volta.
+        windows = self.get_windows()
+        if windows:
+            windows[0].present()
             return
         from .client import DaemonClient
+        from .tray import TrayIcon
         from .window import Window
-
-        client = self._client_factory() if callable(self._client_factory) else DaemonClient()
-        self.client = client
-        window = Window(self, client)
-        window.present()
-        if isinstance(client, DaemonClient):
-            client.connect_bus()
 
         settings, warnings = config.load()
         for warning in warnings:
             log.warning("config: %s", warning)
+
+        client = self._client_factory() if callable(self._client_factory) else DaemonClient()
+        self.client = client
+        window = Window(self, client)
+        self.tray = TrayIcon(window.present, **self._tray_options)
+        if settings.ui.tray_icon and self.tray.start():
+            # Com bandeja, fechar a janela só a esconde; "Sair" no menu encerra o app.
+            window.set_hide_on_close(True)
+            client.connect("status-changed", lambda _c, s: self.tray.update(s))
+        if not (settings.ui.start_minimized and self.tray.active):
+            window.present()
+        if isinstance(client, DaemonClient):
+            client.connect_bus()
+
         if settings.updates.check_on_start:
             from .updates import UpdateNotifier
 

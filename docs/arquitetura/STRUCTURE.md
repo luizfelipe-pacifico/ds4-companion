@@ -85,10 +85,15 @@ src/ds4_companion/
 ├── __init__.py
 ├── app/                    # ds4-companion (GUI)
 │   ├── __main__.py         # python -m ds4_companion.app
+│   ├── application.py      # Adw.Application: tema escuro, CSS, ações, bandeja
+│   ├── client.py           # cliente D-Bus (Gio.DBusProxy) do daemon
+│   ├── context.py          # o que as páginas usam da janela (toasts, confirmação, comandos)
+│   ├── resources.py        # GResource instalado ou compilado do código-fonte
 │   ├── window.py
 │   ├── updates.py          # pop-up de versão nova (ADR 0009)
 │   ├── pages/              # status.py, audio.py, vibration.py, light.py, advanced.py
-│   ├── widgets/            # componentes próprios (slider em dB, cartão do controle, …)
+│   ├── widgets/            # cartão do controle (faixa de luz), volume em dB
+│   ├── tray.py             # ícone na bandeja (StatusNotifierItem)
 │   └── states.py           # telas de estado (AdwStatusPage + ilustrações)
 ├── daemon/                 # ds4-companiond
 │   ├── __main__.py         # python -m ds4_companion.daemon

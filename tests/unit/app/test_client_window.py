@@ -185,11 +185,15 @@ def test_application_activate_with_fake_client(monkeypatch: pytest.MonkeyPatch, 
 
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
     (tmp_path / "ds4-companion").mkdir()
-    (tmp_path / "ds4-companion" / "config.toml").write_text("[updates]\ncheck_on_start = false\n")
+    # Sem bandeja: o teste nunca põe ícone no painel da sessão de quem roda os testes.
+    (tmp_path / "ds4-companion" / "config.toml").write_text(
+        "[ui]\ntray_icon = false\n[updates]\ncheck_on_start = false\n"
+    )
     client = FakeClient()
     app = Application(client_factory=lambda: client)
     # NON_UNIQUE: o teste nunca conversa com uma janela real do app aberta na sessão.
     app.set_flags(Gio.ApplicationFlags.NON_UNIQUE)
+    app.set_application_id("io.github.luizfelipe_pacifico.DS4CompanionTesteJanela")
     app.register(None)
     app.activate()
     window = app.get_active_window()

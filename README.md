@@ -117,7 +117,7 @@ Visual: preto + azul PlayStation, ícones só em SVG ([design](docs/design/DESIG
 |---|---|:-:|
 | 0 | Scripts: vibração no RPCS3 e áudio em paralelo por cabo | ✅ |
 | 1 · v0.1 | Daemon + CLI `ds4ctl` | ✅ |
-| 2 · v0.2 | Interface gráfica, cor da luz e logo | ✅ (falta o ícone na bandeja) |
+| 2 · v0.2 | Interface gráfica, cor da luz, logo e bandeja | ✅ |
 | 3 · v0.3 | PKGBUILD, `install.sh` e AUR | 🔧 pacote e instalador prontos; falta release e AUR |
 | 4 · v0.4+ | Limitador, perfis por jogo, DualSense | ⏳ |
 

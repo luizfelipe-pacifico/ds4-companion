@@ -25,8 +25,8 @@ config_dir = "~/.config/rpcs3"
 backup_before_edit = true
 
 [ui]
-start_minimized = false
-tray_icon = true
+start_minimized = false        # abre só na bandeja (precisa de tray_icon e de bandeja na sessão)
+tray_icon = true               # ícone na bandeja; no GNOME, com a extensão AppIndicator
 
 [updates]
 check_on_start = true          # procurar versão nova ao abrir a interface

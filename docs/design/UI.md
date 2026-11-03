@@ -96,4 +96,6 @@ Ao abrir, a janela consulta o GitHub Releases em segundo plano. Com versão nova
 - Serviço parado: a janela inteira vira a tela "Serviço parado". Na primeira abertura o app ativa o
   serviço sozinho (`systemctl --user enable --now ds4-companion.service`).
 - Problema no PipeWire: banner no topo com a mensagem do daemon.
-- Ícone na bandeja: ainda não implementado (precisa de StatusNotifierItem; ver ROADMAP).
+- Ícone na bandeja (StatusNotifierItem; no GNOME precisa da extensão AppIndicator): clicar abre a
+  janela; a dica mostra conexão, bateria e se o som está no controle. Com a bandeja ativa, fechar a
+  janela só a esconde e **Sair** no menu encerra. Sem bandeja na sessão, nada muda.

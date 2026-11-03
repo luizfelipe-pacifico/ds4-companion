@@ -21,7 +21,7 @@
 - [x] Slider de volume em dB com faixas livre/alto/acima do limite (texto + ícone, ver DESIGN.md)
 - [x] Botões de teste de vibração (forte, fraco, ambos)
 - [x] Indicador de conexão (cabo/Bluetooth) e bateria
-- [ ] Ícone na bandeja (extensão AppIndicator) — pendente: exige implementar StatusNotifierItem no D-Bus
+- [x] Ícone na bandeja (extensão AppIndicator), pelo protocolo StatusNotifierItem direto no D-Bus
 - [x] Página **Luz**: escolher a cor da barra de luz do controle entre cores pré-definidas,
       com pré-visualização ao vivo no controle conectado:
 

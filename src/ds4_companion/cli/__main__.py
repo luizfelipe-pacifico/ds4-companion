@@ -114,6 +114,14 @@ def confirm_over_limit(db: float, ask: Callable[[str], str] | None = None) -> bo
         return False
 
 
+async def led_outcome(proxy: Any, done: str) -> str:
+    """Com o RPCS3 aberto a luz não vai para o controle na hora (ele está usando o controle)."""
+    status = Status.from_mapping({k: v.value for k, v in (await proxy.get_status()).items()})
+    if status.rpcs3_running:
+        return "Salvo. A luz muda no controle quando o RPCS3 fechar."
+    return done
+
+
 async def connect() -> Any:
     from dbus_next.aio.message_bus import MessageBus
 
@@ -130,7 +138,7 @@ async def run(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
     elif cmd == "led-mode":
         await proxy.call_set_led_mode(args.mode)
         text = "mostra a bateria" if args.mode == "battery" else "fica na cor escolhida"
-        print(f"A luz {text}.", file=out)
+        print(await led_outcome(proxy, f"A luz {text}."), file=out)
     elif cmd == "limiter":
         await proxy.call_set_limiter(args.state == "on")
         print("Limitador " + ("ligado." if args.state == "on" else "desligado."), file=out)
@@ -160,7 +168,7 @@ async def run(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
         await proxy.call_test_rumble(args.motor)
     elif cmd == "led":
         await proxy.call_set_led(args.color)
-        print("Cor da luz alterada.", file=out)
+        print(await led_outcome(proxy, "Cor da luz alterada."), file=out)
     elif cmd == "test-tone":
         await proxy.call_play_test_tone()
     elif cmd == "apps":

@@ -190,3 +190,13 @@ def test_status_shows_limiter() -> None:
 
 def test_status_shows_led_mode() -> None:
     assert "mostra a bateria" in cli.format_status(Status(led_mode="battery"))
+
+
+def test_led_with_rpcs3_open_says_it_is_pending(proxy: FakeProxy) -> None:
+    # Regressão: com o RPCS3 aberto a cor fica pendente, mas a CLI dizia "Cor da luz alterada."
+    proxy.status.rpcs3_running = True
+    code, text = ds4ctl("led", "verde")
+    assert code == 0
+    assert "quando o RPCS3 fechar" in text
+    code, text = ds4ctl("led-mode", "battery")
+    assert "quando o RPCS3 fechar" in text

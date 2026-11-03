@@ -92,6 +92,20 @@ def test_interface_over_session_bus(tmp_path: Path) -> None:
         await p.call_set_rpcs3_dir(str(tmp_path))
         await p.call_set_backup(True)
         await p.call_restore_defaults()
+        await p.call_set_profile(
+            "BLUS30001", {"volume_db": Variant("d", -3.0), "large_percent": Variant("i", 50)}, False
+        )
+        profiles = await p.call_get_profiles()
+        assert {k: v.value for k, v in profiles["BLUS30001"].items()} == {
+            "title": "BLUS30001",
+            "volume_db": -3.0,
+            "large_percent": 50,
+        }
+        await p.call_delete_profile("BLUS30001")
+        assert await p.call_get_profiles() == {}
+        with pytest.raises(DBusError) as info:
+            await p.call_set_profile("x", {}, False)
+        assert info.value.type == f"{INTERFACE}.Error.InvalidArgument"
         with pytest.raises(DBusError) as info:
             await p.call_set_led("magenta")
         assert info.value.type == f"{INTERFACE}.Error.InvalidArgument"

@@ -120,6 +120,9 @@ class Status:
     game_serial: str = ""
     """Jogo aberto no RPCS3 (ID do PS3, ex.: BLUS30001), lido do RPCS3.log."""
     game_title: str = ""
+    profile: str = ""
+    """Serial do jogo cujo perfil vale agora (ADR 0012); vazio = ajustes gerais."""
+    profiles: list[str] = field(default_factory=list)
     game_running: bool = False
     mirror_enabled: bool = True
     mirror_active: bool = False

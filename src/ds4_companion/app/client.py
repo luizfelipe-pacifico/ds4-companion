@@ -37,6 +37,9 @@ SIGNATURES = {
     "SetRpcs3Dir": "(s)",
     "SetBackup": "(b)",
     "RestoreDefaults": "()",
+    "GetProfiles": "()",
+    "SetProfile": "(sa{sv}b)",
+    "DeleteProfile": "(s)",
 }
 
 

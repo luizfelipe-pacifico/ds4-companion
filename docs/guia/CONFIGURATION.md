@@ -31,7 +31,29 @@ tray_icon = true               # ícone na bandeja; no GNOME, com a extensão Ap
 
 [updates]
 check_on_start = true          # procurar versão nova ao abrir a interface
+
+[profiles.BLUS30001]           # perfil de um jogo, pelo ID do PS3 (opcional, um por jogo)
+title = "FIFA 19"
+volume_db = -3.0               # cada campo é opcional: o que faltar vem dos ajustes gerais
+mirror_enabled = true
+large_percent = 150
+small_percent = 100
+swap_motors = false
+led_color = "#FF8000"
 ```
+
+## Perfis por jogo
+
+Enquanto um jogo com perfil está aberto no RPCS3, o perfil vale; quando ele para, voltam os ajustes
+gerais ([ADR 0012](../arquitetura/adr/0012-perfis-por-jogo.md)).
+
+- **Som no controle e volume** mudam na hora. Mexer no volume com o perfil ativo muda o volume do
+  perfil. O teto (`max_db`, fone) vale igual.
+- **Vibração e luz** vão para `~/.config/rpcs3/input_configs/<ID>/Default.yml`, o arquivo por jogo
+  do próprio RPCS3, gravado com o RPCS3 fechado. Se ele não existe, o app cria a partir do global
+  (e só esse arquivo criado pelo app é apagado junto com o perfil). Um arquivo criado assim não
+  acompanha mudanças posteriores no global, como trocar o controle de porta.
+- O ID do jogo aparece na página Status e no `ds4ctl status` com o jogo aberto.
 
 ## Validação
 
@@ -68,6 +90,10 @@ ds4ctl test-tone                    # apito só no controle
 ds4ctl apps                         # apps no controle e o que está tocando agora
 ds4ctl apps add '*.exe'             # nome do processo ou padrão (Proton: *.exe)
 ds4ctl apps remove steam
+ds4ctl profile                      # perfis por jogo
+ds4ctl profile set --volume -3 --large 150     # perfil do jogo aberto (ou --game BLUS30001)
+ds4ctl profile set --reset volume   # o campo volta ao ajuste geral
+ds4ctl profile delete --game BLUS30001
 ```
 
 O volume nunca passa do teto (`max_db`): se pedir mais, o `ds4ctl` aplica o teto e avisa.

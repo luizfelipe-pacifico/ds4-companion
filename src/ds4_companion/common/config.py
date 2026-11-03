@@ -12,6 +12,7 @@ import fnmatch
 import json
 import math
 import os
+import re
 import shutil
 import time
 import tomllib
@@ -83,6 +84,21 @@ class UpdatesConfig:
 
 
 @dataclass
+class ProfileConfig:
+    """Ajustes de um jogo (ADR 0012). None = vale o ajuste geral."""
+
+    title: str = ""
+    mirror_enabled: bool | None = None
+    volume_db: float | None = None
+    large_percent: int | None = None
+    small_percent: int | None = None
+    swap_motors: bool | None = None
+    led_color: str | None = None
+    created_rpcs3_file: bool = False
+    """O app criou o input_configs/<serial>/Default.yml do RPCS3 (e pode apagá-lo)."""
+
+
+@dataclass
 class Config:
     audio: AudioConfig = field(default_factory=AudioConfig)
     vibration: VibrationConfig = field(default_factory=VibrationConfig)
@@ -90,6 +106,7 @@ class Config:
     rpcs3: Rpcs3Config = field(default_factory=Rpcs3Config)
     ui: UiConfig = field(default_factory=UiConfig)
     updates: UpdatesConfig = field(default_factory=UpdatesConfig)
+    profiles: dict[str, ProfileConfig] = field(default_factory=dict)
 
 
 class ConfigError(ValueError):
@@ -197,11 +214,68 @@ SCHEMA: dict[str, dict[str, Validator]] = {
 }
 
 
+GAME_SERIAL = re.compile(r"[A-Z]{4}\d{5}")
+"""ID de jogo do PS3 (BLUS30001): chave dos perfis e nome da pasta por jogo do RPCS3."""
+MAX_PROFILES = 200
+MAX_TITLE = 128
+
+
+def clean_title(raw: Any) -> str:
+    if not isinstance(raw, str):
+        raise ConfigError("precisa ser um texto")
+    return "".join(ch for ch in raw if ch.isprintable()).strip()[:MAX_TITLE]
+
+
+PROFILE_SCHEMA: dict[str, Validator] = {
+    "title": clean_title,
+    "mirror_enabled": _bool,
+    "volume_db": _db,
+    "large_percent": _percent,
+    "small_percent": _percent,
+    "swap_motors": _bool,
+    "led_color": _led,
+    "created_rpcs3_file": _bool,
+}
+
+
+def profile_from_dict(serial: str, values: dict[str, Any], warnings: list[str]) -> ProfileConfig:
+    profile = ProfileConfig()
+    for key, raw in values.items():
+        validator = PROFILE_SCHEMA.get(key)
+        if validator is None:
+            warnings.append(f"profiles.{serial}.{key} desconhecido, ignorado")
+            continue
+        try:
+            setattr(profile, key, validator(raw))
+        except ConfigError as exc:
+            warnings.append(f"profiles.{serial}.{key} {exc}; usando o ajuste geral")
+    return profile
+
+
+def _profiles(value: Any, warnings: list[str]) -> dict[str, ProfileConfig]:
+    if not isinstance(value, dict):
+        warnings.append("[profiles] precisa ser uma tabela de jogos; perfis ignorados")
+        return {}
+    profiles: dict[str, ProfileConfig] = {}
+    for serial, values in value.items():
+        if not GAME_SERIAL.fullmatch(serial) or not isinstance(values, dict):
+            warnings.append(f"perfil {serial!r} ignorado: precisa ser [profiles.<ID do jogo>], ex.: BLUS30001")
+            continue
+        if len(profiles) >= MAX_PROFILES:
+            warnings.append(f"mais de {MAX_PROFILES} perfis; o resto foi ignorado")
+            break
+        profiles[serial] = profile_from_dict(serial, values, warnings)
+    return profiles
+
+
 def from_dict(data: dict[str, Any]) -> tuple[Config, list[str]]:
     """Monta um Config a partir do TOML lido. Devolve também os avisos do que foi ignorado."""
     config = Config()
     warnings: list[str] = []
     for section_name, value in data.items():
+        if section_name == "profiles":
+            config.profiles = _profiles(value, warnings)
+            continue
         if section_name not in SCHEMA:
             warnings.append(f"seção desconhecida [{section_name}] ignorada")
             continue
@@ -232,6 +306,10 @@ def normalize(config: Config) -> list[str]:
     if audio.volume_db > audio.max_db:
         audio.volume_db = audio.max_db
         warnings.append("audio.volume_db acima de max_db; rebaixado para max_db")
+    for serial, profile in config.profiles.items():
+        if profile.volume_db is not None and profile.volume_db > audio.max_db:
+            profile.volume_db = audio.max_db
+            warnings.append(f"profiles.{serial}.volume_db acima de max_db; rebaixado para max_db")
     return warnings
 
 
@@ -280,6 +358,13 @@ def dumps(config: Config) -> str:
     for section, values in to_dict(config).items():
         lines.append(f"[{section}]")
         lines += [f"{key} = {_toml_value(value)}" for key, value in values.items()]
+        lines.append("")
+    for serial, profile in sorted(config.profiles.items()):
+        lines.append(f"[profiles.{serial}]")  # o serial já passou pelo GAME_SERIAL: chave TOML simples
+        for f in fields(profile):
+            value = getattr(profile, f.name)
+            if (value is not None and value != f.default) or f.name == "title":
+                lines.append(f"{f.name} = {_toml_value(value)}")
         lines.append("")
     return "\n".join(lines)
 

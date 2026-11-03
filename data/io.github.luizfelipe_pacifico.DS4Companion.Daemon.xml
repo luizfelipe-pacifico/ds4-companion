@@ -6,6 +6,12 @@
  "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
   <interface name="io.github.luizfelipe_pacifico.DS4Companion.Daemon">
+    <method name="DeleteProfile">
+      <arg name="serial" direction="in" type="s"/>
+    </method>
+    <method name="GetProfiles">
+      <arg direction="out" type="a{sa{sv}}"/>
+    </method>
     <method name="PlayTestTone"/>
     <method name="Refresh"/>
     <method name="RestoreDefaults"/>
@@ -29,6 +35,11 @@
     </method>
     <method name="SetPlayers">
       <arg name="players" direction="in" type="ai"/>
+    </method>
+    <method name="SetProfile">
+      <arg name="serial" direction="in" type="s"/>
+      <arg name="values" direction="in" type="a{sv}"/>
+      <arg name="confirm" direction="in" type="b"/>
     </method>
     <method name="SetRpcs3Dir">
       <arg name="path" direction="in" type="s"/>

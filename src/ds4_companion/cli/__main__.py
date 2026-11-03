@@ -12,7 +12,7 @@ from typing import Any, TextIO
 
 from .. import __version__
 from ..common.db import LIMIT_DB, VolumeZone, format_db, zone_for
-from ..common.models import LED_ALIASES, Connection, Status
+from ..common.models import LED_ALIASES, Connection, Status, led_preset
 from ..common.names import BUS_NAME, INTERFACE, OBJECT_PATH, SERVICE_UNIT
 
 EXIT_OK, EXIT_ERROR, EXIT_NO_DAEMON = 0, 1, 3
@@ -20,6 +20,15 @@ EXIT_OK, EXIT_ERROR, EXIT_NO_DAEMON = 0, 1, 3
 CONNECTION_TEXT = {Connection.USB: "cabo USB", Connection.BLUETOOTH: "Bluetooth"}
 ZONE_TEXT = {VolumeZone.FREE: "", VolumeZone.HIGH: " (alto)", VolumeZone.OVER_LIMIT: " (acima do limite)"}
 LED_NAMES = {v: k for k, v in LED_ALIASES.items() if k != "desligado"}
+# Opção da CLI → (campo do perfil, assinatura D-Bus).
+PROFILE_OPTIONS = {
+    "volume": ("volume_db", "d"),
+    "mirror": ("mirror_enabled", "b"),
+    "large": ("large_percent", "i"),
+    "small": ("small_percent", "i"),
+    "swap": ("swap_motors", "b"),
+    "led": ("led_color", "s"),
+}
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -56,6 +65,26 @@ def build_parser() -> argparse.ArgumentParser:
     led_mode.add_argument("mode", choices=["fixed", "battery"])
 
     sub.add_parser("test-tone", help="toca um apito só no controle")
+
+    profile = sub.add_parser("profile", help="perfis por jogo: list, set ou delete (padrão: o jogo aberto)")
+    profile.add_argument("action", choices=["list", "set", "delete"], nargs="?", default="list")
+    profile.add_argument("--game", metavar="ID", help="ID do jogo (ex.: BLUS30001); padrão: o aberto no RPCS3")
+    profile.add_argument("--volume", type=float, metavar="DB", help="volume do controle no jogo, em dB")
+    profile.add_argument("--mirror", choices=["on", "off"], help="som do jogo no controle")
+    profile.add_argument("--large", type=int, metavar="N", help="motor forte, em %%")
+    profile.add_argument("--small", type=int, metavar="N", help="motor fraco, em %%")
+    pswap = profile.add_mutually_exclusive_group()
+    pswap.add_argument("--swap", dest="swap", action="store_true", default=None, help="inverte os motores")
+    pswap.add_argument("--no-swap", dest="swap", action="store_false", help="não inverte os motores")
+    profile.add_argument("--led", metavar="COR", help="cor da luz (nome ou #RRGGBB)")
+    profile.add_argument(
+        "--reset",
+        action="append",
+        default=[],
+        choices=sorted(PROFILE_OPTIONS),
+        help="volta um campo ao ajuste geral (pode repetir)",
+    )
+    profile.add_argument("-y", "--yes", action="store_true", help="confirma volume acima de 0 dB sem perguntar")
 
     apps = sub.add_parser("apps", help="apps cujo som vai para o controle (aceita padrões como *.exe)")
     apps.add_argument("action", choices=["list", "add", "remove"], nargs="?", default="list")
@@ -175,6 +204,72 @@ async def run(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
         await proxy.call_play_test_tone()
     elif cmd == "apps":
         return await run_apps(args, proxy, out)
+    elif cmd == "profile":
+        return await run_profile(args, proxy, out)
+    return EXIT_OK
+
+
+def describe_profile(values: dict[str, Any]) -> str:
+    parts = []
+    if "mirror_enabled" in values:
+        parts.append("som no controle " + ("ligado" if values["mirror_enabled"] else "desligado"))
+    if "volume_db" in values:
+        parts.append(f"volume {format_db(values['volume_db'])}")
+    if "large_percent" in values:
+        parts.append(f"forte {values['large_percent']} %")
+    if "small_percent" in values:
+        parts.append(f"fraco {values['small_percent']} %")
+    if "swap_motors" in values:
+        parts.append("motores invertidos" if values["swap_motors"] else "motores normais")
+    if "led_color" in values:
+        parts.append(f"luz {LED_NAMES.get(values['led_color'], values['led_color'])}")
+    return " · ".join(parts) or "sem ajustes próprios"
+
+
+async def run_profile(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
+    from dbus_next.signature import Variant
+
+    status = Status.from_mapping({k: v.value for k, v in (await proxy.get_status()).items()})
+    profiles = {
+        serial: {key: variant.value for key, variant in values.items()}
+        for serial, values in (await proxy.call_get_profiles()).items()
+    }
+    if args.action == "list":
+        if not profiles:
+            print("Nenhum perfil. Crie com: ds4ctl profile set --volume -3 (com o jogo aberto)", file=out)
+        for serial, values in profiles.items():
+            active = " (ativo agora)" if serial == status.profile else ""
+            print(f"{serial} · {values.get('title', serial)}{active}", file=out)
+            print(f"  {describe_profile(values)}", file=out)
+        return EXIT_OK
+    serial = args.game or (status.game_serial if status.rpcs3_running else "")
+    if not serial:
+        print("Nenhum jogo aberto no RPCS3: diga qual com --game <ID> (ex.: BLUS30001).", file=sys.stderr)
+        return EXIT_ERROR
+    if args.action == "delete":
+        if serial not in profiles:
+            print(f"Não há perfil para {serial}.", file=sys.stderr)
+            return EXIT_ERROR
+        await proxy.call_delete_profile(serial)
+        print(f"Perfil de {serial} apagado.", file=out)
+        return EXIT_OK
+    values = dict(profiles.get(serial, {}))
+    for option in args.reset:
+        values.pop(PROFILE_OPTIONS[option][0], None)
+    given = {
+        "volume": args.volume,
+        "mirror": None if args.mirror is None else args.mirror == "on",
+        "large": args.large,
+        "small": args.small,
+        "swap": args.swap,
+        "led": led_preset(args.led).id if args.led else None,
+    }
+    for option, value in given.items():
+        if value is not None:
+            values[PROFILE_OPTIONS[option][0]] = value
+    signatures = {key: sig for key, sig in PROFILE_OPTIONS.values()} | {"title": "s"}
+    await proxy.call_set_profile(serial, {k: Variant(signatures[k], v) for k, v in values.items()}, args.yes)
+    print(f"Perfil de {serial}: {describe_profile(values)}", file=out)
     return EXIT_OK
 
 
@@ -210,11 +305,18 @@ async def amain(argv: list[str] | None, out: TextIO = sys.stdout) -> int:
 
     # A confirmação vem antes de abrir o D-Bus: desconectar no meio do registro do dbus-next
     # (pessoa recusou) despejava um traceback no terminal.
-    if args.command == "volume" and args.db > LIMIT_DB and not args.yes:
-        if not confirm_over_limit(args.db):
+    wanted_db = args.db if args.command == "volume" else getattr(args, "volume", None)
+    if args.command in ("volume", "profile") and wanted_db is not None and wanted_db > LIMIT_DB and not args.yes:
+        if not confirm_over_limit(wanted_db):
             print("Volume não alterado.", file=out)
             return EXIT_ERROR
         args.yes = True
+    if args.command == "profile" and args.led:
+        try:
+            led_preset(args.led)
+        except KeyError:
+            print(f"Cor desconhecida: {args.led}.", file=sys.stderr)
+            return EXIT_ERROR
 
     try:
         bus, proxy = await connect()

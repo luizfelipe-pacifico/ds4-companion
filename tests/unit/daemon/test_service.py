@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import sys
 from collections.abc import AsyncIterator, Coroutine
 from pathlib import Path
@@ -641,3 +642,142 @@ def test_listeners_hear_when_only_rpcs3_or_game_changes(env: Env) -> None:
     run(env.daemon.refresh())
     assert not env.statuses[-1].rpcs3_running
     assert env.statuses[-1].game_serial == ""
+
+
+# --- perfis por jogo (ADR 0012) -------------------------------------------------------------
+
+BOOT_LOG = "·! 0:00:01 SYS: Title: Jogo de Teste\n·! 0:00:01 SYS: Serial: BLUS30001\n"
+
+
+def sink_db(env: Env) -> float:
+    return env.daemon.status.volume_db
+
+
+def test_profile_volume_and_mirror_follow_the_running_game(env: Env) -> None:
+    run(env.daemon.refresh())
+    run(env.daemon.set_profile("BLUS30001", {"volume_db": -12.0, "mirror_enabled": False}))
+    assert env.daemon.status.profiles == ["BLUS30001"]
+    assert sink_db(env) == pytest.approx(-6.0, abs=0.05)  # jogo não está aberto: vale o geral
+
+    env.rpcs3 = True
+    env.log.write_text(BOOT_LOG)
+    run(env.daemon.refresh())
+    s = env.daemon.status
+    assert s.profile == "BLUS30001"
+    assert sink_db(env) == pytest.approx(-12.0, abs=0.05)
+    assert not s.mirror_enabled
+    assert ("unlink", 121, 99) in env.audio.calls
+
+    # Volume mudado com o perfil ativo fica no perfil, não no ajuste geral.
+    run(env.daemon.set_volume(-9.0))
+    assert env.daemon.config.profiles["BLUS30001"].volume_db == -9.0
+    assert env.daemon.config.audio.volume_db == -6.0
+
+    env.log.write_text(BOOT_LOG + "·! 0:00:09 SYS: Stopping emulator...\n")
+    run(env.daemon.refresh())
+    assert env.daemon.status.profile == ""
+    assert sink_db(env) == pytest.approx(-6.0, abs=0.05)
+    assert env.daemon.status.mirror_enabled
+
+
+def test_profile_title_defaults_to_running_game_and_validation(env: Env) -> None:
+    env.rpcs3 = True
+    env.log.write_text(BOOT_LOG)
+    run(env.daemon.refresh())
+    run(env.daemon.set_profile("BLUS30001", {"large_percent": 150}))
+    assert env.daemon.get_profiles() == {"BLUS30001": {"title": "Jogo de Teste", "large_percent": 150}}
+    for serial, values in [
+        ("blus30001", {}),
+        ("BLUS30001", {"large_percent": 999}),
+        ("BLUS30001", {"inventado": 1}),
+        ("BLUS30001", {"created_rpcs3_file": True}),
+    ]:
+        with pytest.raises(service.DaemonError) as info:
+            run(env.daemon.set_profile(serial, values))
+        assert info.value.code == "InvalidArgument"
+    # Com teto de 0 dB, pedir +3 dB fica em 0 dB (como no SetVolume).
+    run(env.daemon.set_profile("BLUS30001", {"volume_db": 3.0}))
+    assert env.daemon.config.profiles["BLUS30001"].volume_db == 0.0
+    # Com o teto acima de 0 dB, passar de 0 dB no perfil exige confirmação.
+    env.daemon.config.audio.max_db = 3.0
+    with pytest.raises(service.DaemonError) as info:
+        run(env.daemon.set_profile("BLUS30001", {"volume_db": 2.0}))
+    assert info.value.code == "NeedsConfirmation"
+    run(env.daemon.set_profile("BLUS30001", {"volume_db": 2.0}, confirm=True))
+    assert env.daemon.config.profiles["BLUS30001"].volume_db == 2.0
+    with pytest.raises(service.DaemonError):
+        run(env.daemon.delete_profile("BLES00009"))
+
+
+def test_profile_vibration_and_led_go_to_rpcs3_per_game_file(env: Env) -> None:
+    per_game = env.yml.parent.parent / "BLUS30001" / "Default.yml"
+    run(env.daemon.set_profile("BLUS30001", {"large_percent": 40, "swap_motors": True, "led_color": "red"}))
+    run(env.daemon.refresh())  # RPCS3 fechado: grava agora
+    text = per_game.read_text()
+    assert "Large Vibration Motor Multiplier: 40" in text
+    assert "Small Vibration Motor Multiplier: 100" in text  # o que o perfil não define vem do geral
+    assert "Switch Vibration Motors: true" in text
+    assert "Color Value R: 255" in text
+    assert env.daemon.config.profiles["BLUS30001"].created_rpcs3_file
+    assert "Large Vibration Motor Multiplier: 100" in env.yml.read_text()  # o global não muda
+
+    # Sem vibração nem luz no perfil, o arquivo que o app criou sai.
+    run(env.daemon.set_profile("BLUS30001", {"volume_db": -3.0}))
+    run(env.daemon.refresh())
+    assert not per_game.exists()
+    run(env.daemon.set_profile("BLUS30001", {"small_percent": 0}))
+    run(env.daemon.refresh())
+    assert per_game.exists()
+    run(env.daemon.delete_profile("BLUS30001"))
+    run(env.daemon.refresh())
+    assert not per_game.exists()
+    assert env.daemon.status.profiles == []
+
+
+def test_existing_per_game_file_is_edited_and_kept(env: Env) -> None:
+    per_game = env.yml.parent.parent / "BLUS30001" / "Default.yml"
+    per_game.parent.mkdir()
+    per_game.write_text(
+        env.yml.read_text().replace("Large Vibration Motor Multiplier: 100", "Large Vibration Motor Multiplier: 77")
+    )
+    run(env.daemon.set_profile("BLUS30001", {"small_percent": 10}))
+    run(env.daemon.refresh())
+    assert "Small Vibration Motor Multiplier: 10" in per_game.read_text()
+    assert not env.daemon.config.profiles["BLUS30001"].created_rpcs3_file
+    run(env.daemon.delete_profile("BLUS30001"))
+    run(env.daemon.refresh())
+    assert per_game.exists()  # era do usuário: nunca é apagado
+
+
+def test_per_game_file_waits_for_rpcs3_to_close(env: Env) -> None:
+    per_game = env.yml.parent.parent / "BLUS30001" / "Default.yml"
+    env.rpcs3 = True
+    run(env.daemon.refresh())
+    run(env.daemon.set_profile("BLUS30001", {"large_percent": 10}))
+    assert not per_game.exists()
+    env.rpcs3 = False
+    run(env.daemon.refresh())
+    assert per_game.exists()
+
+
+def test_profile_file_needs_the_global_to_copy(env: Env) -> None:
+    per_game = env.yml.parent.parent / "BLUS30001" / "Default.yml"
+    env.yml.unlink()  # sem o global não há de onde copiar
+    run(env.daemon.set_profile("BLUS30001", {"large_percent": 10}))
+    run(env.daemon.refresh())
+    assert not per_game.exists()
+
+
+@pytest.mark.skipif(os.geteuid() == 0, reason="root ignora permissões")
+def test_profile_file_write_error_stays_pending(env: Env) -> None:
+    per_game = env.yml.parent.parent / "BLUS30001" / "Default.yml"
+    per_game.parent.parent.chmod(0o500)  # pasta do RPCS3 sem escrita: falha e fica pendente
+    try:
+        run(env.daemon.set_profile("BLUS30001", {"large_percent": 20}))
+        run(env.daemon.refresh())
+        assert not per_game.exists()
+        assert env.daemon._rpcs3_pending
+    finally:
+        per_game.parent.parent.chmod(0o700)
+    run(env.daemon.refresh())
+    assert "Large Vibration Motor Multiplier: 20" in per_game.read_text()

@@ -19,6 +19,7 @@ class FakeProxy:
     def __init__(self, status: Status) -> None:
         self.status = status
         self.calls: list[tuple[Any, ...]] = []
+        self.profiles: dict[str, dict[str, tuple[str, Any]]] = {}
 
     async def get_status(self) -> dict[str, Variant]:
         return status_variants(self.status)
@@ -35,6 +36,15 @@ class FakeProxy:
                 return min(args[0], self.status.max_db)
             if name == "call_set_vibration":
                 self.status.large_percent, self.status.small_percent, self.status.swap_motors = args
+            if name == "call_get_profiles":
+                return {s: {k: Variant(*v) for k, v in p.items()} for s, p in self.profiles.items()}
+            if name == "call_set_profile":
+                serial, values, _confirm = args
+                if serial == "BLUS99999" and "volume_db" in values and not _confirm:
+                    raise DBusError("x.Error.NeedsConfirmation", "Confirme.")
+                self.profiles[serial] = {k: (v.signature, v.value) for k, v in values.items()}
+            if name == "call_delete_profile":
+                self.profiles.pop(args[0])
             return None
 
         return call
@@ -203,3 +213,40 @@ def test_led_with_rpcs3_open_says_it_is_pending(proxy: FakeProxy) -> None:
     assert "quando o RPCS3 fechar" in text
     code, text = ds4ctl("led-mode", "battery")
     assert "quando o RPCS3 fechar" in text
+
+
+def test_profile_set_merges_and_defaults_to_running_game(proxy: FakeProxy) -> None:
+    code, _ = ds4ctl("profile", "set", "--volume", "-3")
+    assert code == 1  # nenhum jogo aberto e sem --game
+    proxy.status.rpcs3_running = True
+    proxy.status.game_serial, proxy.status.game_title = "BLUS30001", "Jogo"
+    assert ds4ctl("profile", "set", "--volume", "-3", "--mirror", "off")[0] == 0
+    assert {k: v for k, (_sig, v) in proxy.profiles["BLUS30001"].items()} == {
+        "volume_db": -3.0,
+        "mirror_enabled": False,
+    }
+    proxy.profiles["BLUS30001"]["title"] = ("s", "Jogo")
+    # Só os campos passados mudam; --reset devolve um campo ao ajuste geral.
+    assert ds4ctl("profile", "set", "--large", "150", "--led", "vermelho", "--reset", "mirror")[0] == 0
+    values = {k: v for k, (_sig, v) in proxy.profiles["BLUS30001"].items()}
+    assert values == {"title": "Jogo", "volume_db": -3.0, "large_percent": 150, "led_color": "red"}
+    assert proxy.profiles["BLUS30001"]["large_percent"][0] == "i"
+
+    proxy.status.profile = "BLUS30001"  # o daemon marca o perfil do jogo aberto como ativo
+    code, text = ds4ctl("profile")
+    assert code == 0
+    assert "BLUS30001 · Jogo (ativo agora)" in text
+    assert "volume −3 dB" in text
+    assert ds4ctl("profile", "delete")[0] == 0
+    assert proxy.profiles == {}
+    assert ds4ctl("profile", "delete", "--game", "BLUS30001")[0] == 1
+
+
+def test_profile_over_limit_asks_before_calling(proxy: FakeProxy, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("builtins.input", lambda _prompt: "n")
+    code, text = ds4ctl("profile", "set", "--game", "BLUS99999", "--volume", "2")
+    assert code == 1
+    assert "Volume não alterado." in text
+    assert "BLUS99999" not in proxy.profiles
+    assert ds4ctl("profile", "set", "--game", "BLUS99999", "--volume", "2", "--yes")[0] == 0
+    assert ds4ctl("profile", "set", "--game", "BLUS99999", "--led", "magenta")[0] == 1

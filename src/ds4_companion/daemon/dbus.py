@@ -120,6 +120,22 @@ class DaemonInterface(ServiceInterface):
     async def RestoreDefaults(self) -> None:
         await self._call(self._daemon.restore_defaults())
 
+    @method()
+    def GetProfiles(self) -> "a{sa{sv}}":
+        return {
+            serial: {key: to_variant(value) for key, value in values.items()}
+            for serial, values in self._daemon.get_profiles().items()
+        }
+
+    @method()
+    async def SetProfile(self, serial: "s", values: "a{sv}", confirm: "b") -> None:
+        plain = {key: variant.value for key, variant in values.items()}
+        await self._call(self._daemon.set_profile(serial, plain, confirm))
+
+    @method()
+    async def DeleteProfile(self, serial: "s") -> None:
+        await self._call(self._daemon.delete_profile(serial))
+
     @staticmethod
     async def _call(awaitable: Any) -> Any:
         try:

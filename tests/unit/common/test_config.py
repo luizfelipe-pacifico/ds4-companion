@@ -134,3 +134,63 @@ def test_led_custom_color_and_mode() -> None:
     assert c.led.color == "blue"
     assert c.led.mode == "fixed"
     assert len(warnings) == 2
+
+
+PROFILES_TOML = """
+[audio]
+max_db = 0.0
+
+[profiles.BLUS30001]
+title = "Jogo de Teste"
+volume_db = -3.0
+mirror_enabled = true
+large_percent = 150
+led_color = "#FF8000"
+
+[profiles.NPEB00002]
+mirror_enabled = false
+large_percent = 0
+small_percent = 0
+"""
+
+
+def test_profiles_round_trip(tmp_path: Path) -> None:
+    path = tmp_path / "config.toml"
+    path.write_text(PROFILES_TOML)
+    c, warnings = cfg.load(path)
+    assert warnings == []
+    fifa = c.profiles["BLUS30001"]
+    assert (fifa.title, fifa.volume_db, fifa.mirror_enabled, fifa.large_percent) == ("Jogo de Teste", -3.0, True, 150)
+    assert fifa.small_percent is None  # o que o perfil não define vem dos ajustes gerais
+    assert fifa.led_color == "#FF8000"
+    assert c.profiles["NPEB00002"].mirror_enabled is False
+    cfg.save(c, path)
+    again, warnings = cfg.load(path)
+    assert warnings == []
+    assert again.profiles == c.profiles
+
+
+def test_profile_values_are_validated(tmp_path: Path) -> None:
+    path = tmp_path / "config.toml"
+    path.write_text(
+        "[profiles.BLUS30001]\nvolume_db = 4.0\nlarge_percent = 900\ncor = 1\n"
+        "[profiles.nao-e-serial]\nvolume_db = -1.0\n"
+        '[profiles.BLUS30002]\ntitle = "x\\u001b[31m"\n'
+    )
+    c, warnings = cfg.load(path)
+    assert set(c.profiles) == {"BLUS30001", "BLUS30002"}
+    profile = c.profiles["BLUS30001"]
+    assert profile.volume_db == 0.0  # nunca acima do teto
+    assert profile.large_percent is None
+    assert c.profiles["BLUS30002"].title == "x[31m"
+    assert any("nao-e-serial" in w for w in warnings)
+    assert any("large_percent" in w for w in warnings)
+    assert any("profiles.BLUS30001.cor" in w for w in warnings)
+
+
+def test_profiles_section_must_be_tables(tmp_path: Path) -> None:
+    path = tmp_path / "config.toml"
+    path.write_text('profiles = "x"\n[profiles2]\n')
+    c, warnings = cfg.load(path)
+    assert c.profiles == {}
+    assert warnings

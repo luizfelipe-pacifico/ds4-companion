@@ -13,15 +13,15 @@ título perde caracteres de controle e fica com no máximo MAX_TITLE caracteres.
 from __future__ import annotations
 
 import os
-import re
 from dataclasses import dataclass
 from pathlib import Path
 
-MAX_TITLE = 128
+from ...common import config
+
+MAX_TITLE = config.MAX_TITLE
 MAX_READ = 1 << 20
 """Bytes lidos por consulta: um log enorme é lido em partes, sem travar o daemon."""
 
-_SERIAL = re.compile(r"[A-Z]{4}\d{5}")
 _TITLE_MARK = b"SYS: Title: "
 _SERIAL_MARK = b"SYS: Serial: "
 _STOP_MARK = b"SYS: Stopping emulator..."
@@ -39,8 +39,7 @@ def default_log_path() -> Path:
 
 
 def clean_title(raw: str) -> str:
-    text = "".join(ch for ch in raw if ch.isprintable()).strip()
-    return text[:MAX_TITLE]
+    return config.clean_title(raw)
 
 
 class LogWatcher:
@@ -94,6 +93,6 @@ class LogWatcher:
         index = line.find(_SERIAL_MARK)
         if index >= 0:
             serial = line[index + len(_SERIAL_MARK) :].decode("ascii", errors="replace").strip()
-            if _SERIAL.fullmatch(serial):
+            if config.GAME_SERIAL.fullmatch(serial):
                 self.game = Game(serial, self._title or serial)
             self._title = ""

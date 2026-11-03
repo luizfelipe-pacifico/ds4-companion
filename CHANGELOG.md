@@ -38,8 +38,11 @@
   Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
-- Jogo aberto no RPCS3 (título e ID, lidos do `RPCS3.log`) na página Status e no `ds4ctl status`;
-  base dos perfis por jogo (ADR 0012).
+- Perfis por jogo (ADR 0012): som no controle, volume, motores e cor da luz por jogo, em
+  `[profiles.<ID>]`. Som e volume valem com o jogo aberto; vibração e luz vão para o arquivo por
+  jogo do RPCS3 (`input_configs/<ID>/Default.yml`). D-Bus `GetProfiles`/`SetProfile`/`DeleteProfile`
+  e `ds4ctl profile`.
+- Jogo aberto no RPCS3 (título e ID, lidos do `RPCS3.log`) na página Status e no `ds4ctl status`.
 - Suporte ao DualSense e ao DualSense Edge (ADR 0011): detecção por cabo e Bluetooth, relatórios
   HID próprios (USB `0x02`, Bluetooth `0x31` com sequência e CRC32), vibração v1/v2 pela versão
   do firmware, cor da luz, fone pelo relatório de entrada, áudio só nos canais FL/FR (RL/RR são

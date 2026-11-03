@@ -42,6 +42,8 @@ DEBOUNCE_SECONDS = 0.15
 LIMITER_SETTLE_SECONDS = 0.3
 VOLUME_TOLERANCE_DB = 0.3
 MAX_PLAYING = 16
+PROFILE_FIELDS = ("mirror_enabled", "volume_db", "large_percent", "small_percent", "swap_motors", "led_color")
+RPCS3_PROFILE_FIELDS = ("large_percent", "small_percent", "swap_motors", "led_color")
 
 
 class DaemonError(Exception):
@@ -109,6 +111,8 @@ class Daemon:
         # O que os ouvintes viram por último. Alguns campos mudam direto em self.status (RPCS3
         # aberto, jogo, fone): comparar com ele mesmo escondia essas mudanças.
         self._published: Status | None = None
+        self._applied_profile: str | None = None  # perfil cujo volume está no controle agora
+        self._orphan_rpcs3_files: list[Path] = []  # arquivos por jogo que o app criou e o perfil saiu
         self._listeners: list[Listener] = []
         self._sink_id: int | None = None
         self._last_rumble = -math.inf
@@ -219,10 +223,12 @@ class Daemon:
             return
         apps = self.config.audio.apps
         sink = self.graph.ds4_sink()
-        if sink is not None and sink.id != self._sink_id:
-            log.info("áudio do controle disponível; reaplicando %.1f dB", self.config.audio.volume_db)
+        profile = self.active_profile_serial
+        if sink is not None and (sink.id != self._sink_id or profile != self._applied_profile):
+            log.info("volume do controle: %.1f dB (%s)", self._volume_setting(), profile or "ajuste geral")
             self._sink_id = sink.id
-            await self._apply_volume(self.config.audio.volume_db)
+            self._applied_profile = profile
+            await self._apply_volume(self._volume_setting())
         elif sink is None:
             self._sink_id = None
 
@@ -230,7 +236,7 @@ class Daemon:
             if await self._sync_limiter(sink):
                 await self._sleep(LIMITER_SETTLE_SECONDS)  # os nós do limitador aparecem logo depois
                 self.graph = await self._audio.dump()
-            if self.config.audio.mirror_enabled:
+            if self._mirror_setting():
                 pairs = audio_graph.stale_links(self.graph, apps)
                 for out_port, in_port in pairs:
                     await self._audio.unlink(out_port, in_port)
@@ -256,7 +262,7 @@ class Daemon:
         if self._limiter is None:
             return False
         audio = self.config.audio
-        want = sink.name if sink is not None and audio.mirror_enabled and audio.limiter else None
+        want = sink.name if sink is not None and self._mirror_setting() and audio.limiter else None
         return await self._limiter.ensure(want)
 
     async def stop_limiter(self) -> None:
@@ -272,7 +278,7 @@ class Daemon:
         if current > ceiling + VOLUME_TOLERANCE_DB:
             log.warning("volume do controle em %.1f dB passou do teto; rebaixando para %.1f dB", current, ceiling)
             await self._audio.set_volume(sink.id, db_to_volume(ceiling))
-            self.config.audio.volume_db = ceiling
+            self._store_volume(ceiling)
             self._save()
             return True
         return False
@@ -323,10 +329,12 @@ class Daemon:
             hid_access=self.status.hid_access if c else True,
             headphones=self.status.headphones if c else False,
             game_running=bool(self.graph.streams(apps)),
-            mirror_enabled=audio.mirror_enabled,
+            mirror_enabled=self._mirror_setting(),
+            profile=self.active_profile_serial or "",
+            profiles=sorted(self.config.profiles),
             mirror_active=audio_graph.is_mirroring(self.graph, apps),
             sink_present=sink is not None,
-            volume_db=volume_to_db(sink.volume) if sink and sink.volume is not None else audio.volume_db,
+            volume_db=volume_to_db(sink.volume) if sink and sink.volume is not None else self._volume_setting(),
             max_db=self.effective_max_db,
             configured_max_db=audio.max_db,
             output_name=(default.description or default.name) if default else "",
@@ -352,6 +360,140 @@ class Daemon:
             for listener in list(self._listeners):
                 listener(new)
 
+    # --- perfis por jogo (ADR 0012) ------------------------------------------------------------
+
+    @property
+    def active_profile_serial(self) -> str | None:
+        serial = self.status.game_serial
+        return serial if self.status.rpcs3_running and serial in self.config.profiles else None
+
+    def _active_profile(self) -> cfg.ProfileConfig | None:
+        serial = self.active_profile_serial
+        return self.config.profiles[serial] if serial else None
+
+    def _mirror_setting(self) -> bool:
+        profile = self._active_profile()
+        if profile is not None and profile.mirror_enabled is not None:
+            return profile.mirror_enabled
+        return self.config.audio.mirror_enabled
+
+    def _volume_setting(self) -> float:
+        profile = self._active_profile()
+        if profile is not None and profile.volume_db is not None:
+            return profile.volume_db
+        return self.config.audio.volume_db
+
+    def _store_volume(self, db: float) -> None:
+        """Guarda o volume onde ele vale agora: no perfil ativo, se ele define volume, ou no geral."""
+        profile = self._active_profile()
+        if profile is not None and profile.volume_db is not None:
+            profile.volume_db = db
+        else:
+            self.config.audio.volume_db = db
+
+    def get_profiles(self) -> dict[str, dict[str, object]]:
+        """Perfis com os campos definidos (o resto vem dos ajustes gerais)."""
+        result: dict[str, dict[str, object]] = {}
+        for serial, profile in sorted(self.config.profiles.items()):
+            values: dict[str, object] = {"title": profile.title}
+            for key in PROFILE_FIELDS:
+                value = getattr(profile, key)
+                if value is not None:
+                    values[key] = value
+            result[serial] = values
+        return result
+
+    async def set_profile(self, serial: str, values: dict[str, object], confirm: bool = False) -> None:
+        """Cria ou substitui o perfil do jogo `serial`; campo ausente = vale o ajuste geral."""
+        if not cfg.GAME_SERIAL.fullmatch(serial):
+            raise DaemonError("InvalidArgument", "ID de jogo inválido (ex.: BLUS30001).")
+        if serial not in self.config.profiles and len(self.config.profiles) >= cfg.MAX_PROFILES:
+            raise DaemonError("InvalidArgument", f"No máximo {cfg.MAX_PROFILES} perfis.")
+        old = self.config.profiles.get(serial)
+        profile = cfg.ProfileConfig(created_rpcs3_file=old.created_rpcs3_file if old else False)
+        for key, raw in values.items():
+            if key not in (*PROFILE_FIELDS, "title"):
+                raise DaemonError("InvalidArgument", f"Campo de perfil desconhecido: {key}.")
+            try:
+                setattr(profile, key, cfg.PROFILE_SCHEMA[key](raw))
+            except cfg.ConfigError as exc:
+                raise DaemonError("InvalidArgument", f"Perfil, {key}: {exc}.") from exc
+        if profile.volume_db is not None:
+            profile.volume_db = clamp_db(profile.volume_db, self.config.audio.max_db)
+            if profile.volume_db > LIMIT_DB and not confirm:
+                raise DaemonError(
+                    "NeedsConfirmation",
+                    "Acima de 0 dB o som distorce e pode danificar o alto-falante. Confirme para continuar.",
+                )
+        if not profile.title:
+            same_game = self.status.game_serial == serial and self.status.game_title
+            profile.title = self.status.game_title if same_game else (old.title if old and old.title else serial)
+        self.config.profiles[serial] = profile
+        self._applied_profile = None if serial == self.active_profile_serial else self._applied_profile
+        self._rpcs3_pending = True
+        self._save()
+        await self.refresh()
+
+    async def delete_profile(self, serial: str) -> None:
+        profile = self.config.profiles.pop(serial, None)
+        if profile is None:
+            raise DaemonError("InvalidArgument", f"Não há perfil para {serial}.")
+        if profile.created_rpcs3_file:
+            self._orphan_rpcs3_files.append(self._per_game_file(serial))
+            self._rpcs3_pending = True
+        self._save()
+        await self.refresh()
+
+    def _per_game_file(self, serial: str) -> Path:
+        # serial validado pelo GAME_SERIAL: só letras e números, nunca "..".
+        return self.config.rpcs3.input_file.parent.parent / serial / self.config.rpcs3.input_file.name
+
+    def _write_profiles_rpcs3(self, global_text: str | None) -> bool:
+        """Vibração e luz dos perfis no arquivo por jogo do RPCS3. True se algo mudou no config."""
+        changed = False
+        for path in self._orphan_rpcs3_files:
+            with contextlib.suppress(FileNotFoundError):
+                path.unlink()
+                log.info("perfil apagado: %s removido", path.parent.name)
+            with contextlib.suppress(OSError):
+                path.parent.rmdir()  # só se ficou vazia
+        self._orphan_rpcs3_files = []
+        vib, led = self.config.vibration, self.config.led
+        for serial, profile in self.config.profiles.items():
+            path = self._per_game_file(serial)
+            wants = any(getattr(profile, k) is not None for k in RPCS3_PROFILE_FIELDS)
+            if not wants:
+                if profile.created_rpcs3_file:
+                    self._orphan_rpcs3_files.append(path)
+                    profile.created_rpcs3_file = False
+                    changed = True
+                continue
+            exists = path.exists()
+            if not exists and global_text is None:
+                continue  # sem o global para copiar
+            text = path.read_text(encoding="utf-8") if exists else str(global_text)
+            vibration = input_config.Vibration(
+                vib.large_percent if profile.large_percent is None else profile.large_percent,
+                vib.small_percent if profile.small_percent is None else profile.small_percent,
+                vib.swap_motors if profile.swap_motors is None else profile.swap_motors,
+            )
+            text, _ = input_config.apply_vibration(text, vib.players, vibration)
+            color = led.color if profile.led_color is None else profile.led_color
+            text, _ = input_config.apply_color(text, vib.players, led_preset(color).rgb)
+            if exists:
+                input_config.write_with_backup(path, text, backup=False)
+            else:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                tmp = path.with_name(f".{path.name}.ds4-companion.tmp")
+                tmp.write_text(text, encoding="utf-8")
+                os.replace(tmp, path)
+                profile.created_rpcs3_file = True
+                changed = True
+                log.info("perfil %s: arquivo por jogo do RPCS3 criado a partir do global", serial)
+        if self._orphan_rpcs3_files:
+            return self._write_profiles_rpcs3(global_text) or changed
+        return changed
+
     # --- ações (GUI e CLI) --------------------------------------------------------------------
 
     async def set_mirror(self, enabled: bool) -> None:
@@ -369,7 +511,7 @@ class Daemon:
                 "Acima de 0 dB o som distorce e pode danificar o alto-falante. Confirme para continuar.",
             )
         await self._apply_volume(target)
-        self.config.audio.volume_db = target
+        self._store_volume(target)
         self._save()
         await self.refresh()
         return target
@@ -544,7 +686,7 @@ class Daemon:
         path = self.config.rpcs3.input_file
         vib = self.config.vibration
         try:
-            text = path.read_text(encoding="utf-8")
+            text = original = path.read_text(encoding="utf-8")
             text, warnings = input_config.apply_vibration(
                 text, vib.players, input_config.Vibration(vib.large_percent, vib.small_percent, vib.swap_motors)
             )
@@ -555,6 +697,7 @@ class Daemon:
             backup = input_config.write_with_backup(path, text, want_backup)
         except FileNotFoundError:
             log.info("RPCS3 sem %s; nada a editar", path.name)
+            original = None
         except (OSError, input_config.Rpcs3ConfigError) as exc:
             log.warning("não deu para editar o Default.yml: %s", exc)
             return
@@ -562,6 +705,12 @@ class Daemon:
             if backup:
                 self._backed_up = True
                 log.info("Default.yml atualizado (backup: %s)", backup.name)
+        try:
+            if self._write_profiles_rpcs3(original):
+                self._save()
+        except (OSError, input_config.Rpcs3ConfigError, DaemonError) as exc:
+            log.warning("não deu para gravar os perfis no RPCS3: %s", exc)
+            return
         self._rpcs3_pending = False
 
     def _save(self) -> None:

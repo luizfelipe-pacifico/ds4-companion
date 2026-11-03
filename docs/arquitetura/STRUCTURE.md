@@ -17,7 +17,7 @@ ds4-companion/
 │
 ├── src/ds4_companion/                                 ✅ código Python
 │   ├── app/                                           🗓️ GUI (GTK4/libadwaita)
-│   ├── daemon/                                        🗓️ ds4-companiond
+│   ├── daemon/                                        ✅ ds4-companiond
 │   ├── cli/                                           🗓️ ds4ctl
 │   └── common/                                        ✅ código compartilhado
 │
@@ -91,7 +91,7 @@ src/ds4_companion/
 ├── daemon/                 # ds4-companiond
 │   ├── __main__.py         # python -m ds4_companion.daemon
 │   ├── audio/              # links do PipeWire, volume em dB, teto, limitador
-│   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32): vibração e luz
+│   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32) e acesso ao hidraw
 │   ├── rpcs3/              # leitura/edição do Default.yml com backup
 │   ├── device.py           # detecção cabo ↔ Bluetooth via udev
 │   └── dbus.py             # serviço D-Bus exposto para GUI e CLI

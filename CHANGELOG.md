@@ -6,6 +6,8 @@
 - `common/`: conversão volume ↔ dB pela curva cúbica do PipeWire, faixas livre/alto/acima do limite,
   cores da barra de luz e `config.toml` com validação, padrões e gravação atômica.
 - App ID `io.github.luizfelipe_pacifico.DS4Companion` e formato da API D-Bus (ADR 0008).
+- Relatórios HID de vibração e barra de luz (USB `0x05`, Bluetooth `0x11` com CRC32), leitura do
+  estado do controle (fone, cabo) e escrita no `hidraw` com erro claro quando falta permissão.
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

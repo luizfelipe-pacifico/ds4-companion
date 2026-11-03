@@ -27,3 +27,6 @@ Também faltava definir o formato dessa API e como a GUI (laço do GLib) e o dae
   (algumas centenas de bytes) a cada mudança, irrelevante no D-Bus de sessão.
 - Trocar o app ID depois quebra atalhos e configurações de quem já instalou: exige nova ADR e migração.
 - Testes da GUI usam um cliente falso com a mesma interface do `Gio.DBusProxy`, sem daemon real.
+- Risco: o `python-dbus-next` 0.2.3 está parado desde 2021 e usa `typing.no_type_check_decorator`,
+  que sai no Python 3.15. Quando o Arch trocar de versão, migrar daemon e CLI para `Gio.DBus`
+  (já usado pela GUI) ou para um fork mantido, com nova ADR.

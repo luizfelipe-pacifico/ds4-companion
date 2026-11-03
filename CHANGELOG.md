@@ -19,6 +19,11 @@
 - Áudio em paralelo: leitura do `pw-dump`, plano dos links jogo → controle por ID de porta (com
   downmix de 5.1/7.1 para o par estéreo), `pw-link`, `wpctl`, apito de teste e monitor de eventos
   do PipeWire. Testes de integração num PipeWire isolado, sem hardware (`scripts/ci/run-integration.sh`).
+- `ds4-companiond`: daemon de usuário que reconcilia links do PipeWire por eventos, reaplica o
+  volume salvo ao conectar o controle, rebaixa qualquer volume acima do teto (e para −6 dB com fone
+  no controle), testa os motores por 0,5 s com intervalo mínimo e guarda vibração e cor como
+  pendentes enquanto o RPCS3 está aberto. API no D-Bus de sessão
+  (`data/io.github.luizfelipe_pacifico.DS4Companion.Daemon.xml`) e `--stop-motors` para o serviço.
 - Documentação inicial: README, arquitetura, segurança, roadmap, instalação, áudio, vibração,
   configuração, interface, design e solução de problemas.
 - Licença GPL-3.0-or-later, Código de Conduta, guia de boas práticas.

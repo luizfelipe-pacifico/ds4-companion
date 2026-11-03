@@ -95,6 +95,7 @@ src/ds4_companion/
 │   ├── hid/                # relatórios USB 0x05 / BT 0x11 (CRC32) e acesso ao hidraw
 │   ├── rpcs3/              # edição do Default.yml com backup; RPCS3 aberto (/proc)
 │   ├── device.py           # detecção cabo ↔ Bluetooth e bateria via udev
+│   ├── service.py          # núcleo: estado, limites de volume e vibração, pendências do RPCS3
 │   └── dbus.py             # serviço D-Bus exposto para GUI e CLI
 ├── cli/                    # ds4ctl
 │   └── __main__.py
@@ -125,7 +126,7 @@ Tudo que o pacote instala e não é Python. Nomes em `kebab-case` e em inglês.
 | `<app-id>.metainfo.xml.in` | `/usr/share/metainfo/` | 🗓️ |
 | `ds4-companion.service` | `/usr/lib/systemd/user/` | 🗓️ |
 | `70-ds4-companion.rules` | `/usr/lib/udev/rules.d/` | 🗓️ |
-| `<app-id>.xml` (interface D-Bus) | `/usr/share/dbus-1/interfaces/` | 🗓️ |
+| `io.github.luizfelipe_pacifico.DS4Companion.Daemon.xml` (interface D-Bus) | `/usr/share/dbus-1/interfaces/` | ✅ |
 
 Os arquivos com `<app-id>` e o ícone `ds4-companion*.svg` são renomeados quando o app ID for definido.
 

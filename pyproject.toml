@@ -56,6 +56,8 @@ ignore = ["S603", "S607", "RUF001", "RUF002", "RUF003"]
 "tests/**" = ["S101", "S108"]
 "tests/ci/**" = ["PT"]
 "scripts/**" = ["S"]
+# dbus-next lê a assinatura D-Bus das anotações ("d", "as", "a{sv}").
+"src/ds4_companion/daemon/dbus.py" = ["F722", "F821", "UP037"]
 
 [tool.mypy]
 python_version = "3.12"
@@ -78,9 +80,18 @@ disallow_untyped_calls = false
 module = ["ds4_companion.daemon.dbus"]
 disable_error_code = ["name-defined", "valid-type"]
 
+# Os tipos do dbus-next são parciais (decoradores e alguns métodos sem anotação).
+[[tool.mypy.overrides]]
+module = ["ds4_companion.daemon.dbus", "ds4_companion.daemon.__main__", "ds4_companion.cli.*"]
+disallow_untyped_calls = false
+disallow_untyped_decorators = false
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--strict-markers -ra --import-mode=importlib"
+# O dbus-next 0.2.3 usa APIs que saem no Python 3.15/3.16 (typing.no_type_check_decorator,
+# asyncio.iscoroutinefunction); o risco está anotado na ADR 0008.
+filterwarnings = ["ignore::DeprecationWarning:dbus_next.*"]
 markers = [
     "gui: precisa de display (GTK)",
     "hardware: precisa de um DualShock 4 conectado (manual)",

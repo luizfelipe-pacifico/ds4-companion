@@ -41,7 +41,7 @@ python -m ds4_companion.app
   ```bash
   dbus-run-session -- scripts/ci/run-integration.sh
   ```
-- Hardware: checklist manual em cabo **e** Bluetooth antes de cada versão.
+- Hardware: checklist manual em cabo **e** Bluetooth, com DualShock 4 **e** DualSense, antes de cada versão.
 
 ## Estilo
 

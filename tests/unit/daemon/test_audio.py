@@ -239,3 +239,21 @@ def test_playing_lists_every_app_once() -> None:
     graph = g.parse_dump(proton_dump())
     assert graph.playing() == ["RPCS3", "Firefox", "eldenring.exe"]  # ordem do ID do nó
     assert g.parse_dump(fx.dump(game=False)).playing() == []
+
+
+DUALSENSE_SINK = "alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40"
+
+
+def test_dualsense_sink_never_gets_sound_on_haptic_channels() -> None:
+    # Por cabo, o DualSense tem 4 canais: FL/FR são o som, RL/RR acionam os atuadores hápticos.
+    objs = [
+        *fx.dump(ds4=False, game=False),
+        fx.node(97, DUALSENSE_SINK, "Audio/Sink", volume=0.4, **{"node.description": "DualSense Wireless Controller"}),
+        *(fx.port(100 + i, 97, "in", ch) for i, ch in enumerate(("FL", "FR", "RL", "RR"))),
+        fx.node(300, "jogo", "Stream/Output/Audio", **{"application.name": "RPCS3"}),
+        *(fx.port(310 + i, 300, "out", ch) for i, ch in enumerate(("FL", "FR", "FC", "LFE", "RL", "RR"))),
+    ]
+    graph = g.parse_dump(objs)
+    assert graph.ds4_sink() is not None
+    targets = {inp for _out, inp in g.wanted_links(graph, APPS)}
+    assert targets == {100, 101}  # só FL e FR do controle

@@ -49,7 +49,7 @@ def test_missing_keys_are_inserted_inside_config(text: str) -> None:
 def test_apply_color(text: str) -> None:
     new, warnings = ic.apply_color(text, [1, 2, 3, 4], (255, 20, 147))
     assert warnings == [
-        "Jogador 3 não usa o DualShock 4 no RPCS3",
+        "Jogador 3 não usa DualShock 4 nem DualSense no RPCS3",
         "Jogador 4 não está no arquivo do RPCS3",
     ]
     for player in (1, 2):
@@ -133,3 +133,21 @@ def test_process_not_running(tmp_path: Path) -> None:
 def test_process_long_name_is_truncated_like_kernel(tmp_path: Path) -> None:
     proc = _proc(tmp_path, {"7": "um-nome-muito-l"})
     assert process.is_running(["um-nome-muito-longo"], proc=proc)
+
+
+def test_dualsense_players_are_edited_too() -> None:
+    text = (
+        "Player 1 Input:\n"
+        "  Handler: DualSense\n"
+        '  Device: "DualSense Pad #1"\n'
+        "  Config:\n"
+        "    Large Vibration Motor Multiplier: 100\n"
+        "Player 2 Input:\n"
+        "  Handler: DualShock 3\n"
+        "  Config:\n"
+        "    Large Vibration Motor Multiplier: 100\n"
+    )
+    out, warnings = ic.apply_vibration(text, [1, 2], ic.Vibration(70, 80, True))
+    assert ic.read_vibration(out, 1) == ic.Vibration(70, 80, True)
+    assert warnings == ["Jogador 2 não usa DualShock 4 nem DualSense no RPCS3"]
+    assert "Large Vibration Motor Multiplier: 100" in out.split("Player 2 Input:")[1]

@@ -14,7 +14,7 @@
 
 | Recurso | Como o acesso é dado | Escopo |
 |---|---|---|
-| `/dev/hidraw*` do DS4 | regra udev com `TAG+="uaccess"` (só VID `054c`, PIDs `05c4`, `09cc`, `0ba0`) | só o usuário logado na sessão ativa |
+| `/dev/hidraw*` do controle | regra udev com `TAG+="uaccess"` (só VID `054c`, PIDs `05c4`, `09cc`, `0ba0` do DS4 e `0ce6`, `0df2` do DualSense) | só o usuário logado na sessão ativa |
 | PipeWire | sessão do próprio usuário | só os streams do usuário |
 | Arquivos do RPCS3 | `~/.config/rpcs3` | só leitura/escrita das chaves de controle |
 

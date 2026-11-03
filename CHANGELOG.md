@@ -38,6 +38,10 @@
   Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
+- Suporte ao DualSense e ao DualSense Edge (ADR 0011): detecção por cabo e Bluetooth, relatórios
+  HID próprios (USB `0x02`, Bluetooth `0x31` com sequência e CRC32), vibração v1/v2 pela versão
+  do firmware, cor da luz, fone pelo relatório de entrada, áudio só nos canais FL/FR (RL/RR são
+  os atuadores hápticos), handler `DualSense` no `Default.yml` e regra udev para `0ce6`/`0df2`.
 - Tela de carregamento ao abrir: ícone do app, fase em texto (conectando, iniciando o serviço,
   lendo o estado), spinner só depois de 400 ms e, após 10 s, aviso de demora com os registros do
   serviço. O ícone do app entra no GResource.

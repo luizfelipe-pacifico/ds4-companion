@@ -25,10 +25,10 @@ from typing import Protocol
 
 from ..common import config as cfg
 from ..common.db import LIMIT_DB, clamp_db, db_to_volume, volume_to_db
-from ..common.models import LED_MODES, Connection, Motor, Status, led_preset, led_rgb
+from ..common.models import LED_MODES, Connection, Model, Motor, Status, led_preset, led_rgb
 from .audio import graph as audio_graph
 from .audio.pipewire import PipeWireError, write_test_tone
-from .device import Controller, pick, read_battery, redact
+from .device import EDGE_PRODUCT, Controller, pick, read_battery, redact
 from .hid import hidraw, reports
 from .rpcs3 import input_config, process
 
@@ -81,6 +81,7 @@ class Daemon:
         *,
         write_report: Callable[[str, bytes], None] = hidraw.write_report,
         read_report: Callable[[str], bytes | None] = hidraw.read_report,
+        read_feature: Callable[[str, int, int], bytes] = hidraw.get_feature,
         rpcs3_running: Callable[[], bool] = process.is_running,
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
         limiter: LimiterProcess | None = None,
@@ -93,6 +94,8 @@ class Daemon:
         self._config_path = config_path or cfg.default_path()
         self._write_report = write_report
         self._read_report = read_report
+        self._read_feature = read_feature
+        self._vibration_v2: bool | None = None  # DualSense: lido do firmware uma vez por conexão
         self._rpcs3_running = rpcs3_running
         self._sleep = sleep
         self.config, warnings = cfg.load(self._config_path)
@@ -166,7 +169,7 @@ class Daemon:
         if self.controller is None:
             return
         with contextlib.suppress(OSError, ValueError):
-            self._write_report(self.controller.hidraw, reports.output_report(self.controller.connection, motors=(0, 0)))
+            self._write_report(self.controller.hidraw, self._report(self.controller, motors=(0, 0)))
 
     # --- leitura do estado --------------------------------------------------------------------
 
@@ -181,6 +184,7 @@ class Daemon:
                 if self.controller.battery_dir:
                     log.debug("bateria em %s", redact(self.controller.battery_dir))
                 self._led_pending = True
+            self._vibration_v2 = None
 
     async def _check_rpcs3(self) -> None:
         running = await asyncio.to_thread(self._rpcs3_running)
@@ -274,7 +278,8 @@ class Daemon:
             return
         except OSError:
             return
-        parsed = reports.parse_usb_input(data) if data else None
+        parse = reports.parse_dualsense_usb_input if c.model == Model.DUALSENSE else reports.parse_usb_input
+        parsed = parse(data) if data else None
         if parsed is not None and parsed.headphones != self.status.headphones:
             self.status.headphones = parsed.headphones
             log.info("fone no controle: %s", "sim" if parsed.headphones else "não")
@@ -301,6 +306,7 @@ class Daemon:
             self.status,
             connection=c.connection if c else Connection.NONE,
             controller_name=c.name if c else "",
+            controller_model=c.model if c else "",
             battery=battery,
             charging=charging,
             hid_access=self.status.hid_access if c else True,
@@ -405,7 +411,7 @@ class Daemon:
         if vib.swap_motors:
             strong, weak = weak, strong
         try:
-            self._write_report(c.hidraw, reports.output_report(c.connection, motors=(strong, weak)))
+            self._write_report(c.hidraw, self._report(c, motors=(strong, weak)))
             await self._sleep(min(RUMBLE_SECONDS, RUMBLE_MAX_SECONDS))
         except OSError as exc:
             raise self._hid_error(exc) from exc
@@ -480,6 +486,23 @@ class Daemon:
         self._save()
         await self.refresh()
 
+    def _report(
+        self, c: Controller, *, motors: tuple[int, int] | None = None, rgb: tuple[int, int, int] | None = None
+    ) -> bytes:
+        """Relatório de saída no formato do modelo conectado."""
+        if c.model == Model.DUALSENSE and motors is not None and self._vibration_v2 is None:
+            try:
+                feature = self._read_feature(
+                    c.hidraw, reports.DS_FEATURE_FIRMWARE_INFO, reports.DS_FEATURE_FIRMWARE_SIZE
+                )
+            except OSError as exc:
+                log.debug("versão do firmware do DualSense ilegível (%s); usando vibração v2", exc)
+                feature = b""
+            self._vibration_v2 = c.product == EDGE_PRODUCT or reports.uses_vibration_v2(feature)
+        return reports.output_report(
+            c.connection, motors=motors, rgb=rgb, model=c.model, vibration_v2=self._vibration_v2 is not False
+        )
+
     def _hid_error(self, exc: OSError) -> DaemonError:
         if isinstance(exc, hidraw.HidAccessError):
             self.status.hid_access = False
@@ -496,7 +519,7 @@ class Daemon:
             return
         rgb = self._effective_led()
         try:
-            self._write_report(c.hidraw, reports.output_report(c.connection, rgb=rgb))
+            self._write_report(c.hidraw, self._report(c, rgb=rgb))
         except OSError as exc:
             log.warning("luz não aplicada: %s", exc)
             if isinstance(exc, hidraw.HidAccessError):

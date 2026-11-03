@@ -78,7 +78,13 @@ class FakeDevices:
 
 
 class Env:
-    def __init__(self, tmp_path: Path, objs: list[Any] | None = None, connection: Connection = Connection.USB):
+    def __init__(
+        self,
+        tmp_path: Path,
+        objs: list[Any] | None = None,
+        connection: Connection = Connection.USB,
+        product: int = 0x09CC,
+    ):
         self.hidraw = tmp_path / "hidraw7"
         self.hidraw.write_bytes(b"")
         battery = tmp_path / "bat"
@@ -95,7 +101,9 @@ class Env:
         cfg.save(c, self.config_path)
 
         self.audio = FakeAudio(objs if objs is not None else fx.dump())
-        self.devices = FakeDevices([Controller(str(self.hidraw), connection, 0x09CC, str(battery))])
+        self.devices = FakeDevices([Controller(str(self.hidraw), connection, product, str(battery))])
+        self.feature: bytes = b""
+        self.feature_reads = 0
         self.reports: list[bytes] = []
         self.rpcs3 = False
         self.input: bytes | None = None
@@ -116,12 +124,19 @@ class Env:
                 raise self.read_error
             return self.input
 
+        def feature(path: str, report_id: int, size: int) -> bytes:
+            self.feature_reads += 1
+            if not self.feature:
+                raise OSError(5, "I/O")
+            return self.feature
+
         self.daemon = service.Daemon(
             self.audio,
             self.devices,
             self.config_path,
             write_report=write,
             read_report=read,
+            read_feature=feature,
             rpcs3_running=lambda: self.rpcs3,
             sleep=no_sleep,
         )
@@ -538,3 +553,58 @@ def test_custom_color_and_battery_mode(env: Env) -> None:
     assert env.reports[-1][6:9] == bytes([0xFF, 0, 0])
     run(env.daemon.refresh())  # mesma faixa: não reenvia
     assert len(env.reports) == count + 1
+
+
+@pytest.fixture
+def dualsense(tmp_path: Path) -> Env:
+    return Env(tmp_path, product=0x0CE6)
+
+
+def firmware(major: int, minor: int) -> bytes:
+    data = bytearray(64)
+    data[0] = 0x20
+    data[44:46] = ((major << 8) | minor).to_bytes(2, "little")
+    return bytes(data)
+
+
+def test_dualsense_status_led_and_rumble_v1(dualsense: Env) -> None:
+    dualsense.feature = firmware(2, 20)
+    run(dualsense.daemon.refresh())
+    s = dualsense.daemon.status
+    assert (s.controller_name, s.controller_model) == ("DualSense", "dualsense")
+    led = dualsense.reports[0]
+    assert (led[0], len(led)) == (0x02, 63)  # relatório do DualSense, não o 0x05 do DS4
+    assert led[1 + 44 : 1 + 47] == bytes([0, 0, 0xFF])
+
+    dualsense.reports.clear()
+    run(dualsense.daemon.test_rumble("strong"))
+    start, stop = dualsense.reports
+    assert start[1] == 0x01 | 0x02  # firmware antigo: vibração compatível v1
+    assert (start[1 + 3], start[1 + 2]) == (255, 0)  # motor_left = forte
+    assert (stop[1 + 3], stop[1 + 2]) == (0, 0)
+    # A versão do firmware é lida uma vez por conexão.
+    dualsense.daemon._last_rumble = -1e9
+    run(dualsense.daemon.test_rumble("weak"))
+    assert dualsense.feature_reads == 1
+
+
+def test_dualsense_rumble_defaults_to_v2_when_firmware_is_unreadable(dualsense: Env) -> None:
+    run(dualsense.daemon.refresh())
+    dualsense.reports.clear()
+    run(dualsense.daemon.test_rumble("both"))
+    assert dualsense.reports[0][1 + 39] == 0x04  # valid_flag2: COMPATIBLE_VIBRATION2
+
+
+def test_dualsense_headphones_lower_the_ceiling(dualsense: Env) -> None:
+    report = bytearray(64)
+    report[0], report[54] = 0x01, 0x01
+    dualsense.input = bytes(report)
+    run(dualsense.daemon.set_volume(-1.0))
+    run(dualsense.daemon.refresh())
+    assert dualsense.daemon.status.headphones
+    assert dualsense.daemon.status.max_db == -6.0
+    # O byte 30 do DS4 não diz nada no DualSense: só o status[1] vale.
+    report[54], report[30] = 0x00, 0x30
+    dualsense.input = bytes(report)
+    run(dualsense.daemon.refresh())
+    assert not dualsense.daemon.status.headphones

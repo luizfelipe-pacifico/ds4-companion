@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 Contribuidores do DS4 Companion
-"""Detecção do DualShock 4 (cabo ↔ Bluetooth) e da bateria pelo udev.
+"""Detecção do DualShock 4 e do DualSense (cabo ↔ Bluetooth) e da bateria pelo udev.
 
 Propriedades do udev são dados não confiáveis: só números do HID_ID são usados para decidir algo,
 e o nome da bateria (que contém o MAC) nunca vai para o log sem `redact`.
@@ -16,16 +16,20 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..common.models import Connection
+from ..common.models import Connection, Model
 
 log = logging.getLogger(__name__)
 
 SONY_VENDOR = 0x054C
-DS4_PRODUCTS = {
-    0x05C4: "DualShock 4",
-    0x09CC: "DualShock 4",
-    0x0BA0: "DualShock 4 (adaptador sem fio)",
+PRODUCTS: dict[int, tuple[str, Model]] = {
+    0x05C4: ("DualShock 4", Model.DS4),
+    0x09CC: ("DualShock 4", Model.DS4),
+    0x0BA0: ("DualShock 4 (adaptador sem fio)", Model.DS4),
+    0x0CE6: ("DualSense", Model.DUALSENSE),
+    0x0DF2: ("DualSense Edge", Model.DUALSENSE),
 }
+WIRELESS_ADAPTER = 0x0BA0
+EDGE_PRODUCT = 0x0DF2  # o Edge sempre usa a vibração v2
 BUS_USB = 0x0003
 BUS_BLUETOOTH = 0x0005
 
@@ -41,7 +45,11 @@ class Controller:
 
     @property
     def name(self) -> str:
-        return DS4_PRODUCTS.get(self.product, "DualShock 4")
+        return PRODUCTS.get(self.product, ("DualShock 4", Model.DS4))[0]
+
+    @property
+    def model(self) -> Model:
+        return PRODUCTS.get(self.product, ("DualShock 4", Model.DS4))[1]
 
 
 def parse_hid_id(value: str) -> tuple[int, int, int] | None:
@@ -61,10 +69,10 @@ def classify(hid_id: str) -> tuple[Connection, int] | None:
     if parsed is None:
         return None
     bus, vendor, product = parsed
-    if vendor != SONY_VENDOR or product not in DS4_PRODUCTS:
+    if vendor != SONY_VENDOR or product not in PRODUCTS:
         return None
     # O adaptador sem fio é USB para o kernel, mas o controle fala com ele por rádio.
-    if bus == BUS_USB and product != 0x0BA0:
+    if bus == BUS_USB and product != WIRELESS_ADAPTER:
         return Connection.USB, product
     if bus in (BUS_BLUETOOTH, BUS_USB):
         return Connection.BLUETOOTH, product

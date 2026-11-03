@@ -34,7 +34,7 @@ def catalog() -> dict[str, State]:
             "no-controller",
             _("Controle desconectado"),
             _("Nenhum controle conectado"),
-            _("Ligue o DualShock 4 pelo cabo USB ou pareie por Bluetooth."),
+            _("Ligue o DualShock 4 ou o DualSense pelo cabo USB ou pareie por Bluetooth."),
             _("Como parear"),
         ),
         "waiting-game": State(
@@ -48,7 +48,7 @@ def catalog() -> dict[str, State]:
             _("Bluetooth sem áudio no controle"),
             _("Som no controle precisa do cabo"),
             _(
-                "Por Bluetooth o Linux ainda não envia áudio para o DualShock 4. "
+                "Por Bluetooth o Linux ainda não envia áudio para o controle. "
                 "Vibração, luz e bateria continuam funcionando."
             ),
             _("Saiba mais"),

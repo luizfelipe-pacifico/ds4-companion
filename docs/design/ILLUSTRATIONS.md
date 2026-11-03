@@ -70,7 +70,7 @@ tela. Os textos são o ponto de partida para o `gettext`.
   cinza com o plugue USB em `led-blue` solto e três traços azuis indicando onde conectar.
 - **Texto alternativo:** "Controle desconectado"
 - **Título:** Nenhum controle conectado
-- **Descrição:** Ligue o DualShock 4 pelo cabo USB ou pareie por Bluetooth.
+- **Descrição:** Ligue o DualShock 4 ou o DualSense pelo cabo USB ou pareie por Bluetooth.
 - **Botão:** Como parear (abre a ajuda)
 - **Onde:** página Status.
 
@@ -98,7 +98,7 @@ tela. Os textos são o ponto de partida para o `gettext`.
   Bluetooth à esquerda e selo neutro com alto-falante mudo à direita.
 - **Texto alternativo:** "Bluetooth sem áudio no controle"
 - **Título:** Som no controle precisa do cabo
-- **Descrição:** Por Bluetooth o Linux ainda não envia áudio para o DualShock 4. Vibração, luz e bateria
+- **Descrição:** Por Bluetooth o Linux ainda não envia áudio para o controle. Vibração, luz e bateria
   continuam funcionando.
 - **Botão:** Saiba mais (abre [AUDIO.md](../guia/AUDIO.md#cabo-usb--bluetooth))
 - **Onde:** página Áudio, no lugar dos controles de volume.
@@ -145,7 +145,7 @@ page = Adw.StatusPage(
         "/io/github/luizfelipe_pacifico/DS4Companion/illustrations/no-controller.svg"
     ),
     title=_("Nenhum controle conectado"),
-    description=_("Ligue o DualShock 4 pelo cabo USB ou pareie por Bluetooth."),
+    description=_("Ligue o DualShock 4 ou o DualSense pelo cabo USB ou pareie por Bluetooth."),
 )
 ```
 

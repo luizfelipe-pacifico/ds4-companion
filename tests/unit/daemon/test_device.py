@@ -9,7 +9,7 @@ from typing import Any
 
 import pytest
 
-from ds4_companion.common.models import Connection
+from ds4_companion.common.models import Connection, Model
 from ds4_companion.daemon import device
 
 
@@ -20,7 +20,9 @@ from ds4_companion.daemon import device
         ("0005:0000054C:000005C4", (Connection.BLUETOOTH, 0x05C4)),
         ("0003:0000054C:00000BA0", (Connection.BLUETOOTH, 0x0BA0)),
         ("0003:00001C4F:00000048", None),
-        ("0003:0000054C:00000CE6", None),
+        ("0003:0000054C:00000CE6", (Connection.USB, 0x0CE6)),
+        ("0005:0000054C:00000DF2", (Connection.BLUETOOTH, 0x0DF2)),
+        ("0003:0000054C:00000CE5", None),
         ("0018:0000054C:000009CC", None),
         ("lixo", None),
         ("zz:yy:xx", None),
@@ -37,6 +39,11 @@ def test_pick_prefers_usb() -> None:
     assert device.pick([]) is None
     assert usb.name == "DualShock 4"
     assert device.Controller("/dev/x", Connection.BLUETOOTH, 0x0BA0).name.endswith("(adaptador sem fio)")
+    assert usb.model == Model.DS4
+    dualsense = device.Controller("/dev/x", Connection.USB, 0x0CE6)
+    assert (dualsense.name, dualsense.model) == ("DualSense", Model.DUALSENSE)
+    edge = device.Controller("/dev/x", Connection.USB, 0x0DF2)
+    assert (edge.name, edge.model) == ("DualSense Edge", Model.DUALSENSE)
 
 
 def test_read_battery(tmp_path: Path) -> None:

@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import errno
+import fcntl
 import os
 import select
 
@@ -54,3 +55,22 @@ def read_report(path: str, size: int = 64, timeout: float = 0.1) -> bytes | None
 
 def can_write(path: str) -> bool:
     return os.access(path, os.W_OK)
+
+
+def hidiocgfeature(length: int) -> int:
+    """`HIDIOCGFEATURE(len)` de linux/hidraw.h: _IOC(_IOC_WRITE | _IOC_READ, 'H', 0x07, len)."""
+    return (3 << 30) | (length << 16) | (ord("H") << 8) | 0x07
+
+
+def get_feature(path: str, report_id: int, size: int) -> bytes:
+    """Lê um relatório de feature (o primeiro byte do buffer diz qual)."""
+    fd = _open(path, os.O_RDWR)
+    try:
+        buf = bytearray(size)
+        buf[0] = report_id
+        length = fcntl.ioctl(fd, hidiocgfeature(size), buf)
+    except OSError as exc:
+        raise HidError(exc.errno, exc.strerror or "falha ao ler o controle", path) from exc
+    finally:
+        os.close(fd)
+    return bytes(buf[:length])

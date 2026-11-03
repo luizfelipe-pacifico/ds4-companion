@@ -35,6 +35,7 @@ App nativo para Arch Linux, em GTK4 + libadwaita.
 | 💡 | Cor da barra de luz, com nove cores pré-definidas | ✅ | ✅ |
 | 🔌 | Detecção automática cabo ↔ Bluetooth | ✅ | ✅ |
 | 🔋 | Indicador de bateria | ✅ | ✅ |
+| 🎮 | DualShock 4 e DualSense (PS5), inclusive o Edge | ✅ | ✅ |
 
 **"Em paralelo"** quer dizer: a saída que você usa (notebook, monitor HDMI, fone de ouvido) **não muda**.
 O controle recebe uma cópia do som do jogo ao mesmo tempo.
@@ -119,7 +120,7 @@ Visual: preto + azul PlayStation, ícones só em SVG ([design](docs/design/DESIG
 | 1 · v0.1 | Daemon + CLI `ds4ctl` | ✅ |
 | 2 · v0.2 | Interface gráfica, cor da luz, logo e bandeja | ✅ |
 | 3 · v0.3 | PKGBUILD, `install.sh` e AUR | 🔧 pacote e instalador prontos; falta release e AUR |
-| 4 · v0.4+ | Limitador, perfis por jogo, DualSense | ⏳ |
+| 4 · v0.4+ | Limitador, perfis por jogo, DualSense ✅ | ⏳ |
 
 Lista completa em [ROADMAP](docs/desenvolvimento/ROADMAP.md).
 

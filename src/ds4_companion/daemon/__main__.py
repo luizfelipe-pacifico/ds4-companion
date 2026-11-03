@@ -29,12 +29,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def stop_motors() -> int:
+    from ..common.models import Model
     from .device import DeviceMonitor
     from .hid import hidraw, reports
 
     for controller in DeviceMonitor().scan():
-        with contextlib.suppress(OSError):
-            hidraw.write_report(controller.hidraw, reports.output_report(controller.connection, motors=(0, 0)))
+        # Sem a versão do firmware do DualSense, o "parar" vai nos dois formatos de vibração.
+        formats = (True, False) if controller.model == Model.DUALSENSE else (True,)
+        for v2 in formats:
+            report = reports.output_report(
+                controller.connection, motors=(0, 0), model=controller.model, vibration_v2=v2
+            )
+            with contextlib.suppress(OSError):
+                hidraw.write_report(controller.hidraw, report)
     return 0
 
 

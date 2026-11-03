@@ -15,7 +15,7 @@ limiter = true                 # limitador: nenhum pico acima de −1 dBFS no co
 large_percent = 100
 small_percent = 100
 swap_motors = false
-players = [1, 2]               # jogadores do RPCS3 que usam DS4
+players = [1, 2]               # jogadores do RPCS3 que usam DS4 ou DualSense
 
 [led]
 color = "blue"                 # blue, red, green, pink, purple, cyan, orange, white, off ou "#RRGGBB"

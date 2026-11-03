@@ -18,7 +18,7 @@ SINK = "Audio/Sink"
 STREAM = "Stream/Output/Audio"
 LIMITER_INPUT = "ds4_companion_limiter"  # nomes fixos do limitador.py (ADR 0010)
 LIMITER_OUTPUT = "ds4_companion_limiter.out"
-DS4_MARKERS = ("wireless_controller", "dualshock")
+DS4_MARKERS = ("wireless_controller", "dualshock", "dualsense")
 
 # Downmix para o par estéreo do controle: o centro vai para os dois lados, traseiros para o
 # lado correspondente; LFE fica de fora (o alto-falante do controle não reproduz grave).

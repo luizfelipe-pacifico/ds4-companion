@@ -18,6 +18,13 @@ class Connection(StrEnum):
     BLUETOOTH = "bluetooth"
 
 
+class Model(StrEnum):
+    """Família do controle: muda o formato dos relatórios HID e o handler do RPCS3."""
+
+    DS4 = "ds4"
+    DUALSENSE = "dualsense"
+
+
 class Motor(StrEnum):
     STRONG = "strong"
     WEAK = "weak"
@@ -104,6 +111,7 @@ class Status:
 
     connection: str = Connection.NONE
     controller_name: str = ""
+    controller_model: str = ""
     battery: int = -1
     charging: bool = False
     hid_access: bool = True

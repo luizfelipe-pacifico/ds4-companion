@@ -133,6 +133,28 @@ def test_stop_motors(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     assert data[4:6] == b"\0\0"
 
 
+def test_stop_motors_dualsense_sends_both_vibration_formats(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    # Sem saber o firmware, o "parar" vai nos dois formatos: nenhum motor fica ligado.
+    dev = tmp_path / "hidraw8"
+    dev.write_bytes(b"")
+    from ds4_companion.common.models import Connection
+    from ds4_companion.daemon import device
+
+    class Fake:
+        def scan(self) -> list[Controller]:
+            return [Controller(str(dev), Connection.USB, 0x0CE6)]
+
+    written: list[bytes] = []
+    monkeypatch.setattr(device, "DeviceMonitor", Fake)
+    from ds4_companion.daemon.hid import hidraw
+
+    monkeypatch.setattr(hidraw, "write_report", lambda path, report: written.append(report))
+    assert daemon_main.main(["--stop-motors"]) == 0
+    assert [r[0] for r in written] == [0x02, 0x02]
+    assert {r[1] & 0x01 for r in written} == {0, 1}  # v1 (flag0) e v2 (flag2)
+    assert all(r[3:5] == b"\0\0" for r in written)
+
+
 def _signature(xml_text: str) -> set[tuple[str, ...]]:
     import xml.etree.ElementTree as ET
 

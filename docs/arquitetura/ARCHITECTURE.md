@@ -88,6 +88,10 @@ RPCS3 (Stream/Output/Audio)
 | Sink de áudio | sim | **não** |
 | Identificação no RPCS3 | `DS4 Pad #N` (independe da conexão) | igual |
 
+O DualSense segue a mesma tabela, com o handler `DualSense` (`DualSense Pad #N`) no RPCS3 e os
+relatórios HID dele (USB `0x02`, Bluetooth `0x31`). O sink por cabo tem quatro canais: o som vai só
+para FL/FR, porque RL/RR acionam os atuadores hápticos ([ADR 0011](adr/0011-suporte-ao-dualsense.md)).
+
 O daemon detecta a mudança (udev via `pyudev`) e mostra na interface quais recursos estão ativos.
 
 ## Estrutura de pastas

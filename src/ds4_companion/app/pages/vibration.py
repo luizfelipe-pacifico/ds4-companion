@@ -114,12 +114,12 @@ class VibrationPage(Page):
         self.prefs.add(options)
 
         players = Adw.PreferencesGroup(
-            title=_("Jogadores"), description=_("Jogadores do RPCS3 que usam o DualShock 4.")
+            title=_("Jogadores"), description=_("Jogadores do RPCS3 que usam DualShock 4 ou DualSense.")
         )
         row = Adw.PreferencesRow(activatable=False, focusable=False)
         toggles = Gtk.Box(homogeneous=True, hexpand=True, spacing=4)
         toggles.add_css_class("players")
-        toggles.update_property([Gtk.AccessibleProperty.LABEL], [_("Jogadores com DualShock 4")])
+        toggles.update_property([Gtk.AccessibleProperty.LABEL], [_("Jogadores com DualShock 4 ou DualSense")])
         self.players: list[Gtk.ToggleButton] = []
         for n in range(1, MAX_PLAYERS + 1):
             toggle = Gtk.ToggleButton(label=str(n))

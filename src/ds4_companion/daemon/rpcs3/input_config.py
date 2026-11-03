@@ -3,7 +3,7 @@
 """Leitura e edição do `input_configs/global/Default.yml` do RPCS3.
 
 O arquivo é dado não confiável e é do usuário: a edição é por linha, só nas chaves de vibração e
-cor dentro de `Player N Input → Config`, e só de jogadores com `Handler: DualShock 4`. Comentários,
+cor dentro de `Player N Input → Config`, e só de jogadores com `Handler: DualShock 4` ou `DualSense`. Comentários,
 ordem e o resto do arquivo ficam como estão. Os valores escritos são sempre números ou booleanos
 gerados aqui, nunca texto vindo de fora.
 """
@@ -17,7 +17,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-DS4_HANDLER = "DualShock 4"
+HANDLERS = ("DualShock 4", "DualSense")  # nomes do pad_handler no RPCS3
 LARGE = "Large Vibration Motor Multiplier"
 SMALL = "Small Vibration Motor Multiplier"
 SWAP = "Switch Vibration Motors"
@@ -134,8 +134,8 @@ def set_values(text: str, player: int, values: dict[str, str]) -> str:
     if rng is None:
         raise Rpcs3ConfigError(f"Jogador {player} não está no arquivo do RPCS3")
     handler = _direct_value(lines, *rng, "Handler")
-    if handler != DS4_HANDLER:
-        raise Rpcs3ConfigError(f"Jogador {player} não usa o DualShock 4 no RPCS3")
+    if handler not in HANDLERS:
+        raise Rpcs3ConfigError(f"Jogador {player} não usa DualShock 4 nem DualSense no RPCS3")
     cstart, cend, indent, prefix = _config_range(lines, *rng)
     pending = dict(values)
     for i in range(cstart + 1, cend):

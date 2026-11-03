@@ -139,3 +139,11 @@ def test_limiter_that_exits_at_start_is_reported(tmp_path: Path, monkeypatch: py
     limiter = lim.Limiter(conf_dir=tmp_path)
     assert asyncio.run(limiter.ensure("x")) is False
     assert not limiter.running
+
+
+def test_limiter_never_upmixes_to_dualsense_haptic_channels() -> None:
+    # O sink do DualSense tem 4 canais e RL/RR são os atuadores hápticos: o estéreo do limitador
+    # não pode ser espalhado para trás pelo upmix do PipeWire (ADR 0011).
+    text = lim.config_text("alsa_output.usb-Sony_DualSense_Wireless_Controller-00.analog-surround-40")
+    playback = text.split("playback.props")[1]
+    assert "channelmix.upmix   = false" in playback

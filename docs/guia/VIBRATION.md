@@ -5,6 +5,9 @@
 - O DS4 tem **dois motores**: forte (esquerdo, grave) e fraco (direito, agudo).
 - Os jogos de PS3 mandam vibração comum; o RPCS3 repassa para o DS4 por cabo e Bluetooth.
 - **Não existe** vibração háptica nem gatilho adaptativo estilo PS5 no DS4 (é limitação do hardware).
+- O **DualSense** funciona do mesmo jeito, no modo de vibração "compatível" de dois motores (handler
+  `DualSense` no RPCS3). Os jogos de PS3 não têm nada para os atuadores hápticos nem para os
+  gatilhos adaptativos, então eles ficam parados.
 
 ## Ajustes
 

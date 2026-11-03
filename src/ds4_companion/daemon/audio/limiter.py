@@ -66,6 +66,8 @@ context.modules = [
                 target.object      = {json.dumps(target)}
                 node.dont-reconnect = true
                 node.passive       = true
+                # Sem upmix: no DualSense (4 canais) RL/RR são os atuadores hápticos (ADR 0011).
+                channelmix.upmix   = false
             }}
         }}
     }}

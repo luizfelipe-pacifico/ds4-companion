@@ -215,11 +215,11 @@ p {
 }
 
 .button.primary:hover {
-  background: #3a77f7;
+  background: #2562e3;
 }
 
 .button.primary:active {
-  background: #2560dc;
+  background: #1f55c8;
 }
 
 .button.secondary {
@@ -1335,8 +1335,19 @@ input[type="range"]::-moz-range-thumb {
 
 .phases li.now .phase-id,
 .phases li.now .phase-state {
-  color: var(--led-blue);
+  color: var(--white);
   font-weight: 500;
+}
+
+.phases li.now .phase-state::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--led-blue);
+  vertical-align: 1px;
 }
 
 .text-link {

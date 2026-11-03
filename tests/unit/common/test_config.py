@@ -115,3 +115,11 @@ def test_update_check_can_be_turned_off() -> None:
     c, warnings = cfg.from_dict({"updates": {"check_on_start": False}})
     assert warnings == []
     assert not c.updates.check_on_start
+
+
+def test_apps_accept_patterns_but_not_everything() -> None:
+    assert cfg.validate_apps(["*.exe", "wine*"]) == ["*.exe", "wine*"]
+    # "*" mandaria todo o som do computador (navegador, chamadas) para o controle.
+    for everything in ("*", "**", "?*", "[a-z]*"):
+        with pytest.raises(cfg.ConfigError, match="todo o som"):
+            cfg.validate_apps([everything])

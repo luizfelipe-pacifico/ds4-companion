@@ -59,7 +59,8 @@
 - [ ] Perfis por jogo (ex.: FIFA com mais som no controle, Tekken só vibração)
 - [ ] Barra de luz além das cores fixas: cor personalizada, cor por jogador, cor por perfil de jogo e modo bateria
 - [ ] Suporte a DualSense (PS5): vibração háptica/gatilhos quando o RPCS3 suportar
-- [ ] Espelhar áudio de outros apps (Steam/Proton) — lista configurável
+- [x] Espelhar áudio de outros apps (Steam/Proton) — lista configurável: padrões (`*.exe` para o
+      Proton), sugestões do que está tocando na página Áudio e `ds4ctl apps`
 
 ## Pesquisa — Áudio por Bluetooth
 - [x] Avaliar viabilidade: o DS4 recebe áudio por Bluetooth em relatórios HID (0x14–0x19) com

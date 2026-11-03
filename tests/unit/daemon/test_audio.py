@@ -205,3 +205,37 @@ def test_test_tone(tmp_path: Path) -> None:
     samples = [int.from_bytes(frames[i : i + 2], "little", signed=True) for i in range(0, len(frames), 4)]
     assert samples[0] == 0
     assert max(abs(s) for s in samples) <= int(32767 * 10 ** (-12 / 20)) + 1
+
+
+def proton_dump() -> list[object]:
+    """Um jogo do Proton (Wine dá o nome do .exe ao stream), o Firefox e o RPCS3."""
+    return [
+        *fx.dump(),
+        fx.node(
+            400,
+            "Elden Ring",
+            "Stream/Output/Audio",
+            **{"application.name": "eldenring.exe", "application.process.binary": "wine64-preloader"},
+        ),
+        fx.port(401, 400, "out", "FL"),
+        fx.port(402, 400, "out", "FR"),
+        fx.node(200, "Firefox", "Stream/Output/Audio", **{"application.name": "Firefox"}),
+        fx.port(201, 200, "out", "FL"),
+        fx.node(210, "Firefox 2", "Stream/Output/Audio", **{"application.name": "Firefox"}),
+    ]
+
+
+def test_patterns_match_proton_games_case_insensitively() -> None:
+    graph = g.parse_dump(proton_dump())
+    assert [n.id for n in graph.streams(["*.EXE"])] == [400]
+    assert [n.id for n in graph.streams(["wine*"])] == [400]
+    assert [n.id for n in graph.streams(["rpcs3", "*.exe"])] == [120, 400]
+    assert (401, 99) in g.missing_links(graph, ["*.exe"])
+    # Um nome sem curinga continua exato: "rpcs" não pega o "RPCS3".
+    assert graph.streams(["rpcs"]) == []
+
+
+def test_playing_lists_every_app_once() -> None:
+    graph = g.parse_dump(proton_dump())
+    assert graph.playing() == ["RPCS3", "Firefox", "eldenring.exe"]  # ordem do ID do nó
+    assert g.parse_dump(fx.dump(game=False)).playing() == []

@@ -51,6 +51,10 @@ def build_parser() -> argparse.ArgumentParser:
     led.add_argument("color", help="azul, vermelho, verde, rosa, roxo, ciano, laranja, branco ou desligada")
 
     sub.add_parser("test-tone", help="toca um apito só no controle")
+
+    apps = sub.add_parser("apps", help="apps cujo som vai para o controle (aceita padrões como *.exe)")
+    apps.add_argument("action", choices=["list", "add", "remove"], nargs="?", default="list")
+    apps.add_argument("name", nargs="?", help="nome do processo ou padrão (ex.: *.exe para Proton)")
     return parser
 
 
@@ -142,6 +146,34 @@ async def run(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
         print("Cor da luz alterada.", file=out)
     elif cmd == "test-tone":
         await proxy.call_play_test_tone()
+    elif cmd == "apps":
+        return await run_apps(args, proxy, out)
+    return EXIT_OK
+
+
+async def run_apps(args: argparse.Namespace, proxy: Any, out: TextIO) -> int:
+    status = Status.from_mapping({k: v.value for k, v in (await proxy.get_status()).items()})
+    if args.action == "list":
+        print("Apps no controle:", file=out)
+        for app in status.apps or ["(nenhum)"]:
+            print(f"  {app}", file=out)
+        if status.playing:
+            print(f"Tocando agora: {', '.join(status.playing)}", file=out)
+        return EXIT_OK
+    if not args.name:
+        print("Diga o nome do app: ds4ctl apps add <nome>", file=sys.stderr)
+        return EXIT_ERROR
+    known = [a.casefold() for a in status.apps]
+    if args.action == "add":
+        if args.name.casefold() not in known:
+            await proxy.call_set_apps([*status.apps, args.name])
+        print(f"O som de {args.name} vai para o controle.", file=out)
+        return EXIT_OK
+    if args.name.casefold() not in known:
+        print(f"{args.name} não está na lista.", file=sys.stderr)
+        return EXIT_ERROR
+    await proxy.call_set_apps([a for a in status.apps if a.casefold() != args.name.casefold()])
+    print(f"{args.name} saiu da lista.", file=out)
     return EXIT_OK
 
 

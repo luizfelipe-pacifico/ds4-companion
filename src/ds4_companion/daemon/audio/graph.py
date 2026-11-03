@@ -12,6 +12,8 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Any
 
+from ...common.config import app_matches
+
 SINK = "Audio/Sink"
 STREAM = "Stream/Output/Audio"
 DS4_MARKERS = ("wireless_controller", "dualshock")
@@ -74,12 +76,21 @@ class Graph:
         return None
 
     def streams(self, apps: Iterable[str]) -> list[Node]:
-        wanted = {a.casefold() for a in apps}
+        """Streams de saída cujo nome de app ou binário casa com um nome ou padrão da lista."""
+        patterns = list(apps)
         return [
             n
-            for n in sorted(self.nodes.values(), key=lambda n: n.id)
-            if n.media_class == STREAM and wanted & {n.app_name.casefold(), n.app_binary.casefold()} - {""}
+            for n in self._output_streams()
+            if any(app_matches(p, n.app_name) or app_matches(p, n.app_binary) for p in patterns)
         ]
+
+    def playing(self) -> list[str]:
+        """Nome de cada app tocando agora (sem repetir), para sugerir na interface."""
+        names = (n.app_name or n.app_binary for n in self._output_streams())
+        return list(dict.fromkeys(name for name in names if name))
+
+    def _output_streams(self) -> list[Node]:
+        return [n for n in sorted(self.nodes.values(), key=lambda n: n.id) if n.media_class == STREAM]
 
     def ports_of(self, node_id: int, direction: str) -> list[Port]:
         return [p for p in self.ports if p.node_id == node_id and p.direction == direction and not p.monitor]

@@ -13,7 +13,18 @@ Detalhes técnicos em [ARCHITECTURE.md](../arquitetura/ARCHITECTURE.md#áudio-em
 ## Quais apps são espelhados
 
 Por padrão só o RPCS3 (`rpcs3`, `AppRun.wrapped`). Navegador, Discord etc. **não** vão para o controle.
-A lista é configurável (`audio.apps` em [CONFIGURATION.md](CONFIGURATION.md)).
+A lista é configurável (`audio.apps` em [CONFIGURATION.md](CONFIGURATION.md)) e casa com o nome do
+app ou do processo, sem diferenciar maiúsculas.
+
+### Steam, Proton e outros jogos
+
+- **Áudio → Sugestões** mostra o que está tocando agora no computador; escolher um app manda o som
+  dele para o controle. No terminal: `ds4ctl apps` lista, `ds4ctl apps add <nome>` adiciona.
+- **Jogos do Steam e Proton** adiciona o padrão `*.exe`. O Proton (Wine) dá ao som de cada jogo o
+  nome do `.exe`, então um padrão só cobre todos os jogos do Windows.
+- Jogos nativos de Linux têm cada um o seu nome de processo: abra o jogo e escolha-o nas sugestões.
+- Padrões aceitam `*` e `?` (`wine*`, `*.exe`). Um padrão que pegaria tudo (`*`) é recusado: o som
+  do navegador e de chamadas iria para o controle.
 
 ## Volume em dB
 

@@ -90,6 +90,8 @@ class Status:
     configured_max_db: float = 0.0
     output_name: str = ""
     apps: list[str] = field(default_factory=list)
+    playing: list[str] = field(default_factory=list)
+    """Apps tocando som agora (dado do PipeWire), para a interface sugerir."""
     large_percent: int = 100
     small_percent: int = 100
     swap_motors: bool = False

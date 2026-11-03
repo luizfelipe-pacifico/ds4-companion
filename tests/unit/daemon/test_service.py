@@ -145,6 +145,7 @@ def test_refresh_mirrors_and_reports_status(env: Env) -> None:
     assert s.game_running
     assert s.sink_present
     assert s.output_name == "Monitor HDMI"
+    assert s.playing == ["RPCS3"]
     assert s.volume_db == pytest.approx(-6.0, abs=0.01)  # volume salvo reaplicado ao achar o controle
     assert env.statuses
     assert env.statuses[-1] == s
@@ -347,6 +348,8 @@ def test_apps_dir_backup_and_defaults(env: Env, tmp_path: Path) -> None:
     assert env.daemon.status.apps == ["rpcs3", "steam"]
     with pytest.raises(service.DaemonError):
         run(env.daemon.set_apps([""]))
+    with pytest.raises(service.DaemonError, match="todo o som"):
+        run(env.daemon.set_apps(["*"]))
     run(env.daemon.set_rpcs3_dir(str(tmp_path)))
     assert env.daemon.status.rpcs3_config_dir == str(tmp_path)
     with pytest.raises(service.DaemonError):

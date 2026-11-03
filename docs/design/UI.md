@@ -24,8 +24,16 @@ Capturas com estados sintéticos, sem daemon nem hardware: `dbus-run-session -- 
                                          0 dB
  ⚠ Acima de 0 dB o som distorce e pode danificar o alto-falante.
  [ Tocar apito de teste ]
- Apps espelhados: RPCS3  [+ adicionar]
+ Apps no controle
+   rpcs3                                     [🗑]
+   Adicionar pelo nome do processo ou padrão  [✎]
+ Sugestões — Tocando agora no computador. Escolha um para mandar o som para o controle.
+   Firefox                                    [+]
+   Jogos do Steam e Proton (*.exe)            [+]
 ```
+- **Sugestões** só aparece quando há o que sugerir: apps tocando que a lista ainda não pega e o
+  atalho do Proton enquanto `*.exe` não está na lista. A linha escolhida sai na hora e um toast
+  confirma; se o daemon recusar, o toast diz o motivo e a sugestão volta.
 
 ## Vibração
 ```

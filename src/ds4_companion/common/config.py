@@ -8,6 +8,7 @@ Valor inválido nunca derruba o daemon: volta para o padrão e gera um aviso. O 
 
 from __future__ import annotations
 
+import fnmatch
 import json
 import math
 import os
@@ -27,6 +28,8 @@ MAX_APPS = 32
 MAX_APP_NAME = 64
 MAX_PERCENT = 200
 MAX_PLAYERS = 7
+# Apps que nunca devem ir para o controle sem querer: um padrão que pega todos eles pega tudo.
+_EVERYDAY_APPS = ("firefox", "discord", "spotify", "chromium", "zoom", "x")
 
 
 def default_path() -> Path:
@@ -115,6 +118,11 @@ def _percent(value: Any) -> int:
     return value
 
 
+def app_matches(pattern: str, name: str) -> bool:
+    """Nome de app ou padrão com curingas (`*.exe`, `wine*`), sem diferenciar maiúsculas."""
+    return bool(name) and fnmatch.fnmatchcase(name.casefold(), pattern.casefold())
+
+
 def validate_apps(value: Any) -> list[str]:
     if not isinstance(value, list) or len(value) > MAX_APPS:
         raise ConfigError(f"precisa ser uma lista com até {MAX_APPS} nomes")
@@ -125,6 +133,8 @@ def validate_apps(value: Any) -> list[str]:
         name = item.strip()
         if not name or len(name) > MAX_APP_NAME or not name.isprintable():
             raise ConfigError(f"nome de app inválido (1 a {MAX_APP_NAME} caracteres visíveis)")
+        if all(app_matches(name, app) for app in _EVERYDAY_APPS):
+            raise ConfigError(f"o padrão {name} mandaria todo o som do computador para o controle")
         if name.casefold() not in (a.casefold() for a in apps):
             apps.append(name)
     return apps

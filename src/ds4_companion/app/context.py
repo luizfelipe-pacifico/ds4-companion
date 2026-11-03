@@ -32,12 +32,21 @@ class Context:
         # As mensagens do daemon podem trazer stderr do PipeWire: texto puro, nunca markup.
         self.toasts.add_toast(Adw.Toast(title=text, timeout=4, use_markup=False))
 
-    def call(self, method: str, *args: Any, ok: str | None = None, done: Callable[[Any], None] | None = None) -> None:
+    def call(
+        self,
+        method: str,
+        *args: Any,
+        ok: str | None = None,
+        done: Callable[[Any], None] | None = None,
+        failed: Callable[[], None] | None = None,
+    ) -> None:
         """Chama o daemon; erro vira toast com a mensagem dele, sucesso opcionalmente também."""
 
         def finished(code: str | None, message: str, value: Any) -> None:
             if code is not None:
                 self.toast(message)
+                if failed:
+                    failed()
                 return
             if ok:
                 self.toast(ok)

@@ -8,6 +8,7 @@ from gettext import gettext as _
 
 from gi.repository import Adw, Gtk
 
+from ...common.config import app_matches
 from ...common.db import format_db
 from ...common.models import Connection, Status
 from ...common.names import AUDIO_HELP_URL, HELP_URL
@@ -15,6 +16,9 @@ from ..context import Context
 from ..states import catalog, inline_state
 from ..widgets.volume_row import VolumeRow
 from .base import Page
+
+# Wine/Proton dá ao stream o nome do .exe do jogo: um padrão cobre todos os jogos do Windows.
+PROTON_PATTERN = "*.exe"
 
 
 class AudioPage(Page):
@@ -56,11 +60,27 @@ class AudioPage(Page):
         empty = catalog()["empty-apps"]
         self.empty_apps = Adw.ActionRow(title=empty.title, subtitle=empty.description, activatable=False)
         self.apps_group.add(self.empty_apps)
-        self.add_row = Adw.EntryRow(title=_("Adicionar app pelo nome do processo"), show_apply_button=True)
+        self.add_row = Adw.EntryRow(title=_("Adicionar pelo nome do processo ou padrão"), show_apply_button=True)
         self.add_row.connect("apply", self._on_add)
         self.apps_group.add(self.add_row)
         self._app_rows: list[Adw.ActionRow] = []
         self.prefs.add(self.apps_group)
+
+        # Sugestões ficam logo abaixo da lista que elas mudam e só aparecem quando há o que sugerir.
+        self.suggestions = Adw.PreferencesGroup(title=_("Sugestões"), visible=False)
+        self.proton = Adw.ActionRow(
+            title=_("Jogos do Steam e Proton"),
+            subtitle=_("Adiciona o padrão {pattern}: todo jogo do Windows rodando no Proton.").format(
+                pattern=PROTON_PATTERN
+            ),
+            activatable=True,
+        )
+        self.proton.add_suffix(Gtk.Image(icon_name="list-add-symbolic"))
+        self.proton.connect("activated", lambda row: self._suggest(row, PROTON_PATTERN))
+        self.suggestions.add(self.proton)
+        self._suggestion_rows: list[Adw.ActionRow] = []
+        self._playing: list[str] = []
+        self.prefs.add(self.suggestions)
 
     # --- daemon → tela ---
 
@@ -85,6 +105,7 @@ class AudioPage(Page):
             self.volume.set_tooltip_text(None)
         if s.apps != self._apps:
             self._show_apps(s.apps)
+        self._show_suggestions(s.playing)
 
     def _show_apps(self, apps: list[str]) -> None:
         self._apps = list(apps)
@@ -105,7 +126,48 @@ class AudioPage(Page):
             self._app_rows.append(row)
         self.empty_apps.set_visible(not apps)
 
+    def _show_suggestions(self, playing: list[str]) -> None:
+        """Apps tocando agora que a lista ainda não pega, mais o atalho do Proton."""
+        unmatched = [name for name in playing if not any(app_matches(app, name) for app in self._apps)]
+        if unmatched != self._playing:
+            self._playing = unmatched
+            for row in self._suggestion_rows:
+                self.suggestions.remove(row)
+            self._suggestion_rows = []
+            for name in unmatched:
+                row = Adw.ActionRow(title=name, activatable=True, use_markup=False)
+                row.add_suffix(Gtk.Image(icon_name="list-add-symbolic"))
+                row.update_property(
+                    [Gtk.AccessibleProperty.LABEL], [_("Mandar o som de {app} para o controle").format(app=name)]
+                )
+                row.connect("activated", self._suggest, name)
+                self.suggestions.remove(self.proton)
+                self.suggestions.add(row)
+                self.suggestions.add(self.proton)
+                self._suggestion_rows.append(row)
+        self.suggestions.set_description(
+            _("Tocando agora no computador. Escolha um para mandar o som para o controle.") if unmatched else None
+        )
+        self.proton.set_visible(PROTON_PATTERN.casefold() not in (a.casefold() for a in self._apps))
+        self._sync_suggestions_visible()
+
+    def _sync_suggestions_visible(self) -> None:
+        rows = [*self._suggestion_rows, self.proton]
+        self.suggestions.set_visible(any(r.get_visible() for r in rows))
+
     # --- tela → daemon ---
+
+    def _suggest(self, row: Adw.ActionRow, name: str) -> None:
+        # Resposta no toque: a sugestão sai na hora; se o daemon recusar, o toast diz o motivo e
+        # ela volta.
+        def restore() -> None:
+            row.set_visible(True)
+            self._sync_suggestions_visible()
+
+        row.set_visible(False)
+        self._sync_suggestions_visible()
+        message = _("O som de {app} vai para o controle.").format(app=name)
+        self.ctx.call("SetApps", [*self._apps, name], ok=message, failed=restore)
 
     def _on_mirror(self, row: Adw.SwitchRow, _pspec: object) -> None:
         if not self._syncing:

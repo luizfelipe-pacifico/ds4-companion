@@ -32,6 +32,7 @@ SHOTS = [
     ("audio-aguardando", "audio", {}),
     ("audio-alto", "audio", {"volume_db": -2.5, "mirror_active": True}),
     ("audio-sem-apps", "audio", {"apps": []}),
+    ("audio-sugestoes", "audio", {"apps": ["rpcs3"], "playing": ["Firefox", "eldenring.exe", "Discord"]}),
     ("audio-bluetooth", "audio", {"connection": Connection.BLUETOOTH, "sink_present": False}),
     ("vibracao", "vibration", {"large_percent": 150, "players": [1, 2]}),
     ("audio-acima", "audio", {"volume_db": 2.0, "max_db": 3.0, "configured_max_db": 3.0}),

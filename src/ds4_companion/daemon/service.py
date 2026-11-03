@@ -40,6 +40,7 @@ RUMBLE_COOLDOWN = 1.0
 POLL_SECONDS = 3.0
 DEBOUNCE_SECONDS = 0.15
 VOLUME_TOLERANCE_DB = 0.3
+MAX_PLAYING = 16
 
 
 class DaemonError(Exception):
@@ -280,6 +281,7 @@ class Daemon:
             configured_max_db=audio.max_db,
             output_name=(default.description or default.name) if default else "",
             apps=list(apps),
+            playing=self.graph.playing()[:MAX_PLAYING],
             large_percent=vib.large_percent,
             small_percent=vib.small_percent,
             swap_motors=vib.swap_motors,

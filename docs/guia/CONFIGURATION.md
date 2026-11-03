@@ -40,7 +40,7 @@ e aparece um aviso no journal (`journalctl --user -u ds4-companion`).
 | Opção | Aceita |
 |---|---|
 | `volume_db`, `max_db`, `headphone_max_db` | número de −60 a +6 dB; `volume_db` e `headphone_max_db` nunca ficam acima de `max_db` |
-| `apps` | até 32 nomes, 1 a 64 caracteres visíveis cada |
+| `apps` | até 32 nomes ou padrões (`*.exe`, `wine*`), 1 a 64 caracteres visíveis cada; um padrão que pegaria qualquer app (`*`) é recusado |
 | `large_percent`, `small_percent` | inteiro de 0 a 200 |
 | `players` | jogadores de 1 a 7 |
 | `color` | uma das cores da lista acima |
@@ -61,6 +61,9 @@ ds4ctl vibration --large 80 --small 100 [--swap|--no-swap] [--players 1 2]
 ds4ctl test-rumble [strong|weak|both]
 ds4ctl led rosa                     # azul, vermelho, verde, rosa, roxo, ciano, laranja, branco, desligada
 ds4ctl test-tone                    # apito só no controle
+ds4ctl apps                         # apps no controle e o que está tocando agora
+ds4ctl apps add '*.exe'             # nome do processo ou padrão (Proton: *.exe)
+ds4ctl apps remove steam
 ```
 
 O volume nunca passa do teto (`max_db`): se pedir mais, o `ds4ctl` aplica o teto e avisa.

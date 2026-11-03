@@ -157,3 +157,23 @@ def test_version(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit):
         cli.main(["--version"])
     assert "ds4ctl 0.1.0" in capsys.readouterr().out
+
+
+def test_apps_list_add_remove(proxy: FakeProxy) -> None:
+    proxy.status.apps = ["rpcs3"]
+    proxy.status.playing = ["Firefox", "eldenring.exe"]
+    code, text = ds4ctl("apps")
+    assert code == 0
+    assert "rpcs3" in text
+    assert "Tocando agora: Firefox, eldenring.exe" in text
+
+    assert ds4ctl("apps", "add", "*.exe")[0] == 0
+    assert proxy.calls[-1] == ("call_set_apps", ["rpcs3", "*.exe"])
+    assert ds4ctl("apps", "add", "RPCS3")[0] == 0  # já está na lista: não chama o daemon
+    assert proxy.calls[-1] == ("call_set_apps", ["rpcs3", "*.exe"])
+
+    assert ds4ctl("apps", "remove", "RPCS3")[0] == 0
+    assert proxy.calls[-1] == ("call_set_apps", [])
+    code, _ = ds4ctl("apps", "remove", "steam")
+    assert code == 1
+    assert ds4ctl("apps", "add")[0] == 1

@@ -342,3 +342,40 @@ def test_daemon_messages_in_toasts_are_not_markup(client: FakeClient) -> None:
     real.toast("pw-link falhou: <porta> & cia")
     assert shown[0].get_title() == "pw-link falhou: <porta> & cia"
     assert not shown[0].get_use_markup()
+
+
+def test_audio_suggestions_add_playing_apps_and_proton(ctx: Ctx, client: FakeClient) -> None:
+    page = AudioPage(ctx)
+    page.update(sample(apps=["rpcs3"], playing=["RPCS3", "Firefox", "eldenring.exe"]))
+    # O que já casa com a lista não é sugerido; nomes são texto, não markup.
+    assert [r.get_title() for r in page._suggestion_rows] == ["Firefox", "eldenring.exe"]
+    assert not any(r.get_use_markup() for r in page._suggestion_rows)
+    assert page.suggestions.get_visible()
+    assert "Tocando agora" in page.suggestions.get_description()
+    assert page.proton.get_visible()
+
+    firefox = page._suggestion_rows[0]
+    firefox.emit("activated")
+    assert client.calls[-1] == ("SetApps", ["rpcs3", "Firefox"])
+    assert not firefox.get_visible()  # some na hora, antes da resposta do daemon
+    assert ctx.toasts_seen[-1] == "O som de Firefox vai para o controle."
+
+    page.proton.emit("activated")
+    assert client.calls[-1] == ("SetApps", ["rpcs3", "*.exe"])
+
+    # Com *.exe na lista, o jogo do Proton e o atalho deixam de ser sugeridos.
+    page.update(sample(apps=["rpcs3", "*.exe"], playing=["RPCS3", "eldenring.exe"]))
+    assert page._suggestion_rows == []
+    assert not page.suggestions.get_description()
+    assert not page.proton.get_visible()
+    assert not page.suggestions.get_visible()
+
+
+def test_audio_suggestion_comes_back_when_daemon_refuses(ctx: Ctx, client: FakeClient) -> None:
+    page = AudioPage(ctx)
+    page.update(sample(apps=["rpcs3"], playing=["Firefox"]))
+    client.errors["SetApps"] = ("Failed", "Não deu para salvar a configuração.")
+    page._suggestion_rows[0].emit("activated")
+    assert ctx.toasts_seen[-1] == "Não deu para salvar a configuração."
+    assert page._suggestion_rows[0].get_visible()
+    assert page.suggestions.get_visible()

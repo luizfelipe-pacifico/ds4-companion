@@ -34,6 +34,9 @@
   Telas de estado com as ilustrações, banner de problema no PipeWire, tela de serviço parado e
   ativação do serviço na primeira abertura. CSS do design system em `data/style.css`, ícone próprio
   de vibração e GResource. `scripts/screenshots.sh` gera capturas num `mutter` headless.
+- Som de outros apps no controle (Steam/Proton): a lista aceita padrões como `*.exe` (recusa os que
+  pegariam tudo), a página Áudio sugere os apps tocando agora e o atalho "Jogos do Steam e Proton",
+  e o `ds4ctl apps` lista, adiciona e remove. O estado do daemon traz `playing`.
 - Pesquisa de áudio por Bluetooth: protocolo (relatórios 0x11/0x17, SBC 32 kHz), orçamento de
   latência e riscos em `docs/desenvolvimento/BLUETOOTH_AUDIO.md`; codificador SBC pela `libsbc` e
   relatórios em `daemon/hid/bt_audio.py` e protótipo `scripts/bt_audio_prototype.py`, ainda sem

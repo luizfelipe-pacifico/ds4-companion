@@ -38,7 +38,11 @@ def test_status_variants_round_trip() -> None:
     status = Status(players=[], apps=["rpcs3"], battery=50)
     variants = ddbus.status_variants(status)
     assert variants["players"].signature == "ai"
+    assert variants["playing"].signature == "as"  # lista vazia também vai como texto
     assert Status.from_mapping({k: v.value for k, v in variants.items()}) == status
+    playing = Status(playing=["Firefox", "eldenring.exe"])
+    variants = ddbus.status_variants(playing)
+    assert Status.from_mapping({k: v.value for k, v in variants.items()}).playing == playing.playing
 
 
 async def _session() -> tuple[MessageBus, MessageBus] | None:
